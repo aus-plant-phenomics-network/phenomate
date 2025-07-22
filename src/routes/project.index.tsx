@@ -60,7 +60,8 @@ function RouteComponent() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Confirmation</AlertDialogTitle>
               <AlertDialogDescription>
-                Delete all selected projects
+                This action cannot be undone. This will permanently delete all
+                selected projects and remove their data on the computer.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

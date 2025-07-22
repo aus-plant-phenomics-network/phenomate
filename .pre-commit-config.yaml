@@ -1,5 +1,5 @@
 default_language_version:
-  python: "3"
+  python: '3'
 repos:
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.0.0
@@ -17,23 +17,23 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.9.10"
+    rev: 'v0.9.10'
     hooks:
       # Run the linter.
-    - id: ruff
-      types_or: [ python, pyi ]
-      args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
-      types_or: [ python, pyi ]
+      - id: ruff
+        types_or: [python, pyi]
+        args: [--fix]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [python, pyi]
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
       - id: codespell
-        exclude: "uv.lock|package.json|package-lock.json"
+        exclude: 'uv.lock|package.json|package-lock.json'
         additional_dependencies:
           - tomli
   - repo: https://github.com/sphinx-contrib/sphinx-lint
-    rev: "v1.0.0"
+    rev: 'v1.0.0'
     hooks:
       - id: sphinx-lint

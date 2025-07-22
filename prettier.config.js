@@ -4,34 +4,33 @@
 const config = {
   semi: false,
   singleQuote: true,
-  trailingComma: "all",
+  trailingComma: 'all',
   tabWidth: 2,
   useTabs: false,
   bracketSameLine: false,
-  arrowParens: "avoid",
+  arrowParens: 'avoid',
   overrides: [
     {
-      files: ["*.mjs", "*.cjs", "*.js"],
+      files: ['*.mjs', '*.cjs', '*.js'],
       options: {
-        parser: "babel"
-      }
+        parser: 'babel',
+      },
     },
 
     {
-      files: ["*.mts", "*.cts", "*.ts"],
+      files: ['*.mts', '*.cts', '*.ts'],
       options: {
-        parser: "typescript"
-      }
+        parser: 'typescript',
+      },
     },
 
     {
-      files: ["*.json", "*.jsonc", "*.json5"],
+      files: ['*.json', '*.jsonc', '*.json5'],
       options: {
-        parser: "json"
-      }
-    }
-  ]
+        parser: 'json',
+      },
+    },
+  ],
+}
 
-};
-
-export default config;
+export default config

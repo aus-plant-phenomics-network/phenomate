@@ -55,9 +55,9 @@ export const AddressBar = (
       {...rest}
       type="text"
       value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
+      onChange={e => setInputValue(e.target.value)}
       onBlur={commitChange}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter') {
           commitChange()
           e.currentTarget.blur()
@@ -82,7 +82,7 @@ export const useFolderChain = (currentAddress: string): Array<FileData> => {
   if (!currentAddress.startsWith('/')) {
     throw new Error('Path must start with "/"')
   }
-  const parts = currentAddress.split('/').filter((p) => p !== '')
+  const parts = currentAddress.split('/').filter(p => p !== '')
   const result = []
   let currentPath = ''
   for (const part of parts) {
@@ -136,7 +136,7 @@ export const handleSelect = (
   const fileBrowserHandle = fileBrowserHandleRef.current
   return () => {
     const currentSelection = fileBrowserHandle.getFileSelection()
-    const selectedFile = files.filter((item) => currentSelection.has(item.id))
+    const selectedFile = files.filter(item => currentSelection.has(item.id))
     addSelectedFiles(selectedFile)
     // Clean up - remove all selected file in Chonky's internal store
     fileBrowserHandle.setFileSelection(new Set())

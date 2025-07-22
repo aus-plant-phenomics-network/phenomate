@@ -62,11 +62,11 @@ export function Autocomplete(
           <CommandList>
             <CommandEmpty>Not Found</CommandEmpty>
             <CommandGroup>
-              {data.map((item) => (
+              {data.map(item => (
                 <CommandItem
                   key={item}
                   value={item}
-                  onSelect={(currentValue) => {
+                  onSelect={currentValue => {
                     setValue(currentValue === value ? '' : currentValue)
                     setOpen(false)
                   }}
