@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { useCallback, useMemo, useState } from 'react'
+import { Trash2 } from 'lucide-react'
 import { makeFileDataColumn } from './-project.offload.tables'
 import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
@@ -13,7 +14,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
 import { RawDataTable, useTableWithFilterSort } from '@/components/Table'
-import { Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/project/$projectId/offload')({
   component: OffloadProjectPage,
@@ -74,7 +74,7 @@ export default function OffloadProjectPage() {
         )
       }
     },
-    [setSelectedFiles, form],
+    [selectedFiles, setSelectedFiles, form],
   )
 
   const removeAllFiles = useCallback(() => {
@@ -87,10 +87,6 @@ export default function OffloadProjectPage() {
       if (files.length > 0) {
         const toRemove = new Set(files.map(item => item.id))
         const newFiles = selectedFiles.filter(item => !toRemove.has(item.id))
-        console.log(
-          newFiles,
-          newFiles.map(item => item.id),
-        )
         setSelectedFiles(newFiles)
         form.setFieldValue(
           'src_files',
@@ -212,16 +208,23 @@ export default function OffloadProjectPage() {
             variant="outline"
             size="sm"
             onClick={() => {
-              const selectedRows = table
-                .getFilteredSelectedRowModel()
-                .rows.map(item => item.original)
-              removeSelectedFiles(selectedRows)
+              const selectedRows = table.getFilteredSelectedRowModel().rows
+              selectedRows.forEach(row => row.toggleSelected(false))
+              const selectedRowsData = selectedRows.map(item => item.original)
+              removeSelectedFiles(selectedRowsData)
             }}
           >
             <Trash2 />
             Remove Selected
           </Button>
-          <Button variant="outline" size="sm" onClick={removeAllFiles}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              table.toggleAllRowsSelected(false)
+              removeAllFiles()
+            }}
+          >
             <Trash2 />
             Remove All
           </Button>

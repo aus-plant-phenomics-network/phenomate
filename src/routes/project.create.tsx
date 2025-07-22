@@ -72,7 +72,7 @@ export default function CreateProjectPage() {
         }}
       >
         <div className="flex flex-col gap-y-6 w-[410px] sm:w-[600px]">
-          <h1 className="flex justify-start text-2xl font-bold items-center px-6 pb-4">
+          <h1 className="flex justify-center text-2xl font-bold items-center px-6 pb-4">
             Create Project
           </h1>
           <div className="flex flex-col justify-center gap-y-4 px-6">
