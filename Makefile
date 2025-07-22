@@ -117,7 +117,7 @@ fix:                                               ## Run formatting scripts
 	@echo "${OK} Code formatting complete ✨"
 
 .PHONY: lint
-lint: pre-commit fix type-check 			       ## Run all linting
+lint: pre-commit type-check 			       ## Run all linting
 
 .PHONY: coverage
 coverage:                                          ## Run the tests and generate coverage report
@@ -179,26 +179,25 @@ docs-linkcheck-full:                               ## Run the full link check on
 # -----------------------------------------------------------------------------
 # Server
 # -----------------------------------------------------------------------------
-.PHONY: run-server 									
+.PHONY: run-server
 run-server:											## Start local django server for debugging
 	@uv run manage.py runserver
 
 .PHONY: install-mq
 install-mq: 										## Install rabbit mq server
-	@apt-get install rabbitmq-server 
+	@apt-get install rabbitmq-server
 
-.PHONY: run-celery 
+.PHONY: run-celery
 run-celery: 										## Start celery server
 	@uv run celery -A backend worker --loglevel=info
 
 .PHONY: clear-db
 clear-db:											## Remove current db session and load bootstrap data
-	@rm -rf db.sqlite3 
-	@uv run manage.py makemigrations 
-	@uv run manage.py migrate 
-	@uv run manage.py loaddata bootstrap-data.json 
+	@rm -rf db.sqlite3
+	@uv run manage.py makemigrations
+	@uv run manage.py migrate
+	@uv run manage.py loaddata bootstrap-data.json
 
-.PHONY: save-db 									
+.PHONY: save-db
 save-db:											## Save current data dump to use as bootstrap data
 	@uv run manage.py dumpdata --format json -o bootstrap-data.json
-

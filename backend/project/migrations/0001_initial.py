@@ -5,11 +5,9 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -27,7 +25,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Project",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
                 ("name", models.CharField(unique=True)),
                 ("year", models.IntegerField()),
                 ("summary", models.CharField(max_length=50)),
@@ -35,20 +38,61 @@ class Migration(migrations.Migration):
                 ("internal", models.BooleanField()),
                 ("created", models.DateTimeField(auto_now_add=True)),
                 ("updated", models.DateTimeField(auto_now=True)),
-                ("organisation", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="project.organisation")),
-                ("researcher", models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to="project.personnel")),
+                (
+                    "organisation",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="project.organisation",
+                    ),
+                ),
+                (
+                    "researcher",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="project.personnel",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
             name="Activity",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("activity", models.CharField(choices=[("CP", "Copied"), ("RM", "Removed")], default="CP", max_length=2)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "activity",
+                    models.CharField(
+                        choices=[("CP", "Copied"), ("RM", "Removed")], default="CP", max_length=2
+                    ),
+                ),
                 ("filename", models.CharField()),
                 ("target", models.CharField(default="")),
-                ("status", models.CharField(choices=[("QUEUED", "Queued"), ("ERROR", "Error"), ("COMPLETED", "Completed")], default="QUEUED")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("QUEUED", "Queued"),
+                            ("ERROR", "Error"),
+                            ("COMPLETED", "Completed"),
+                        ],
+                        default="QUEUED",
+                    ),
+                ),
                 ("error_log", models.CharField(default="")),
-                ("project", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="project.project")),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="project.project"
+                    ),
+                ),
             ],
         ),
     ]
