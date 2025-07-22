@@ -233,7 +233,7 @@ interface DataTableProps<TData, TValue> {
 
 export function RawDataTable<TData>({ table }: { table: TableT<TData> }) {
   return (
-    <div className="rounded-md border overflow-auto w-full p-2">
+    <div className="rounded-md border overflow-auto w-full p-2 flex flex-grow">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map(headerGroup => (

@@ -10,7 +10,7 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier",
-    "check": "prettier --write . && eslint --fix",
+    "check": "prettier --write .",
     "sync-backend": "openapi-typescript http://127.0.0.1:8000/api/openapi.json -o ./src/lib/api/v1.d.ts"
   },
   "dependencies": {
