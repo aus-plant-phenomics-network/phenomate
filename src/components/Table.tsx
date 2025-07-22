@@ -31,8 +31,10 @@ import type {
   ColumnFiltersState,
   InitialTableState,
   RowData,
+  RowSelectionState,
   SortingState,
   Table as TableT,
+  VisibilityState,
 } from '@tanstack/react-table'
 
 import {
@@ -277,19 +279,35 @@ export function useTableWithFilterSort<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  return useReactTable({
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const table = useReactTable({
     data,
     columns,
     initialState: initialState,
     filterFns: {},
-    onSortingChange: setSorting,
+
     state: {
       sorting,
       columnFilters,
+      columnVisibility,
+      rowSelection,
     },
+    onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
+  return {
+    table: table,
+    sorting: sorting,
+    setSorting: setSorting,
+    columnFilters: columnFilters,
+    setColumnFilters: setColumnFilters,
+    rowSelection: rowSelection,
+    setRowSelection: setRowSelection,
+  }
 }

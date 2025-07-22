@@ -19,16 +19,9 @@ export const Route = createFileRoute('/project/')({
 
 function RouteComponent() {
   const { data } = useSuspenseQuery(queryOption)
-  const table = useTableWithFilterSort({
+  const { table } = useTableWithFilterSort({
     columns: projectColumns,
     data: data,
-    initialState: {
-      columnVisibility: {
-        location: false,
-        internal: false,
-        updated: false,
-      },
-    },
   })
   return (
     <>

@@ -26,6 +26,7 @@ import {
 import { cn } from '@/lib/utils'
 import { DataTableColumnHeader } from '@/components/Table'
 import { $api } from '@/lib/api'
+import { Checkbox } from '@/components/ui/checkbox'
 
 function DropdownMenuDialog(
   props: AlertDialogTriggerProps & {
@@ -125,6 +126,28 @@ function ProjectAction(
 export const projectColumns: Array<
   ColumnDef<components['schemas']['ProjectGetSchema']>
 > = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={value => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: 'action',
     cell: ({ row }) => <ProjectAction row={row} />,

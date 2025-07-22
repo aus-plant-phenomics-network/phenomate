@@ -101,6 +101,16 @@ def delete_project(request: HttpRequest, project_id: int) -> None:
     p.delete()
 
 
+@router.delete("/", summary="Remove multiple projects")
+def delete_projects(request: HttpRequest, project_ids: list[int]) -> None:
+    to_remove = set(project_ids)
+    projects = [get_object_or_404(Project, pk=project_id) for project_id in project_ids]
+    for project in projects:
+        if project.is_valid:
+            rm_project(project.location)
+    Project.objects.filter(pk__in=to_remove).delete()
+
+
 @router.get(
     "/{project_id}/activity",
     response=list[ActivitySchema],

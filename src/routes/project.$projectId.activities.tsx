@@ -26,7 +26,7 @@ export const Route = createFileRoute('/project/$projectId/activities')({
 function RouteComponent() {
   const { projectId } = Route.useParams()
   const { data } = useSuspenseQuery(queryOption(projectId))
-  const table = useTableWithFilterSort({
+  const { table } = useTableWithFilterSort({
     columns: activityColumns,
     data: data,
   })

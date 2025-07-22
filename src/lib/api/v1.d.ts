@@ -16,7 +16,8 @@ export interface paths {
         put?: never;
         /** Create a new project */
         post: operations["backend_project_api_create_project"];
-        delete?: never;
+        /** Remove multiple projects */
+        delete: operations["backend_project_api_delete_projects"];
         options?: never;
         head?: never;
         patch?: never;
@@ -289,6 +290,28 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ProjectGetSchema"];
                 };
+            };
+        };
+    };
+    backend_project_api_delete_projects: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
