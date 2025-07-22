@@ -119,114 +119,114 @@ export default function OffloadProjectPage() {
   })
 
   return (
-    <div>
-      <h1 className="flex justify-start text-2xl font-bold items-center px-6 pb-4">
-        Offload Data
-      </h1>
-      <div className="flex flex-col xl:flex-row w-full gap-4">
-        <div className="flex flex-col gap-y-4 items-center h-full">
-          <form
-            id="project-create-form"
-            onSubmit={e => {
-              e.preventDefault()
-              e.stopPropagation()
-              form.handleSubmit()
+    <div className="flex flex-col xl:flex-row w-full gap-4 flex-grow-1 min-h-0">
+      {/* Form */}
+      <div className="flex flex-col gap-y-4 items-center">
+        <form
+          id="project-create-form"
+          onSubmit={e => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <h1 className="flex justify-center text-2xl font-bold items-center px-6 pb-4">
+            Offload Data
+          </h1>
+          <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
+            <div className="flex flex-col justify-center gap-y-4 px-6">
+              {/* Root Field */}
+              <form.Field
+                name="src_files"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Data*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          multiple
+                          readOnly
+                          hidden
+                          aria-hidden
+                        />
+                        <VFS
+                          addSelectedFiles={addSelectedFiles}
+                          baseAddr="/home"
+                          triggerText="Offload Data"
+                          title="Select Offload Data"
+                          description="Select File(s) or Folder(s) to offload to project"
+                          multiple={true}
+                          dirOnly={false}
+                        />
+                      </Fieldset>
+                    </>
+                  )
+                }}
+              />
+
+              {/* Summary Field */}
+              <form.Field
+                name="site"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Site*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Site"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
+            </div>
+            <div className="flex justify-end px-6 py-4">
+              <form.Subscribe
+                selector={state => [state.canSubmit, state.isSubmitting]}
+                children={([canSubmit, isSubmitting]) => (
+                  <Button type="submit" disabled={!canSubmit}>
+                    {isSubmitting ? '...' : 'Submit'}
+                  </Button>
+                )}
+              />
+            </div>
+          </div>
+        </form>
+        {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
+      </div>
+      {/* Display Table */}
+      <div className="flex flex-col flex-grow-1 min-h-0">
+        <div className="flex justify-end gap-x-2 p-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const selectedRows = table
+                .getFilteredSelectedRowModel()
+                .rows.map(item => item.original)
+              removeSelectedFiles(selectedRows)
             }}
           >
-            <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
-              <div className="flex flex-col justify-center gap-y-4 px-6">
-                {/* Root Field */}
-                <form.Field
-                  name="src_files"
-                  children={field => {
-                    return (
-                      <>
-                        <Fieldset>
-                          <Label htmlFor={field.name}>Data*</Label>
-                          <Input
-                            type="text"
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            multiple
-                            readOnly
-                            hidden
-                            aria-hidden
-                          />
-                          <VFS
-                            addSelectedFiles={addSelectedFiles}
-                            baseAddr="/home"
-                            triggerText="Offload Data"
-                            title="Select Offload Data"
-                            description="Select File(s) or Folder(s) to offload to project"
-                            multiple={true}
-                            dirOnly={false}
-                          />
-                        </Fieldset>
-                      </>
-                    )
-                  }}
-                />
-
-                {/* Summary Field */}
-                <form.Field
-                  name="site"
-                  children={field => {
-                    return (
-                      <>
-                        <Fieldset>
-                          <Label htmlFor={field.name}>Site*</Label>
-                          <Input
-                            type="text"
-                            id={field.name}
-                            name={field.name}
-                            placeholder="Site"
-                            onBlur={field.handleBlur}
-                            onChange={e => field.handleChange(e.target.value)}
-                          />
-                        </Fieldset>
-                        <FieldInfo field={field} />
-                      </>
-                    )
-                  }}
-                />
-              </div>
-              <div className="flex justify-end px-6 py-4">
-                <form.Subscribe
-                  selector={state => [state.canSubmit, state.isSubmitting]}
-                  children={([canSubmit, isSubmitting]) => (
-                    <Button type="submit" disabled={!canSubmit}>
-                      {isSubmitting ? '...' : 'Submit'}
-                    </Button>
-                  )}
-                />
-              </div>
-            </div>
-          </form>
-          {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
+            <Trash2 />
+            Remove Selected
+          </Button>
+          <Button variant="outline" size="sm" onClick={removeAllFiles}>
+            <Trash2 />
+            Remove All
+          </Button>
         </div>
-        <div>
-          <div className="flex justify-end gap-x-2 p-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const selectedRows = table
-                  .getFilteredSelectedRowModel()
-                  .rows.map(item => item.original)
-                removeSelectedFiles(selectedRows)
-              }}
-            >
-              <Trash2 />
-              Remove Selected
-            </Button>
-            <Button variant="outline" size="sm" onClick={removeAllFiles}>
-              <Trash2 />
-              Remove All
-            </Button>
-          </div>
-          <RawDataTable table={table} />
-        </div>
+        <RawDataTable table={table} />
       </div>
     </div>
   )

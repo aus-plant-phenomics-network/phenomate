@@ -21,6 +21,6 @@ from django.urls import path
 from backend.api import app
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("api/", app.urls),
+    path("", admin.site.urls),
 ]
