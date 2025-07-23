@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 from django.conf import settings
@@ -16,7 +15,7 @@ from backend.project.dto import (
     ResearcherSchema,
 )
 from backend.project.models import Activity, Organisation, Personnel, Project
-from backend.project.service import copy_data, init_project, rm_project
+from backend.project.service import init_project, rm_project
 from backend.project.tasks import copy_file_to_location
 
 if TYPE_CHECKING:
@@ -128,7 +127,8 @@ def list_activities(request: HttpRequest, project_id: str) -> list[Activity]:
 def offload_data(
     request: HttpRequest, project_id: str, form_data: Form[OffloadActivityForm]
 ) -> None:
-    project = get_object_or_404(Project, pk=project_id)
+    pass
+    # project = get_object_or_404(Project, pk=project_id)
     # TODO: split filename to determine appropriate structure
     # copy_data(
     #     src=[Path(p) for p in form_data.src_files],
