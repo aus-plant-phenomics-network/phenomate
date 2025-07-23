@@ -13,7 +13,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, Fieldset } from '@/components/Form'
-import { RawDataTable, useTableWithFilterSort } from '@/components/Table'
+import {
+  DataTablePagination,
+  RawDataTable,
+  useTableWithFilterSort,
+} from '@/components/Table'
 
 export const Route = createFileRoute('/project/$projectId/offload')({
   component: OffloadProjectPage,
@@ -24,6 +28,7 @@ const offloadSchema = z.object({
 })
 
 export default function OffloadProjectPage() {
+  console.log('Offload page rerendered')
   const navigate = useNavigate()
   const { projectId } = Route.useParams()
   const [submitError, setError] = useState<string>('')
@@ -59,42 +64,55 @@ export default function OffloadProjectPage() {
     },
   })
 
-  const addSelectedFiles = (files: Array<FileData>) => {
-    if (files.length > 0) {
-      const prevIdSet = new Set(selectedFiles.map(item => item.id))
-      const toAdd = files.filter(item => !prevIdSet.has(item.id))
-      const newFiles = [...selectedFiles, ...toAdd]
-      setSelectedFiles(newFiles)
-      form.setFieldValue(
-        'src_files',
-        newFiles.map(item => item.id),
-      )
-    }
-  }
+  const addSelectedFiles = useCallback(
+    (files: Array<FileData>) => {
+      if (files.length > 0) {
+        setSelectedFiles(prev => {
+          const prevIdSet = new Set(prev.map(item => item.id))
+          const toAdd = files.filter(item => !prevIdSet.has(item.id))
+          return [...prev, ...toAdd]
+        })
+        form.setFieldValue('src_files', prev => {
+          const prevIdSet = new Set(prev)
+          const toAdd = files
+            .map(item => item.id)
+            .filter(item => !prevIdSet.has(item))
+          return [...prev, ...toAdd]
+        })
+      }
+    },
+    [setSelectedFiles, form],
+  )
 
-  const removeAllFiles = () => {
+  const removeAllFiles = useCallback(() => {
     setSelectedFiles([])
     form.setFieldValue('src_files', [])
-  }
+  }, [setSelectedFiles, form])
 
   const removeSelectedFiles = useCallback(
     (files: Array<FileData>) => {
       if (files.length > 0) {
         const toRemove = new Set(files.map(item => item.id))
-        const newFiles = selectedFiles.filter(item => !toRemove.has(item.id))
-        setSelectedFiles(newFiles)
-        form.setFieldValue(
-          'src_files',
-          newFiles.map(item => item.id),
+        setSelectedFiles(prev => prev.filter(item => !toRemove.has(item.id)))
+        form.setFieldValue('src_files', prev =>
+          prev.filter(item => !toRemove.has(item)),
         )
       }
     },
-    [selectedFiles, selectedFiles, form],
+    [setSelectedFiles, form],
   )
 
-  const removeSelectedFile = (file: FileData) => {
-    removeSelectedFiles([file])
-  }
+  const removeSelectedFile = useCallback(
+    (file: FileData) => {
+      setSelectedFiles((prev: Array<FileData>) =>
+        prev.filter(item => item.id !== file.id),
+      )
+      form.setFieldValue('src_files', (prev: Array<string>) =>
+        prev.filter(item => item != file.id),
+      )
+    },
+    [setSelectedFiles, form],
+  )
 
   const columns = useMemo(
     () => makeFileDataColumn(removeSelectedFile),
@@ -172,7 +190,7 @@ export default function OffloadProjectPage() {
         {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
       </div>
       {/* Display Table */}
-      <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto">
+      <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto gap-y-4">
         <div className="flex justify-end gap-x-2 p-2">
           <Button
             variant="outline"
@@ -200,6 +218,7 @@ export default function OffloadProjectPage() {
           </Button>
         </div>
         <RawDataTable table={table} />
+        <DataTablePagination table={table} />
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { projectColumns } from './-project.index.tables'
 import { $api, queryClient } from '@/lib/api'
 import {
+  DataTablePagination,
   DataTableViewOptions,
   RawDataTable,
   useTableWithFilterSort,
@@ -86,6 +87,7 @@ function RouteComponent() {
         <DataTableViewOptions table={table} />
       </div>
       <RawDataTable table={table} />
+      <DataTablePagination table={table} />
     </>
   )
 }

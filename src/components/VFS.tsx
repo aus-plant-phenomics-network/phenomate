@@ -175,6 +175,7 @@ export const VFS = ({
   baseAddr,
   addSelectedFiles,
 }: VFSProps) => {
+  console.log('VFS Rendered')
   const [currentAddress, setCurrentAddress] = useState<string>(baseAddr)
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
@@ -206,7 +207,7 @@ export const VFS = ({
     <Dialog modal={false}>
       <DialogTrigger asChild>
         <Button className="text-left justify-start" variant="outline">
-          {triggerText}
+          <p className="overflow-hidden">{triggerText}</p>
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col h-[600px] md:max-w-[600px]">

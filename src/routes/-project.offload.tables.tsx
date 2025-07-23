@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 export const makeFileDataColumn = (
   removeSelectedFileHandler: (data: FileData) => void,
 ): Array<ColumnDef<FileData>> => {
+  console.log('Columns rerendered')
   return [
     {
       id: 'select',
