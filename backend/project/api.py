@@ -129,11 +129,12 @@ def offload_data(
     request: HttpRequest, project_id: str, form_data: Form[OffloadActivityForm]
 ) -> None:
     project = get_object_or_404(Project, pk=project_id)
-    copy_data(
-        src=[Path(p) for p in form_data.src_files],
-        dst=Path(project.location) / form_data.site,
-        project=project,
-    )
+    # TODO: split filename to determine appropriate structure
+    # copy_data(
+    #     src=[Path(p) for p in form_data.src_files],
+    #     dst=Path(project.location) / form_data.site,
+    #     project=project,
+    # )
 
 
 @router.post(

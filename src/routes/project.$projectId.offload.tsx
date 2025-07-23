@@ -12,7 +12,7 @@ import { VFS } from '@/components/VFS'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
+import { AlertMessage, Fieldset } from '@/components/Form'
 import { RawDataTable, useTableWithFilterSort } from '@/components/Table'
 
 export const Route = createFileRoute('/project/$projectId/offload')({
@@ -21,7 +21,6 @@ export const Route = createFileRoute('/project/$projectId/offload')({
 
 const offloadSchema = z.object({
   src_files: z.array(z.string()).min(1),
-  site: z.string().min(1),
 })
 
 export default function OffloadProjectPage() {
@@ -43,7 +42,6 @@ export default function OffloadProjectPage() {
   const defaultProjectOffloadValues: components['schemas']['OffloadActivityForm'] =
     {
       src_files: [],
-      site: '',
     }
   const form = useForm({
     defaultValues: defaultProjectOffloadValues,
@@ -54,33 +52,30 @@ export default function OffloadProjectPage() {
     canSubmitWhenInvalid: true,
     onSubmit: ({ value }) => {
       console.log(value)
-      // mutation.mutate({
-      //   params: { path: { project_id: projectId } },
-      //   body: value,
-      // })
+      mutation.mutate({
+        params: { path: { project_id: projectId } },
+        body: value,
+      })
     },
   })
 
-  const addSelectedFiles = useCallback(
-    (files: Array<FileData>) => {
-      if (files.length > 0) {
-        const prevIdSet = new Set(selectedFiles.map(item => item.id))
-        const toAdd = files.filter(item => !prevIdSet.has(item.id))
-        const newFiles = [...selectedFiles, ...toAdd]
-        setSelectedFiles(newFiles)
-        form.setFieldValue(
-          'src_files',
-          newFiles.map(item => item.id),
-        )
-      }
-    },
-    [selectedFiles, setSelectedFiles, form],
-  )
+  const addSelectedFiles = (files: Array<FileData>) => {
+    if (files.length > 0) {
+      const prevIdSet = new Set(selectedFiles.map(item => item.id))
+      const toAdd = files.filter(item => !prevIdSet.has(item.id))
+      const newFiles = [...selectedFiles, ...toAdd]
+      setSelectedFiles(newFiles)
+      form.setFieldValue(
+        'src_files',
+        newFiles.map(item => item.id),
+      )
+    }
+  }
 
-  const removeAllFiles = useCallback(() => {
+  const removeAllFiles = () => {
     setSelectedFiles([])
     form.setFieldValue('src_files', [])
-  }, [setSelectedFiles, form])
+  }
 
   const removeSelectedFiles = useCallback(
     (files: Array<FileData>) => {
@@ -94,15 +89,12 @@ export default function OffloadProjectPage() {
         )
       }
     },
-    [selectedFiles, setSelectedFiles, form],
+    [selectedFiles, selectedFiles, form],
   )
 
-  const removeSelectedFile = useCallback(
-    (file: FileData) => {
-      removeSelectedFiles([file])
-    },
-    [removeSelectedFiles],
-  )
+  const removeSelectedFile = (file: FileData) => {
+    removeSelectedFiles([file])
+  }
 
   const columns = useMemo(
     () => makeFileDataColumn(removeSelectedFile),
@@ -117,7 +109,7 @@ export default function OffloadProjectPage() {
   return (
     <div className="flex flex-col xl:flex-row w-full gap-4 flex-grow-1 min-h-0">
       {/* Form */}
-      <div className="flex flex-col gap-y-4 items-center">
+      <div className="flex flex-col gap-y-4 items-center min-w-[350px]">
         <form
           id="project-create-form"
           onSubmit={e => {
@@ -131,7 +123,7 @@ export default function OffloadProjectPage() {
           </h1>
           <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
             <div className="flex flex-col justify-center gap-y-4 px-6">
-              {/* Root Field */}
+              {/* Src Field Field */}
               <form.Field
                 name="src_files"
                 children={field => {
@@ -163,30 +155,8 @@ export default function OffloadProjectPage() {
                   )
                 }}
               />
-
-              {/* Summary Field */}
-              <form.Field
-                name="site"
-                children={field => {
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label htmlFor={field.name}>Site*</Label>
-                        <Input
-                          type="text"
-                          id={field.name}
-                          name={field.name}
-                          placeholder="Site"
-                          onBlur={field.handleBlur}
-                          onChange={e => field.handleChange(e.target.value)}
-                        />
-                      </Fieldset>
-                      <FieldInfo field={field} />
-                    </>
-                  )
-                }}
-              />
             </div>
+            {/* Submit button */}
             <div className="flex justify-end px-6 py-4">
               <form.Subscribe
                 selector={state => [state.canSubmit, state.isSubmitting]}
@@ -202,7 +172,7 @@ export default function OffloadProjectPage() {
         {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
       </div>
       {/* Display Table */}
-      <div className="flex flex-col flex-grow-1 min-h-0">
+      <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto">
         <div className="flex justify-end gap-x-2 p-2">
           <Button
             variant="outline"

@@ -17,6 +17,7 @@ def rm_project(location: str) -> None:
     shutil.rmtree(location)
 
 
+# TODO: Update copy data method to process file based on name
 def copy_data(src: list[Path], dst: Path, project: Project) -> None:
     all_items: set[Path] = set()
     failed_jobs = []

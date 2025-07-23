@@ -67,4 +67,3 @@ class ActivitySchema(Schema):
 
 class OffloadActivityForm(Schema):
     src_files: list[str]
-    site: str
