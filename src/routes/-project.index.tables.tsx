@@ -170,7 +170,9 @@ export const projectColumns: Array<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valid" />
     ),
-    enableColumnFilter: false,
+    meta: {
+      filterVariant: 'boolean',
+    },
   },
   {
     accessorKey: 'location',
@@ -193,7 +195,9 @@ export const projectColumns: Array<
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Internal" />
     ),
-    enableColumnFilter: false,
+    meta: {
+      filterVariant: 'boolean',
+    },
   },
   {
     accessorKey: 'researcherName',

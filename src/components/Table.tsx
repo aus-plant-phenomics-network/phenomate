@@ -62,7 +62,7 @@ import { cn } from '@/lib/utils'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range'
+    filterVariant?: 'text' | 'range' | 'boolean'
   }
 }
 
@@ -71,6 +71,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
   const { filterVariant } = column.columnDef.meta ?? {}
 
   return filterVariant === 'range' ? (
+    // Range filter variant
     <div>
       <div className="flex space-x-2">
         <DebouncedInput
@@ -93,7 +94,26 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
         />
       </div>
     </div>
+  ) : filterVariant === 'boolean' ? (
+    // Boolean
+    <Select
+      onValueChange={value =>
+        column.setFilterValue(
+          value === 'All' ? '' : value === '1' ? true : false,
+        )
+      }
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="All" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="All">All</SelectItem>
+        <SelectItem value="1">true</SelectItem>
+        <SelectItem value="0">false</SelectItem>
+      </SelectContent>
+    </Select>
   ) : (
+    // Text filter variant
     <DebouncedInput
       className="w-36 border shadow rounded"
       onChange={value => column.setFilterValue(value)}
