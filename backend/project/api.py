@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
 
+from appm import ProjectManager
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ninja import Form, Router
@@ -12,10 +13,11 @@ from backend.project.dto import (
     OrganisationSchema,
     ProjectCreateSchema,
     ProjectGetSchema,
+    ProjectListSchema,
     ResearcherSchema,
 )
 from backend.project.models import Activity, Organisation, Personnel, Project
-from backend.project.service import init_project, rm_project
+from backend.project.service import rm_project
 from backend.project.tasks import copy_file_to_location
 
 if TYPE_CHECKING:
@@ -26,7 +28,7 @@ router = Router()
 
 @router.get(
     "/",
-    response=list[ProjectGetSchema],
+    response=list[ProjectListSchema],
     summary="List available projects",
 )
 def list_projects(request: HttpRequest) -> list[Project]:
@@ -56,35 +58,75 @@ def list_organisations(request: HttpRequest) -> list[Organisation]:
     response=ProjectGetSchema,
     summary="Get project by PK",
 )
-def get_project(request: HttpRequest, project_id: int) -> Project:
-    return get_object_or_404(Project, pk=project_id)
+def get_project(request: HttpRequest, project_id: int) -> ProjectGetSchema:
+    project = get_object_or_404(Project, pk=project_id)
+    manager = ProjectManager.load_project(project.location)
+    project_metadata = manager.metadata.model_dump(mode="python")
+    return ProjectGetSchema(
+        id=project.pk, location=project.location, is_valid=project.is_valid, **project_metadata
+    )
+
+
+@router.post("/import", response=ProjectListSchema, summary="Import a project")
+def import_project(request: HttpRequest, project: str) -> Project:
+    manager = ProjectManager.load_project(project)
+    if not Project.objects.filter(location=manager.location).exists():
+        researcherName = manager.metadata.meta.researcherName
+        researcher, rstatus = (
+            Personnel.objects.get_or_create(name=researcherName) if researcherName else (None, None)
+        )
+        organisationName = manager.metadata.meta.organisationName
+        organisation, ostatus = (
+            Organisation.objects.get_or_create(name=organisationName)
+            if organisationName
+            else (None, None)
+        )
+        Project.objects.create(
+            year=manager.metadata.meta.year,
+            summary=manager.metadata.meta.summary,
+            internal=manager.metadata.meta.internal,
+            researcher=researcher,
+            organisation=organisation,
+            location=str(manager.location),
+        )
+    return Project.objects.get(location=manager.location)
 
 
 @router.post(
     "/",
-    response=ProjectGetSchema,
+    response=ProjectListSchema,
     summary="Create a new project",
 )
 def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
     researcher, rstatus = (
-        Personnel.objects.get_or_create(name=data.researcher) if data.researcher else (None, None)
-    )
-    organisation, ostatus = (
-        Organisation.objects.get_or_create(name=data.organisation)
-        if data.organisation
+        Personnel.objects.get_or_create(name=data.researcherName)
+        if data.researcherName
         else (None, None)
     )
-
+    organisation, ostatus = (
+        Organisation.objects.get_or_create(name=data.organisationName)
+        if data.organisationName
+        else (None, None)
+    )
+    root = data.root if data.root else getattr(settings, "DEFAULT_ROOT_FOLDER", "/Project")
+    manager = ProjectManager.from_template(
+        root=root,
+        year=data.year,
+        summary=data.summary,
+        internal=data.internal,
+        researcherName=researcher.name if researcher else None,
+        organisationName=organisation.name if organisation else None,
+        template=data.template,
+    )
     project = Project.objects.create(
         year=data.year,
         summary=data.summary,
-        root=data.root if data.root else getattr(settings, "DEFAULT_ROOT_FOLDER", "/Project"),
         internal=data.internal,
         researcher=researcher,
         organisation=organisation,
-        name=data.name,
+        location=str(manager.location),
     )
-    init_project(project.location)
+    manager.init_project()
     return project
 
 
@@ -117,7 +159,7 @@ def delete_projects(request: HttpRequest, project_ids: list[int]) -> None:
 )
 def list_activities(request: HttpRequest, project_id: str) -> list[Activity]:
     project = get_object_or_404(Project, pk=project_id)
-    return cast("list[Activity]", project.activity_set.all())
+    return cast("list[Activity]", project.activity_set.all())  # pyright: ignore[reportAttributeAccessIssue]
 
 
 @router.post(
@@ -144,7 +186,7 @@ def offload_data(
 def restart_activity(request: HttpRequest, activity_id: int) -> None:
     log = get_object_or_404(Activity, pk=activity_id)
     if log.activity == Activity.ActivityChoices.COPIED:
-        copy_file_to_location.delay(activity_id)
+        copy_file_to_location.delay(activity_id)  # pyright: ignore[reportFunctionMemberAccess]
 
 
 @router.delete(

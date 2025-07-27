@@ -1,8 +1,7 @@
 import datetime
 
+from appm.model import ProjectMetadata
 from ninja import Schema
-
-from backend.project.utils import slugify
 
 
 class ResearcherSchema(Schema):
@@ -13,47 +12,34 @@ class OrganisationSchema(Schema):
     name: str
 
 
-class ProjectGetSchema(Schema):
+class ProjectListSchema(Schema):
     id: int
-    name: str
-    location: str
-    is_valid: bool
-    updated: datetime.datetime
     year: int
+    summary: str
     internal: bool
     researcherName: str | None
     organisationName: str | None
+    updated: datetime.datetime
+    location: str
+    is_valid: bool
+    name: str
+    root: str
+
+
+class ProjectGetSchema(ProjectMetadata, Schema):
+    id: int
+    location: str
+    is_valid: bool
 
 
 class ProjectCreateSchema(Schema):
     year: int
     summary: str
-    root: str | None = None
+    template: str
     internal: bool = True
-    researcher: str | None = None
-    organisation: str | None = None
-
-    @property
-    def name(self) -> str:
-        name = f"{self.year}_{slugify(self.summary)}"
-        if self.internal is not None:
-            internal_val = "internal" if self.internal else "external"
-            name += f"_{internal_val}"
-        if self.researcher:
-            name += f"_{slugify(self.researcher)}"
-        if self.organisation:
-            name += f"_{slugify(self.organisation)}"
-        return name
-
-
-class ProjectUpdateSchema(Schema):
-    id: int
-    year: int | None = None
-    summary: str | None = None
+    researcherName: str | None = None
+    organisationName: str | None = None
     root: str | None = None
-    internal: bool | None = None
-    researcher: str | None = None
-    organisation: str | None = None
 
 
 class ActivitySchema(Schema):

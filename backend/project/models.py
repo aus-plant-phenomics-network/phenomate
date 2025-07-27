@@ -1,9 +1,8 @@
 from fileinput import filename
 from pathlib import Path
 
+from appm.utils import slugify
 from django.db import models
-
-from backend.project.utils import slugify
 
 
 class Personnel(models.Model):
@@ -22,22 +21,25 @@ class Organisation(models.Model):
 
 # Create your models here.
 class Project(models.Model):
-    name = models.CharField(unique=True, null=False)
     year = models.IntegerField()
     summary = models.CharField(max_length=50)
-    root = models.CharField()
     internal = models.BooleanField()
     researcher = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True)
     organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True)
+    location = models.CharField(unique=True, null=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.location
 
     @property
-    def location(self) -> str:
-        return str(Path(self.root) / self.name)
+    def name(self) -> str:
+        return Path(self.location).name
+
+    @property
+    def root(self) -> str:
+        return str(Path(self.location).parent)
 
     @property
     def is_valid(self) -> bool:

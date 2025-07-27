@@ -196,8 +196,9 @@ clear-db:											## Remove current db session and load bootstrap data
 	@rm -rf db.sqlite3
 	@uv run manage.py makemigrations
 	@uv run manage.py migrate
-	@uv run manage.py loaddata bootstrap-data.json
 
 .PHONY: save-db
 save-db:											## Save current data dump to use as bootstrap data
 	@uv run manage.py dumpdata --format json -o bootstrap-data.json
+
+.PHONY: 
