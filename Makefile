@@ -201,4 +201,6 @@ clear-db:											## Remove current db session and load bootstrap data
 save-db:											## Save current data dump to use as bootstrap data
 	@uv run manage.py dumpdata --format json -o bootstrap-data.json
 
-.PHONY: 
+.PHONY:
+admin:
+	@uv run manage.py createsuperuser --username admin

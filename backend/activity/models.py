@@ -1,3 +1,35 @@
 from django.db import models
 
+from backend.project.models import Project
+
+
 # Create your models here.
+class Activity(models.Model):
+    class ActivityChoices(models.TextChoices):
+        COPIED = "CP"
+        REMOVED = "RM"
+
+    class StatusChoices(models.TextChoices):
+        QUEUED = "QUEUED"
+        ERROR = "ERROR"
+        COMPLETED = "COMPLETED"
+
+    # Model Fields
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    activity = models.CharField(
+        max_length=2, choices=ActivityChoices, default=ActivityChoices.COPIED
+    )
+    filename = models.CharField()
+    target = models.CharField(default="")
+    status = models.CharField(choices=StatusChoices, default=StatusChoices.QUEUED)
+    error_log = models.CharField(default="")
+
+    def __str__(self) -> str:
+        name = ""
+        if self.project:
+            name += f"{self.project}"
+        name += f"_{self.activity}_{self.filename}"
+        if self.target:
+            name += f"_{self.target}"
+        name += f"_{self.status}"
+        return name

@@ -4,14 +4,6 @@ from appm.model import ProjectMetadata
 from ninja import Schema
 
 
-class ResearcherSchema(Schema):
-    name: str
-
-
-class OrganisationSchema(Schema):
-    name: str
-
-
 class ProjectListSchema(Schema):
     id: int
     year: int
@@ -42,14 +34,6 @@ class ProjectCreateSchema(Schema):
     root: str | None = None
 
 
-class ActivitySchema(Schema):
-    id: int
-    activity: str
-    filename: str
-    target: str | None
-    status: str
-    error_log: str | None
-
-
-class OffloadActivityForm(Schema):
-    src_files: list[str]
+class ProjectImportDTO(Schema):
+    project_path: str
+    metadata_path: str | None = None

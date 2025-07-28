@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "backend.project.apps.ProjectConfig",
+    "backend.organisation.apps.OrganisationConfig",
+    "backend.researcher.apps.ResearcherConfig",
+    "backend.activity.apps.ActivityConfig",
     "corsheaders",
 ]
 

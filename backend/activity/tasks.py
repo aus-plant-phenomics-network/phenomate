@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 
-from backend.project.models import Activity
+from backend.activity.models import Activity
 from celery import shared_task
 
 

@@ -6,7 +6,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from ninja import NinjaAPI
 
+from backend.activity.api import router as activity_router
+from backend.organisation.api import router as organisation_router
 from backend.project.api import router as project_router
+from backend.researcher.api import router as researcher_router
 from backend.url.api import router as urls_router
 
 if TYPE_CHECKING:
@@ -43,5 +46,8 @@ def integrity_conflict(request: HttpRequest, exc: IndentationError) -> HttpRespo
     )
 
 
-app.add_router("/project", project_router, tags=["Project"])
-app.add_router("/urls", urls_router, tags=["urls"])
+app.add_router("/project/", project_router, tags=["project"])
+app.add_router("/urls/", urls_router, tags=["urls"])
+app.add_router("/researcher/", researcher_router, tags=["researcher"])
+app.add_router("/organisation/", organisation_router, tags=["organisation"])
+app.add_router("/activity/", activity_router, tags=["activity"])
