@@ -165,7 +165,7 @@ export const makeIndexDataColumn = (
         <DataTableColumnHeader column={column} title="Last Updated" />
       ),
       cell: ({ cell }) => {
-        const formatter = new Intl.DateTimeFormat('en-US', {
+        const formatter = new Intl.DateTimeFormat('en-GB', {
           timeZone: timezone,
           year: 'numeric',
           month: '2-digit',
