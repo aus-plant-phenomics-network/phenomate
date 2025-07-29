@@ -28,7 +28,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { AlertMessage } from '@/components/Form'
-import { BaseVFS, VFS } from '@/components/VFS'
+import { BaseVFS } from '@/components/VFS'
 
 const queryOption = $api.queryOptions('get', '/api/project/')
 
