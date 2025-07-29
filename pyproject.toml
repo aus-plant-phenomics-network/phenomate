@@ -9,6 +9,7 @@ dependencies = [
     "celery[django]>=5.5.3",
     "django-cors-headers>=4.7.0",
     "django-ninja>=1.4.3",
+    "appm>=0.0.3",
 ]
 
 [dependency-groups]

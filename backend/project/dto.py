@@ -1,6 +1,6 @@
 import datetime
 
-from appm.model import ProjectMetadata
+from appm.model import Project
 from ninja import Schema
 
 
@@ -18,7 +18,7 @@ class ProjectListSchema(Schema):
     root: str
 
 
-class ProjectGetSchema(ProjectMetadata, Schema):
+class ProjectGetSchema(Project, Schema):
     id: int
     location: str
     is_valid: bool
@@ -27,7 +27,7 @@ class ProjectGetSchema(ProjectMetadata, Schema):
 class ProjectCreateSchema(Schema):
     year: int
     summary: str
-    template: str
+    template: str | None = None
     internal: bool = True
     researcherName: str | None = None
     organisationName: str | None = None
