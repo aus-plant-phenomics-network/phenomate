@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from appm.exceptions import TemplateEngineException
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from ninja import NinjaAPI
@@ -21,6 +22,15 @@ app = NinjaAPI(title="Phenomate API")
 # Error handling logic
 @app.exception_handler(ValueError)
 def invalid_request(request: HttpRequest, exc: ValueError) -> HttpResponse:
+    return app.create_response(
+        request,
+        {"message": str(exc)},
+        status=400,
+    )
+
+
+@app.exception_handler(TemplateEngineException)
+def invalid_template(request: HttpRequest, exc: TemplateEngineException) -> HttpResponse:
     return app.create_response(
         request,
         {"message": str(exc)},

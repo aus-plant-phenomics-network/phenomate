@@ -5,24 +5,48 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('project', '0002_alter_project_organisation_alter_project_researcher_and_more'),
+        ("project", "0002_alter_project_organisation_alter_project_researcher_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Activity',
+            name="Activity",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('activity', models.CharField(choices=[('CP', 'Copied'), ('RM', 'Removed')], default='CP', max_length=2)),
-                ('filename', models.CharField()),
-                ('target', models.CharField(default='')),
-                ('status', models.CharField(choices=[('QUEUED', 'Queued'), ('ERROR', 'Error'), ('COMPLETED', 'Completed')], default='QUEUED')),
-                ('error_log', models.CharField(default='')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.project')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "activity",
+                    models.CharField(
+                        choices=[("CP", "Copied"), ("RM", "Removed")], default="CP", max_length=2
+                    ),
+                ),
+                ("filename", models.CharField()),
+                ("target", models.CharField(default="")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("QUEUED", "Queued"),
+                            ("ERROR", "Error"),
+                            ("COMPLETED", "Completed"),
+                        ],
+                        default="QUEUED",
+                    ),
+                ),
+                ("error_log", models.CharField(default="")),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="project.project"
+                    ),
+                ),
             ],
         ),
     ]

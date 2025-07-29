@@ -30,7 +30,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 
 function DropdownMenuDialog(
   props: AlertDialogTriggerProps & {
-    row: Row<components['schemas']['ProjectGetSchema']>
+    row: Row<components['schemas']['ProjectListSchema']>
   },
 ) {
   const { onSelect, row } = props
@@ -81,7 +81,7 @@ function DropdownMenuDialog(
 
 function ProjectAction(
   props: Omit<React.ComponentProps<'button'>, 'children'> & {
-    row: Row<components['schemas']['ProjectGetSchema']>
+    row: Row<components['schemas']['ProjectListSchema']>
   },
 ) {
   const { row, className, ...rest } = props
@@ -124,7 +124,7 @@ function ProjectAction(
 }
 
 export const projectColumns: Array<
-  ColumnDef<components['schemas']['ProjectGetSchema']>
+  ColumnDef<components['schemas']['ProjectListSchema']>
 > = [
   {
     id: 'select',

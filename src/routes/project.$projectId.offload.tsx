@@ -28,7 +28,6 @@ const offloadSchema = z.object({
 })
 
 export default function OffloadProjectPage() {
-  console.log('Offload page rerendered')
   const navigate = useNavigate()
   const { projectId } = Route.useParams()
   const [submitError, setError] = useState<string>('')

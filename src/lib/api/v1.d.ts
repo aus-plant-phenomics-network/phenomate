@@ -354,7 +354,7 @@ export interface components {
             naming_convention: components["schemas"]["NamingConv"];
             /**
              * Version
-             * @default 0.0.3
+             * @default 0.0.4
              */
             version: string;
             meta: components["schemas"]["Metadata"];
@@ -365,8 +365,8 @@ export interface components {
             /** Is Valid */
             is_valid: boolean;
         };
-        /** ProjectImportDTO */
-        ProjectImportDTO: {
+        /** ProjectImportSchema */
+        ProjectImportSchema: {
             /** Project Path */
             project_path: string;
             /** Metadata Path */
@@ -526,7 +526,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ProjectImportDTO"];
+                "application/json": components["schemas"]["ProjectImportSchema"];
             };
         };
         responses: {

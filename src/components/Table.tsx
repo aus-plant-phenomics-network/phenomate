@@ -226,7 +226,7 @@ export function DataTableViewOptions<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline">
           <Settings2 />
           View
         </Button>
@@ -309,7 +309,6 @@ export function useTableWithFilterSort<TData, TValue>({
   data,
   initialState,
 }: DataTableProps<TData, TValue>) {
-  console.log('Table Rendered')
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})

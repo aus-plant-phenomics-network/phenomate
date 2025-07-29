@@ -39,7 +39,7 @@ install: destroy clean                              ## Install the project, depe
 	@echo "${INFO} Starting fresh installation..."
 	@uv python pin 3.13 >/dev/null 2>&1
 	@uv venv >/dev/null 2>&1
-	@uv sync --all-extras --dev
+	@uv sync --all-extras --dev --group analysis
 	@if ! command -v npm >/dev/null 2>&1; then \
 		echo "${INFO} Installing Node environment... 📦"; \
 		uvx nodeenv .venv --force --quiet; \

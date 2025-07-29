@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ChonkyActions,
   FileHelper,
@@ -68,14 +68,18 @@ export const AddressBar = (
 }
 
 // Content
-export interface VFSProps {
+export interface BaseVFSProps {
   title: string
-  triggerText: string
+  children: React.ReactNode
   description: string
   multiple: boolean
   dirOnly: boolean
   baseAddr: string
   addSelectedFiles: (files: Array<FileData>) => void
+}
+
+export interface VFSProps extends Omit<BaseVFSProps, 'children'> {
+  triggerText: string
 }
 
 export const useFolderChain = (currentAddress: string): Array<FileData> => {
@@ -166,16 +170,15 @@ function handleDisabledState(
 /**
  * Renders Shadcn's `Dialog` components with Chonky `FullFileBrowser` in `DialogContent`.
  */
-export const VFS = ({
+export const BaseVFS = ({
   title,
-  triggerText,
+  children,
   description,
   multiple,
   dirOnly,
   baseAddr,
   addSelectedFiles,
-}: VFSProps) => {
-  console.log('VFS Rendered')
+}: BaseVFSProps) => {
   const [currentAddress, setCurrentAddress] = useState<string>(baseAddr)
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
@@ -205,11 +208,7 @@ export const VFS = ({
   return (
     // modal = True will mess up Chonky's own popup window
     <Dialog modal={false}>
-      <DialogTrigger asChild>
-        <Button className="text-left justify-start" variant="outline">
-          <p className="overflow-hidden">{triggerText}</p>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="flex flex-col h-[600px] md:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -242,5 +241,30 @@ export const VFS = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export const VFS = ({
+  title,
+  triggerText,
+  description,
+  multiple,
+  dirOnly,
+  baseAddr,
+  addSelectedFiles,
+}: VFSProps) => {
+  return (
+    <BaseVFS
+      title={title}
+      description={description}
+      multiple={multiple}
+      dirOnly={dirOnly}
+      baseAddr={baseAddr}
+      addSelectedFiles={addSelectedFiles}
+    >
+      <Button className="text-left justify-start" variant="outline">
+        <p className="overflow-hidden">{triggerText}</p>
+      </Button>
+    </BaseVFS>
   )
 }

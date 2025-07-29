@@ -34,6 +34,6 @@ class ProjectCreateSchema(Schema):
     root: str | None = None
 
 
-class ProjectImportDTO(Schema):
+class ProjectImportSchema(Schema):
     project_path: str
     metadata_path: str | None = None

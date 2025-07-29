@@ -11,7 +11,7 @@ from backend.organisation.models import Organisation
 from backend.project.dto import (
     ProjectCreateSchema,
     ProjectGetSchema,
-    ProjectImportDTO,
+    ProjectImportSchema,
     ProjectListSchema,
 )
 from backend.project.models import Project
@@ -86,7 +86,7 @@ def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
 
 
 @router.post("/load", response=ProjectListSchema)
-def load_project(request: HttpRequest, data: ProjectImportDTO) -> Project:
+def load_project(request: HttpRequest, data: ProjectImportSchema) -> Project:
     manager = ProjectManager.load_project(data.project_path, data.metadata_path)
     if not Project.objects.filter(location=manager.location).exists():
         researcherName = manager.metadata.meta.researcherName

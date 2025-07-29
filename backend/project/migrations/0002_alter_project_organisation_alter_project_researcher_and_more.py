@@ -5,31 +5,40 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('organisation', '0001_initial'),
-        ('project', '0001_initial'),
-        ('researcher', '0001_initial'),
+        ("organisation", "0001_initial"),
+        ("project", "0001_initial"),
+        ("researcher", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='project',
-            name='organisation',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='organisation.organisation'),
+            model_name="project",
+            name="organisation",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="organisation.organisation",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='researcher',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='researcher.researcher'),
+            model_name="project",
+            name="researcher",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="researcher.researcher",
+            ),
         ),
         migrations.DeleteModel(
-            name='Activity',
+            name="Activity",
         ),
         migrations.DeleteModel(
-            name='Organisation',
+            name="Organisation",
         ),
         migrations.DeleteModel(
-            name='Personnel',
+            name="Personnel",
         ),
     ]
