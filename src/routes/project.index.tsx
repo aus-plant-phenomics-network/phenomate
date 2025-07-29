@@ -3,8 +3,8 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { FolderUp, Plus, Trash2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from '@tanstack/react-form'
-import { useState } from 'react'
-import { projectColumns } from './-project.index.tables'
+import { useMemo, useState } from 'react'
+import { makeIndexDataColumn } from './-project.index.tables'
 import type { Table } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 import type { FileData } from '@aperturerobotics/chonky'
@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { AlertMessage } from '@/components/Form'
 import { BaseVFS } from '@/components/VFS'
+import { TZSelect, currentTimeZone } from '@/components/TimezoneSelect'
 
 const queryOption = $api.queryOptions('get', '/api/project/')
 
@@ -176,8 +177,13 @@ function ImportProjectButton({
 }
 
 function RouteComponent() {
+  const [timezone, setTimezone] = useState<string>(currentTimeZone)
   const [submitError, setError] = useState<string>('')
   const { data } = useSuspenseQuery(queryOption)
+  const projectColumns = useMemo(
+    () => makeIndexDataColumn(timezone),
+    [timezone],
+  )
   const { table } = useTableWithFilterSort({
     columns: projectColumns,
     data: data,
@@ -191,6 +197,7 @@ function RouteComponent() {
         <ImportProjectButton setError={setError} />
         <DeleteSelectedButton table={table} />
         <DataTableViewOptions table={table} />
+        <TZSelect value={timezone} onValueChange={setTimezone} />
       </div>
       {/* Table and Pagination */}
       <RawDataTable table={table} />

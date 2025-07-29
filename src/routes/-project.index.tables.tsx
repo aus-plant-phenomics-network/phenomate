@@ -123,92 +123,107 @@ function ProjectAction(
   )
 }
 
-export const projectColumns: Array<
-  ColumnDef<components['schemas']['ProjectListSchema']>
-> = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    id: 'action',
-    cell: ({ row }) => <ProjectAction row={row} />,
-  },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-  },
-  {
-    accessorKey: 'updated',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Updated" />
-    ),
-  },
-  {
-    accessorKey: 'is_valid',
-    cell: ({ cell }) => (cell.getValue() as boolean).toString(),
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Valid" />
-    ),
-    meta: {
-      filterVariant: 'boolean',
+export const makeIndexDataColumn = (
+  timezone: string,
+): Array<ColumnDef<components['schemas']['ProjectListSchema']>> => {
+  return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={value => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
-  },
-  {
-    accessorKey: 'location',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Location" />
-    ),
-  },
-  {
-    accessorKey: 'year',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Year" />
-    ),
-    meta: {
-      filterVariant: 'range',
+    {
+      id: 'action',
+      cell: ({ row }) => <ProjectAction row={row} />,
     },
-  },
-  {
-    accessorKey: 'internal',
-    cell: ({ cell }) => (cell.getValue() as boolean).toString(),
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Internal" />
-    ),
-    meta: {
-      filterVariant: 'boolean',
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
     },
-  },
-  {
-    accessorKey: 'researcherName',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Researcher" />
-    ),
-  },
-  {
-    accessorKey: 'organisationName',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Organisation" />
-    ),
-  },
-]
+    {
+      accessorKey: 'updated',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Last Updated" />
+      ),
+      cell: ({ cell }) => {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: timezone,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })
+        return formatter.format(new Date(cell.getValue() as string))
+      },
+    },
+    {
+      accessorKey: 'is_valid',
+      cell: ({ cell }) => (cell.getValue() as boolean).toString(),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Valid" />
+      ),
+      meta: {
+        filterVariant: 'boolean',
+      },
+    },
+    {
+      accessorKey: 'location',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Location" />
+      ),
+    },
+    {
+      accessorKey: 'year',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Year" />
+      ),
+      meta: {
+        filterVariant: 'range',
+      },
+    },
+    {
+      accessorKey: 'internal',
+      cell: ({ cell }) => (cell.getValue() as boolean).toString(),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Internal" />
+      ),
+      meta: {
+        filterVariant: 'boolean',
+      },
+    },
+    {
+      accessorKey: 'researcherName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Researcher" />
+      ),
+    },
+    {
+      accessorKey: 'organisationName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Organisation" />
+      ),
+    },
+  ]
+}
