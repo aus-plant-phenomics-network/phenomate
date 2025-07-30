@@ -30,15 +30,15 @@ wheels = [
 
 [[package]]
 name = "appm"
-version = "0.0.4"
+version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "ruamel-yaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8b/9d/4cacba9d77453711329b1ef62c37d8cf705d21fc1082f4402f9d2a8bd5a7/appm-0.0.4.tar.gz", hash = "sha256:b361e8b6a9bb10b8d25e574afc6f3e695a894e228ee1ab22dca8725b44ccfd94", size = 1459486, upload-time = "2025-07-29T10:27:16.881Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/ac/cd658e3892537f131116bfe9b17d576306f5d82dcefb3f2782ef682b333d/appm-0.0.5.tar.gz", hash = "sha256:3ab9872b7d67e8c7f54ecbccc25e1407fac5f486c79ff1cb54a06ae8804419dd", size = 1468024, upload-time = "2025-07-30T09:15:42.823Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/ef/80b44c4f0bdf846f2e9b1704f36efbdb0a18a79aac251d417c1dbf675af9/appm-0.0.4-py3-none-any.whl", hash = "sha256:1070b714674fbf3147a5d123c08bbd55bc67c9b53f1230f715fe0175e0df5b8b", size = 1976266, upload-time = "2025-07-29T10:27:10.121Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/27/f0066191a07d29a80646a1149940f0a624358a6cd1b44f37d5b1f8c2b50f/appm-0.0.5-py3-none-any.whl", hash = "sha256:9d308da3a4ef2ae18545a8bad146bed4f24e276b9b6f486098f4c7dc77e691a4", size = 1987854, upload-time = "2025-07-30T09:15:34.175Z" },
 ]
 
 [[package]]
@@ -446,7 +446,7 @@ analysis = [
 
 [package.metadata]
 requires-dist = [
-    { name = "appm", specifier = ">=0.0.4" },
+    { name = "appm", specifier = ">=0.0.5" },
     { name = "celery", specifier = ">=5.5.3" },
     { name = "django", specifier = ">=5.2.4" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },

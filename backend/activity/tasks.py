@@ -15,7 +15,7 @@ from celery import shared_task
 def remove_task(log_pk: int) -> None:
     log = Activity.objects.get(pk=log_pk)
     src = Path(log.filename)
-    shutil.rmtree(src)
+    src.unlink()
     log.status = Activity.StatusChoices.COMPLETED
     log.save()
 
@@ -23,10 +23,10 @@ def remove_task(log_pk: int) -> None:
 @shared_task
 def preprocess_task(log_pk: int) -> None:
     log = Activity.objects.get(pk=log_pk)
-    src = Path(log.filename)
-    dst = Path(log.target)
-    manager = ProjectManager.load_project(dst)
     try:
+        src = Path(log.filename)
+        dst = Path(log.target)
+        manager = ProjectManager.load_project(log.project.location)
         name = src.name
         components = manager.match(name)
         if "sensor" not in components or components["sensor"] is None:
@@ -62,27 +62,28 @@ def copy_task(log_pk: int) -> None:
     log = Activity.objects.get(pk=log_pk)
     dst = Path(log.target)
     src = Path(log.filename)
+    name = src.name
     manager = ProjectManager.load_project(dst)
     try:
         # If file can be parsed -> put to the correct location and initiate preprocessing
-        dst_path = manager.location / manager.get_file_placement(src.name)
-        manager.copy_file(src)
+        dst_path = manager.copy_file(src)
+        file_path = dst_path / name
         with transaction.atomic():
             log.status = Activity.StatusChoices.COMPLETED
-            log.target = str(dst_path.parent.absolute())
+            log.target = str(dst_path.absolute())
             # Queue next task
             next_log = Activity.objects.create(
                 activity=Activity.ActivityChoices.PREPROCESSED,
                 project=log.project,
                 parent=log,
-                filename=str(dst_path.absolute()),
-                target=str(dst_path.parent.absolute()),
+                filename=str(file_path.absolute()),
+                target=str(dst_path.absolute()),
                 status=Activity.StatusChoices.QUEUED,
             )
             # Save logs to db
             next_log.save()
             log.save()
-        preprocess_task.delay(next_log.pk)
+        preprocess_task.delay(next_log.pk)  # pyright: ignore[reportFunctionMemberAccess]
     except FileFormatMismatch:
         # If file cannot be matched -> dumped at root dir
         shutil.copy2(src, dst)
