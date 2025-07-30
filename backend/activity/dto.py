@@ -1,12 +1,14 @@
 from ninja import Schema
 
+from backend.activity.models import Activity
+
 
 class ActivitySchema(Schema):
     id: int
-    activity: str
+    activity: Activity.ActivityChoices
     filename: str
     target: str | None
-    status: str
+    status: Activity.StatusChoices
     error_log: str | None
 
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.db import models
 
 from backend.project.models import Project
@@ -6,8 +8,9 @@ from backend.project.models import Project
 # Create your models here.
 class Activity(models.Model):
     class ActivityChoices(models.TextChoices):
-        COPIED = "CP"
-        REMOVED = "RM"
+        COPIED = "COPY"
+        PREPROCESSED = "PREPROC"
+        REMOVED = "REMOVE"
 
     class StatusChoices(models.TextChoices):
         QUEUED = "QUEUED"
@@ -16,9 +19,10 @@ class Activity(models.Model):
 
     # Model Fields
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    activity = models.CharField(
-        max_length=2, choices=ActivityChoices, default=ActivityChoices.COPIED
+    parent = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, blank=True, null=True, related_name="children"
     )
+    activity = models.CharField(choices=ActivityChoices, default=ActivityChoices.COPIED)
     filename = models.CharField()
     target = models.CharField(default="")
     status = models.CharField(choices=StatusChoices, default=StatusChoices.QUEUED)

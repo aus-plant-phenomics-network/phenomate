@@ -79,7 +79,7 @@ def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
         internal=data.internal,
         researcher=researcher,
         organisation=organisation,
-        location=str(manager.location),
+        location=str(manager.location.absolute()),
     )
     manager.init_project()
     return project
@@ -107,9 +107,9 @@ def load_project(request: HttpRequest, data: ProjectImportSchema) -> Project:
             internal=manager.metadata.meta.internal,
             researcher=researcher,
             organisation=organisation,
-            location=str(manager.location),
+            location=str(manager.location.absolute()),
         )
-    return Project.objects.get(location=manager.location)
+    return Project.objects.get(location=str(manager.location.absolute()))
 
 
 @router.delete(

@@ -1,4 +1,3 @@
-import datetime
 from pathlib import Path
 
 from ninja import Schema
@@ -18,7 +17,6 @@ class DirFileItem(Schema):
     isDir: bool
     isHidden: bool
     size: int | float
-    modDate: datetime.datetime
 
     @classmethod
     def from_path(cls, path: Path) -> "DirFileItem":
@@ -30,5 +28,4 @@ class DirFileItem(Schema):
             isDir=path.is_dir(),
             isHidden=path.name.startswith("."),
             size=size,
-            modDate=datetime.datetime.fromtimestamp(path.stat().st_mtime),  # noqa: DTZ006
         )

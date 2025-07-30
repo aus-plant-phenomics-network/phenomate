@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 
 const queryOption = (projectId: string) =>
-  $api.queryOptions('get', '/api/project/{project_id}/activity', {
+  $api.queryOptions('get', '/api/activity/{project_id}', {
     params: {
       path: { project_id: projectId },
     },

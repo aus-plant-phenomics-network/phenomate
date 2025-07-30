@@ -35,7 +35,7 @@ export default function OffloadProjectPage() {
 
   const mutation = $api.useMutation(
     'post',
-    '/api/project/{project_id}/offload',
+    '/api/activity/offload/{project_id}',
     {
       onSuccess: () => navigate({ to: '/project' }),
       onError(error) {

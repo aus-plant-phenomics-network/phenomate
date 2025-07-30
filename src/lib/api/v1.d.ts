@@ -142,7 +142,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/activity/{project_id}/offload": {
+    "/api/activity/offload/{project_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -153,23 +153,6 @@ export interface paths {
         put?: never;
         /** Perform data offloading */
         post: operations["backend_activity_api_offload_data"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/activity/{activity_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Restart FAILED/QUEUED job */
-        post: operations["backend_activity_api_restart_activity"];
         delete?: never;
         options?: never;
         head?: never;
@@ -384,11 +367,6 @@ export interface components {
             isHidden: boolean;
             /** Size */
             size: number;
-            /**
-             * Moddate
-             * Format: date-time
-             */
-            modDate: string;
         };
         /** ResearcherSchema */
         ResearcherSchema: {
@@ -400,21 +378,29 @@ export interface components {
             /** Name */
             name: string;
         };
+        /**
+         * ActivityChoices
+         * @enum {string}
+         */
+        ActivityChoices: "COPY" | "PREPROC" | "REMOVE";
         /** ActivitySchema */
         ActivitySchema: {
             /** Id */
             id: number;
-            /** Activity */
-            activity: string;
+            activity: components["schemas"]["ActivityChoices"];
             /** Filename */
             filename: string;
             /** Target */
             target: string | null;
-            /** Status */
-            status: string;
+            status: components["schemas"]["StatusChoices"];
             /** Error Log */
             error_log: string | null;
         };
+        /**
+         * StatusChoices
+         * @enum {string}
+         */
+        StatusChoices: "QUEUED" | "ERROR" | "COMPLETED";
         /** OffloadActivityForm */
         OffloadActivityForm: {
             /** Src Files */
@@ -663,26 +649,6 @@ export interface operations {
                 };
             };
         };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    backend_activity_api_restart_activity: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                activity_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             /** @description OK */
             200: {

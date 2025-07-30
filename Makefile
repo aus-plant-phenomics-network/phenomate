@@ -194,7 +194,7 @@ run-celery: 										## Start celery server
 .PHONY: clear-db
 clear-db:											## Remove current db session and load bootstrap data
 	@rm -rf db.sqlite3
-	@uv run manage.py makemigrations
+	@uv run manage.py makemigrations project activity researcher organisation
 	@uv run manage.py migrate
 
 .PHONY: save-db
