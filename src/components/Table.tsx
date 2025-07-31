@@ -9,6 +9,7 @@ import {
   ChevronsRight,
   ChevronsUpDown,
   EyeOff,
+  RefreshCcw,
   Settings2,
 } from 'lucide-react'
 import {
@@ -37,11 +38,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select'
+import { Checkbox } from './ui/checkbox'
+import { TooltipInfo } from './TooltipInfo'
 import type {
   Column,
   ColumnDef,
   ColumnFiltersState,
   InitialTableState,
+  Row,
   RowData,
   RowSelectionState,
   SortingState,
@@ -185,19 +189,31 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp />
-            Asc
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown />
-            Desc
-          </DropdownMenuItem>
+          <TooltipInfo contentText="Sort ascending">
+            <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+              <ArrowUp />
+              Asc
+            </DropdownMenuItem>
+          </TooltipInfo>
+          <TooltipInfo contentText="Sort descending">
+            <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+              <ArrowDown />
+              Desc
+            </DropdownMenuItem>
+          </TooltipInfo>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeOff />
-            Hide
-          </DropdownMenuItem>
+          <TooltipInfo contentText="Hide column">
+            <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+              <EyeOff />
+              Hide
+            </DropdownMenuItem>
+          </TooltipInfo>
+          <TooltipInfo contentText="Reset sorting">
+            <DropdownMenuItem onClick={() => column.clearSorting()}>
+              <RefreshCcw />
+              Reset
+            </DropdownMenuItem>
+          </TooltipInfo>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -225,12 +241,14 @@ export function DataTableViewOptions<TData>({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          <Settings2 />
-          View
-        </Button>
-      </DropdownMenuTrigger>
+      <TooltipInfo contentText="Toggle column(s) visibility">
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            <Settings2 />
+            View
+          </Button>
+        </DropdownMenuTrigger>
+      </TooltipInfo>
       <DropdownMenuContent align="end" className="w-fit">
         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -318,7 +336,7 @@ export function useTableWithFilterSort<TData, TValue>({
     columns,
     initialState: initialState,
     filterFns: {},
-
+    autoResetPageIndex: false,
     state: {
       sorting,
       columnFilters,
@@ -426,5 +444,90 @@ export function DataTablePagination<TData>({
         </div>
       </div>
     </div>
+  )
+}
+
+export function SelectPageRowsCheckBox<TData>({
+  table,
+}: {
+  table: TableT<TData>
+}) {
+  return (
+    <TooltipInfo contentText="Toggle rows in the current page">
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    </TooltipInfo>
+  )
+}
+
+export function SelectRowCheckBox<TData>({ row }: { row: Row<TData> }) {
+  return (
+    <TooltipInfo contentText="Select current row">
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={value => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    </TooltipInfo>
+  )
+}
+
+export function DataTableAdvancedSelectionOptions<TData>({
+  table,
+}: {
+  table: TableT<TData>
+}) {
+  return (
+    <DropdownMenu>
+      <TooltipInfo contentText="Advanced selection menu">
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            <Settings2 />
+            Selection
+          </Button>
+        </DropdownMenuTrigger>
+      </TooltipInfo>
+      <DropdownMenuContent align="start" className="w-fit">
+        <DropdownMenuLabel>Selection Options</DropdownMenuLabel>
+        <TooltipInfo contentText="Toggle all rows in the table">
+          <DropdownMenuItem
+            onSelect={e => {
+              e.preventDefault()
+              table.toggleAllRowsSelected()
+            }}
+          >
+            Toggle All
+          </DropdownMenuItem>
+        </TooltipInfo>
+        <TooltipInfo contentText="Toggle currently selected rows (inverse selection)">
+          <DropdownMenuItem
+            onSelect={e => {
+              e.preventDefault()
+              table.getCoreRowModel().rows.forEach(row => row.toggleSelected())
+            }}
+          >
+            Toggle Selected
+          </DropdownMenuItem>
+        </TooltipInfo>
+        <TooltipInfo contentText="Toggle currently filtered rows">
+          <DropdownMenuItem
+            onSelect={e => {
+              e.preventDefault()
+              table
+                .getFilteredRowModel()
+                .rows.forEach(row => row.toggleSelected())
+            }}
+          >
+            Toggle Filtered
+          </DropdownMenuItem>
+        </TooltipInfo>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

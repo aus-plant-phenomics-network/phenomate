@@ -5,8 +5,11 @@ import type { FileData } from '@aperturerobotics/chonky'
 
 import { Button } from '@/components/ui/button'
 
-import { DataTableColumnHeader } from '@/components/Table'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DataTableColumnHeader,
+  SelectPageRowsCheckBox,
+  SelectRowCheckBox,
+} from '@/components/Table'
 
 export const makeFileDataColumn = (
   removeSelectedFileHandler: (data: FileData) => void,
@@ -14,23 +17,8 @@ export const makeFileDataColumn = (
   return [
     {
       id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
+      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
+      cell: ({ row }) => <SelectRowCheckBox row={row} />,
       enableSorting: false,
       enableHiding: false,
     },

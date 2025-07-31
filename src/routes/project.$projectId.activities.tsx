@@ -7,6 +7,7 @@ import type { components } from '@/lib/api/v1'
 import type { Table } from '@tanstack/react-table'
 import { $api, queryClient } from '@/lib/api'
 import {
+  DataTableAdvancedSelectionOptions,
   DataTablePagination,
   DataTableViewOptions,
   RawDataTable,
@@ -81,6 +82,7 @@ function RouteComponent() {
   return (
     <>
       <div className="flex justify-end items-center gap-x-4 w-full">
+        <DataTableAdvancedSelectionOptions table={table} />
         <Link
           to="/project/$projectId/offload"
           params={{ projectId: projectId }}

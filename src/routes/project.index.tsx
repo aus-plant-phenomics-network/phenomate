@@ -10,6 +10,7 @@ import type { components } from '@/lib/api/v1'
 import type { FileData } from '@aperturerobotics/chonky'
 import { $api, queryClient } from '@/lib/api'
 import {
+  DataTableAdvancedSelectionOptions,
   DataTablePagination,
   DataTableViewOptions,
   RawDataTable,
@@ -169,6 +170,7 @@ function RouteComponent() {
       <div className="flex justify-end items-center gap-x-4 w-full">
         <AddProjectPanelButton />
         <ImportProjectPanelButton setError={setError} />
+        <DataTableAdvancedSelectionOptions table={table} />
         <DeleteSelectedButton table={table} />
         <DataTableViewOptions table={table} />
         <TZSelect value={timezone} onValueChange={setTimezone} />

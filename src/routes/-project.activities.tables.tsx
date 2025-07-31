@@ -3,8 +3,11 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import type { ColumnDef, Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 
-import { DataTableColumnHeader } from '@/components/Table'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DataTableColumnHeader,
+  SelectPageRowsCheckBox,
+  SelectRowCheckBox,
+} from '@/components/Table'
 import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { $api } from '@/lib/api'
@@ -81,23 +84,8 @@ export function makeActivityColumns(
   return [
     {
       id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
+      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
+      cell: ({ row }) => <SelectRowCheckBox row={row} />,
       enableSorting: false,
       enableHiding: false,
     },
