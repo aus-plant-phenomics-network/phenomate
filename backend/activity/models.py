@@ -27,6 +27,8 @@ class Activity(models.Model):
     target = models.CharField(default="")
     status = models.CharField(choices=StatusChoices, default=StatusChoices.QUEUED)
     error_log = models.CharField(default="")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         name = ""

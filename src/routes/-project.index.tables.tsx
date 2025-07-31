@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
+import { formatDT } from '@/lib/utils'
 
 function DeleteProjectDialog({
   row,
@@ -111,17 +112,8 @@ export const makeIndexDataColumn = (
         <DataTableColumnHeader column={column} title="Last Updated" />
       ),
       cell: ({ cell }) => {
-        const formatter = new Intl.DateTimeFormat('en-AU', {
-          timeZone: timezone,
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true,
-        })
-        return formatter.format(new Date(cell.getValue() as string))
+        const value = cell.getValue()
+        return formatDT(timezone, value as string)
       },
       enableColumnFilter: false,
     },

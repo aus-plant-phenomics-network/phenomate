@@ -9,6 +9,7 @@ import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { $api } from '@/lib/api'
 import { DeleteDialog } from '@/components/DeleteDialog'
+import { formatDT } from '@/lib/utils'
 
 function DeleteActivityDialog({
   row,
@@ -74,57 +75,81 @@ function ActivityAction(
   )
 }
 
-export const activityColumns: Array<
-  ColumnDef<components['schemas']['ActivitySchema']>
-> = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    id: 'action',
-    cell: ({ row }) => <ActivityAction row={row} />,
-  },
-  {
-    accessorKey: 'activity',
-    header: ({ column }) => (
-      <DataTableColumnHeader title="Activity" column={column} />
-    ),
-  },
-  {
-    accessorKey: 'status',
-    header: ({ column }) => (
-      <DataTableColumnHeader title="Status" column={column} />
-    ),
-  },
-  {
-    accessorKey: 'filename',
-    header: ({ column }) => (
-      <DataTableColumnHeader title="FileName" column={column} />
-    ),
-  },
-  {
-    accessorKey: 'target',
-    header: ({ column }) => (
-      <DataTableColumnHeader title="Target" column={column} />
-    ),
-  },
-]
+export function makeActivityColumns(
+  timezone: string,
+): Array<ColumnDef<components['schemas']['ActivitySchema']>> {
+  return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={value => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      id: 'action',
+      cell: ({ row }) => <ActivityAction row={row} />,
+    },
+    {
+      accessorKey: 'activity',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="Activity" column={column} />
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="Status" column={column} />
+      ),
+    },
+    {
+      accessorKey: 'created',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created" />
+      ),
+      cell: ({ cell }) => {
+        const value = cell.getValue()
+        return formatDT(timezone, value as string)
+      },
+      enableColumnFilter: false,
+    },
+    {
+      accessorKey: 'updated',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Last Updated" />
+      ),
+      cell: ({ cell }) => {
+        const value = cell.getValue()
+        return formatDT(timezone, value as string)
+      },
+      enableColumnFilter: false,
+    },
+    {
+      accessorKey: 'filename',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="FileName" column={column} />
+      ),
+    },
+    {
+      accessorKey: 'target',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="Target" column={column} />
+      ),
+    },
+  ]
+}

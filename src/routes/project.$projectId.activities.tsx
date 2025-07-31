@@ -1,7 +1,8 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Plus, Trash2 } from 'lucide-react'
-import { activityColumns } from './-project.activities.tables'
+import { useMemo, useState } from 'react'
+import { makeActivityColumns } from './-project.activities.tables'
 import type { components } from '@/lib/api/v1'
 import type { Table } from '@tanstack/react-table'
 import { $api, queryClient } from '@/lib/api'
@@ -13,6 +14,7 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { DeleteDialog } from '@/components/DeleteDialog'
+import { TZSelect, currentTimeZone } from '@/components/TimezoneSelect'
 
 const queryOption = (projectId: string) =>
   $api.queryOptions('get', '/api/activity/{project_id}', {
@@ -65,6 +67,11 @@ function DeleteSelectedButton({
 }
 
 function RouteComponent() {
+  const [timezone, setTimezone] = useState<string>(currentTimeZone)
+  const activityColumns = useMemo(
+    () => makeActivityColumns(timezone),
+    [timezone],
+  )
   const { projectId } = Route.useParams()
   const { data } = useSuspenseQuery(queryOption(projectId))
   const { table } = useTableWithFilterSort({
@@ -85,6 +92,7 @@ function RouteComponent() {
         </Link>
         <DeleteSelectedButton table={table} projectId={projectId} />
         <DataTableViewOptions table={table} />
+        <TZSelect value={timezone} onValueChange={setTimezone} />
       </div>
       <RawDataTable table={table} />
       <DataTablePagination table={table} />
