@@ -64,11 +64,12 @@ export const makeFileDataColumn = (
     {
       accessorKey: 'size',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Size(B)" />
+        <DataTableColumnHeader column={column} title="Size(kB)" />
       ),
-      meta: {
-        filterVariant: 'range',
+      cell: ({ cell }) => {
+        return (Number(cell.getValue()) / 1000).toFixed(2)
       },
+      enableColumnFilter: false,
     },
   ]
 }

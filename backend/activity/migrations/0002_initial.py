@@ -5,18 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('activity', '0001_initial'),
-        ('project', '0001_initial'),
+        ("activity", "0001_initial"),
+        ("project", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.project'),
+            model_name="activity",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="project.project"
+            ),
         ),
     ]

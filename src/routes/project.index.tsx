@@ -16,20 +16,10 @@ import {
   useTableWithFilterSort,
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { AlertMessage } from '@/components/Form'
 import { BaseVFS } from '@/components/VFS'
 import { TZSelect, currentTimeZone } from '@/components/TimezoneSelect'
+import { DeleteDialog } from '@/components/DeleteDialog'
 
 const queryOption = $api.queryOptions('get', '/api/project/')
 
@@ -42,7 +32,7 @@ const projectImportSchema = z.object({
   project_path: z.string().nonempty(),
 })
 
-function AddProjectButton() {
+function AddProjectPanelButton() {
   return (
     <Link to="/project/create">
       <Button variant="outline">
@@ -62,44 +52,28 @@ function DeleteSelectedButton({
   const mutation = $api.useMutation('delete', '/api/project/', {
     onSuccess: () => navigate({ to: '/project', reloadDocument: true }),
   })
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const confirmHandler = () => {
+    const selectedIds = selectedRows.map(item => item.original.id)
+    mutation.mutate({ body: selectedIds })
+  }
+  const disabled = selectedRows.length === 0
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">
-          <Trash2 />
-          Delete
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete Confirmation</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete all
-            selected projects and remove their data on the computer.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                const selectedIds = table
-                  .getFilteredSelectedRowModel()
-                  .rows.map(item => item.original.id)
-                mutation.mutate({ body: selectedIds })
-              }}
-            >
-              Continue
-            </Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <DeleteDialog
+      asChild
+      contentTitle="Delete Selected Projects"
+      contentDescription="This action cannot be undone. This will permanently delete the selected projects and remove all data on the computer."
+      confirmHandler={confirmHandler}
+    >
+      <Button variant="outline" disabled={disabled}>
+        <Trash2 />
+        Delete
+      </Button>
+    </DeleteDialog>
   )
 }
 
-function ImportProjectButton({
+function ImportProjectPanelButton({
   setError,
 }: {
   setError: (value: string) => void
@@ -193,8 +167,8 @@ function RouteComponent() {
     <>
       {/* Buttons panel */}
       <div className="flex justify-end items-center gap-x-4 w-full">
-        <AddProjectButton />
-        <ImportProjectButton setError={setError} />
+        <AddProjectPanelButton />
+        <ImportProjectPanelButton setError={setError} />
         <DeleteSelectedButton table={table} />
         <DataTableViewOptions table={table} />
         <TZSelect value={timezone} onValueChange={setTimezone} />

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectIndexRouteImport } from './routes/project.index'
 import { Route as ProjectCreateRouteImport } from './routes/project.create'
+import { Route as ActivityActivityIdRouteImport } from './routes/activity.$activityId'
 import { Route as ProjectProjectIdOffloadRouteImport } from './routes/project.$projectId.offload'
 import { Route as ProjectProjectIdActivitiesRouteImport } from './routes/project.$projectId.activities'
 
@@ -30,6 +31,11 @@ const ProjectCreateRoute = ProjectCreateRouteImport.update({
   path: '/project/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivityActivityIdRoute = ActivityActivityIdRouteImport.update({
+  id: '/activity/$activityId',
+  path: '/activity/$activityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectProjectIdOffloadRoute = ProjectProjectIdOffloadRouteImport.update({
   id: '/project/$projectId/offload',
   path: '/project/$projectId/offload',
@@ -44,6 +50,7 @@ const ProjectProjectIdActivitiesRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/project/create': typeof ProjectCreateRoute
   '/project': typeof ProjectIndexRoute
   '/project/$projectId/activities': typeof ProjectProjectIdActivitiesRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/project/create': typeof ProjectCreateRoute
   '/project': typeof ProjectIndexRoute
   '/project/$projectId/activities': typeof ProjectProjectIdActivitiesRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/project/create': typeof ProjectCreateRoute
   '/project/': typeof ProjectIndexRoute
   '/project/$projectId/activities': typeof ProjectProjectIdActivitiesRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activity/$activityId'
     | '/project/create'
     | '/project'
     | '/project/$projectId/activities'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activity/$activityId'
     | '/project/create'
     | '/project'
     | '/project/$projectId/activities'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/activity/$activityId'
     | '/project/create'
     | '/project/'
     | '/project/$projectId/activities'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivityActivityIdRoute: typeof ActivityActivityIdRoute
   ProjectCreateRoute: typeof ProjectCreateRoute
   ProjectIndexRoute: typeof ProjectIndexRoute
   ProjectProjectIdActivitiesRoute: typeof ProjectProjectIdActivitiesRoute
@@ -119,6 +132,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activity/$activityId': {
+      id: '/activity/$activityId'
+      path: '/activity/$activityId'
+      fullPath: '/activity/$activityId'
+      preLoaderRoute: typeof ActivityActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/project/$projectId/offload': {
       id: '/project/$projectId/offload'
       path: '/project/$projectId/offload'
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivityActivityIdRoute: ActivityActivityIdRoute,
   ProjectCreateRoute: ProjectCreateRoute,
   ProjectIndexRoute: ProjectIndexRoute,
   ProjectProjectIdActivitiesRoute: ProjectProjectIdActivitiesRoute,

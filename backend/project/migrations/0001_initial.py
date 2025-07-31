@@ -5,27 +5,47 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('organisation', '0001_initial'),
-        ('researcher', '0001_initial'),
+        ("organisation", "0001_initial"),
+        ("researcher", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.IntegerField()),
-                ('summary', models.CharField(max_length=50)),
-                ('internal', models.BooleanField()),
-                ('location', models.CharField(unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('organisation', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='organisation.organisation')),
-                ('researcher', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='researcher.researcher')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("year", models.IntegerField()),
+                ("summary", models.CharField(max_length=50)),
+                ("internal", models.BooleanField()),
+                ("location", models.CharField(unique=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "organisation",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="organisation.organisation",
+                    ),
+                ),
+                (
+                    "researcher",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="researcher.researcher",
+                    ),
+                ),
             ],
         ),
     ]

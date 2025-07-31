@@ -37,7 +37,11 @@ export default function OffloadProjectPage() {
     'post',
     '/api/activity/offload/{project_id}',
     {
-      onSuccess: () => navigate({ to: '/project' }),
+      onSuccess: () =>
+        navigate({
+          to: '/project/$projectId/activities',
+          params: { projectId: projectId },
+        }),
       onError(error) {
         if (error) setError((error as Error).message)
       },

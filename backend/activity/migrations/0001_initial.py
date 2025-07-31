@@ -5,23 +5,55 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Activity',
+            name="Activity",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('activity', models.CharField(choices=[('COPY', 'Copied'), ('PREPROC', 'Preprocessed'), ('REMOVE', 'Removed')], default='COPY')),
-                ('filename', models.CharField()),
-                ('target', models.CharField(default='')),
-                ('status', models.CharField(choices=[('QUEUED', 'Queued'), ('ERROR', 'Error'), ('COMPLETED', 'Completed')], default='QUEUED')),
-                ('error_log', models.CharField(default='')),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='children', to='activity.activity')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "activity",
+                    models.CharField(
+                        choices=[
+                            ("COPY", "Copied"),
+                            ("PREPROC", "Preprocessed"),
+                            ("REMOVE", "Removed"),
+                        ],
+                        default="COPY",
+                    ),
+                ),
+                ("filename", models.CharField()),
+                ("target", models.CharField(default="")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("QUEUED", "Queued"),
+                            ("ERROR", "Error"),
+                            ("COMPLETED", "Completed"),
+                        ],
+                        default="QUEUED",
+                    ),
+                ),
+                ("error_log", models.CharField(default="")),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="children",
+                        to="activity.activity",
+                    ),
+                ),
             ],
         ),
     ]

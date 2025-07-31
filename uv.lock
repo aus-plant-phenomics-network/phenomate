@@ -451,7 +451,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.2.4" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
     { name = "django-ninja", specifier = ">=1.4.3" },
-    { name = "phenomate-core", specifier = ">=0.1.4" },
+    { name = "phenomate-core", specifier = ">=0.1.5" },
 ]
 
 [package.metadata.requires-dev]
@@ -465,7 +465,7 @@ analysis = [
 
 [[package]]
 name = "phenomate-core"
-version = "0.1.4"
+version = "0.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google" },
@@ -476,9 +476,9 @@ dependencies = [
     { name = "pyturbojpeg" },
     { name = "spectral" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/10/4f839f1b3109cb6db9a6377ae0eefdc8b079f0b5a632f7323b92a0adee36/phenomate_core-0.1.4.tar.gz", hash = "sha256:555f8db68d65262d76f95150ba569b8765e3402fa68b8c096068eb242a082cdd", size = 19378, upload-time = "2025-07-30T07:39:52.667Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/b5/b7eabf27e8e9597da6b9feb031545bd3fb0f0b596a0517a2d050ec2c3e27/phenomate_core-0.1.5.tar.gz", hash = "sha256:6a8f2500da90a69003ba99ae6c6ae31bfe470f288ef14b4e51ab2413fe0a8cfc", size = 19422, upload-time = "2025-07-30T11:50:04.185Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/12/d3a480f32271d2194f822bf7eaef5d3c3e9fc2482ad97b807bbbfaef613b/phenomate_core-0.1.4-py3-none-any.whl", hash = "sha256:7da4080075d25237648eb22fe7d3820fdb1be7de916d1e41486e51eb90f89750", size = 28579, upload-time = "2025-07-30T07:39:51.182Z" },
+    { url = "https://files.pythonhosted.org/packages/46/6f/218c7334e92a09ea8ffa6f0a674bed9858bbfa49a5300cd8c7e0675f6078/phenomate_core-0.1.5-py3-none-any.whl", hash = "sha256:c42e7bee085950fb5827b8cf847994deaf82646902a450ff274f0e28e362b849", size = 28621, upload-time = "2025-07-30T11:50:02.679Z" },
 ]
 
 [[package]]
