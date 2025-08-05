@@ -16,7 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Celery settings
-CELERY_BROKER_URL = "amqp://guest:guest@localhost"
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@localhost")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -28,12 +28,14 @@ CELERY_TASK_SERIALIZER = "json"
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-qk=zw&3h@zoe10btbj((u^v8%%2m)x%p(i(f+l!g5hgqvz1-51"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-qk=zw&3h@zoe10btbj((u^v8%%2m)x%p(i(f+l!g5hgqvz1-51"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = os.getenv("DJANGO_ALLOWED_HOST", "0.0.0.0").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -131,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = os.getenv("STATIC_URL", "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -139,4 +141,4 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Phenomate settings
-DEFAULT_ROOT_FOLDER = os.getenv("HOME", "/home") + "/Phenomate"
+DEFAULT_ROOT_FOLDER = os.getenv("DEFAULT_ROOT_FOLDER", os.getenv("HOME", "/home")) + "/Phenomate"

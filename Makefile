@@ -27,19 +27,35 @@ help:                                               ## Display this help text fo
 # =============================================================================
 # Developer Utils
 # =============================================================================
+.PHONY: install-libjpeg-turbo
+install-libjpeg-turbo: 
+	@wget -q -O- https://packagecloud.io/dcommander/libjpeg-turbo/gpgkey | gpg --dearmor > /etc/apt/trusted.gpg.d/libjpeg-turbo.gpg
+	@echo "deb [signed-by=/etc/apt/trusted.gpg.d/libjpeg-turbo.gpg] https://packagecloud.io/dcommander/libjpeg-turbo/any/ any main" > /etc/apt/sources.list.d/libjpeg-turbo.list
+	@apt update 
+	@apt install libjpeg-turbo-official
+
 .PHONY: install-uv
 install-uv:                                         ## Install latest version of uv
 	@echo "${INFO} Installing uv..."
-	@curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1
+	@curl -LsSf https://astral.sh/uv/install.sh  | sh # >/dev/null 2>&1
 	@uv tool install nodeenv >/dev/null 2>&1
 	@echo "${OK} UV installed successfully"
 
-.PHONY: install
-install: destroy clean                              ## Install the project, dependencies, and pre-commit for local development
+.PHONY: install-backend-dev
+install-backend-dev: destroy clean                              ## Install the project, dependencies, and pre-commit for local development
 	@echo "${INFO} Starting fresh installation..."
 	@uv python pin 3.13 >/dev/null 2>&1
 	@uv venv >/dev/null 2>&1
 	@uv sync --all-extras --dev --group analysis
+
+.PHONY: install-backend 
+install-backend: destroy clean								## Install backend 
+	@echo "${INFO} Starting fresh installation..."			
+	@uv python pin 3.13 >/dev/null 2>&1
+	@uv pip install --system --no-cache -r pyproject.toml
+
+.PHONY: install-frontend
+install-frontend:
 	@if ! command -v npm >/dev/null 2>&1; then \
 		echo "${INFO} Installing Node environment... 📦"; \
 		uvx nodeenv .venv --force --quiet; \
