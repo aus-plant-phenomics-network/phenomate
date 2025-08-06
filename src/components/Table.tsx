@@ -66,7 +66,13 @@ import { cn } from '@/lib/utils'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range' | 'boolean'
+    filterVariant?:
+      | 'text'
+      | 'range'
+      | 'boolean'
+      | 'date'
+      | 'date-range'
+      | 'select-facet'
   }
 }
 

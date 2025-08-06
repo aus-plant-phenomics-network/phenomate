@@ -19,8 +19,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { AlertMessage } from '@/components/Form'
 import { BaseVFS } from '@/components/VFS'
-import { TZSelect, currentTimeZone } from '@/components/TimezoneSelect'
+import { TZSelect } from '@/components/TimezoneSelect'
 import { DeleteDialog } from '@/components/DeleteDialog'
+import { usePhenomate } from '@/lib/context'
 
 const queryOption = $api.queryOptions('get', '/api/project/')
 
@@ -151,15 +152,15 @@ function ImportProjectPanelButton({
 }
 
 function RouteComponent() {
-  const [timezone, setTimezone] = useState<string>(currentTimeZone)
   const [submitError, setError] = useState<string>('')
   const { data } = useSuspenseQuery(queryOption)
-  const projectColumns = useMemo(
+  const { timezone } = usePhenomate()
+  const indexDataColumns = useMemo(
     () => makeIndexDataColumn(timezone),
     [timezone],
   )
   const { table } = useTableWithFilterSort({
-    columns: projectColumns,
+    columns: indexDataColumns,
     data: data,
   })
 
@@ -172,7 +173,7 @@ function RouteComponent() {
         <DataTableAdvancedSelectionOptions table={table} />
         <DeleteSelectedButton table={table} />
         <DataTableViewOptions table={table} />
-        <TZSelect value={timezone} onValueChange={setTimezone} />
+        <TZSelect />
       </div>
       {/* Table and Pagination */}
       <RawDataTable table={table} />
