@@ -31,6 +31,8 @@ services:
       - "8000:8000"
     volumes:
       - /:/hostfs
+      - /c:/c
+      - /d:/d
     depends_on:
       - rabbitmq
     command: >
@@ -49,6 +51,8 @@ services:
     command: celery -A backend worker -l INFO --concurrency 4
     volumes:
       - /:/hostfs
+      - /c:/c
+      - /d:/d
     depends_on:
       - rabbitmq
       - backend

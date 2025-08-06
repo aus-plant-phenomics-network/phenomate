@@ -12,5 +12,7 @@ def list_dir(src: str, dirOnly: bool = False) -> list[DirFileItem]:
     result: list[DirFileItem] = []
     for child in psrc.iterdir():
         if not dirOnly or (dirOnly and child.is_dir()):
-            result.append(DirFileItem.from_path(child))
+            item = DirFileItem.from_path(child)
+            if item:
+                result.append(item)
     return result
