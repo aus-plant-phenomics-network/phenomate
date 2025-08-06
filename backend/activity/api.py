@@ -25,6 +25,15 @@ def list_activities(request: HttpRequest, project_id: str) -> list[Activity]:
     return cast("list[Activity]", project.activity_set.all())  # pyright: ignore[reportAttributeAccessIssue]
 
 
+@router.get(
+    "/activity/{activity_id}",
+    response=ActivitySchema,
+    summary="Get activity by id",
+)
+def get_activity(request: HttpRequest, activity_id: str) -> Activity:
+    return get_object_or_404(Activity, pk=activity_id)
+
+
 @router.post(
     "/offload/{project_id}",
     summary="Perform data offloading",

@@ -142,6 +142,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/activity/activity/{activity_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get activity by id */
+        get: operations["backend_activity_api_get_activity"];
+        put?: never;
+        post?: never;
+        /** Remove an activity log */
+        delete: operations["backend_activity_api_cancel_activity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/activity/offload/{project_id}": {
         parameters: {
             query?: never;
@@ -171,23 +189,6 @@ export interface paths {
         /** Restart FAILED/QUEUED job */
         post: operations["backend_activity_api_restart_activity"];
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/activity/activity/{activity_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Remove an activity log */
-        delete: operations["backend_activity_api_cancel_activity"];
         options?: never;
         head?: never;
         patch?: never;
@@ -693,6 +694,48 @@ export interface operations {
             };
         };
     };
+    backend_activity_api_get_activity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                activity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivitySchema"];
+                };
+            };
+        };
+    };
+    backend_activity_api_cancel_activity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                activity_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     backend_activity_api_offload_data: {
         parameters: {
             query?: never;
@@ -718,26 +761,6 @@ export interface operations {
         };
     };
     backend_activity_api_restart_activity: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                activity_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    backend_activity_api_cancel_activity: {
         parameters: {
             query?: never;
             header?: never;
