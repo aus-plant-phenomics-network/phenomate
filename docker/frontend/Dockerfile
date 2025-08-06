@@ -8,7 +8,7 @@ RUN npm install
 
 RUN npm i -g serve
 
-COPY . . 
+COPY . .
 
 RUN npm run build
 

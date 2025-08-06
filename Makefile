@@ -28,13 +28,13 @@ help:                                               ## Display this help text fo
 # Developer Utils
 # =============================================================================
 .PHONY: install-mq
-install-mq: 										## Install rabbit mq server for local development 
+install-mq: 										## Install rabbit mq server for local development
 	@apt-get install rabbitmq-server
 .PHONY: install-libjpeg-turbo
 install-libjpeg-turbo: 								# Install libjpeg turbo - run with sudo
 	@wget -q -O- https://packagecloud.io/dcommander/libjpeg-turbo/gpgkey | gpg --dearmor > /etc/apt/trusted.gpg.d/libjpeg-turbo.gpg
 	@echo "deb [signed-by=/etc/apt/trusted.gpg.d/libjpeg-turbo.gpg] https://packagecloud.io/dcommander/libjpeg-turbo/any/ any main" > /etc/apt/sources.list.d/libjpeg-turbo.list
-	@apt update 
+	@apt update
 	@apt install libjpeg-turbo-official
 
 .PHONY: install-uv
@@ -47,14 +47,14 @@ install-uv:                                         ## Install latest version of
 .PHONY: install-backend-dev
 install-backend-dev: destroy clean                  ## Install the project, dependencies, and pre-commit for local development
 	@echo "${INFO} Starting fresh installation..."
-	@uv python pin 3.13 >/dev/null 2>&1
+	@uv python pin 3.12 >/dev/null 2>&1
 	@uv venv >/dev/null 2>&1
 	@uv sync --all-extras --dev --group analysis
 
-.PHONY: install-backend 
+.PHONY: install-backend
 install-backend: destroy clean						## Install backend - for docker
-	@echo "${INFO} Starting fresh installation..."			
-	@uv python pin 3.13 >/dev/null 2>&1
+	@echo "${INFO} Starting fresh installation..."
+	@uv python pin 3.12 >/dev/null 2>&1
 	@uv pip install --system --no-cache -r pyproject.toml
 
 .PHONY: install-frontend
@@ -65,8 +65,8 @@ install-frontend-dev:
 	fi
 	@NODE_OPTIONS="--no-deprecation --disable-warning=ExperimentalWarning" npm install --no-fund
 	@echo "${OK} Installation complete! 🎉"
-.PHONY: install-dev 
-install-dev: install-backend-dev install-frontend-dev 
+.PHONY: install-dev
+install-dev: install-backend-dev install-frontend-dev
 
 .PHONY: upgrade
 upgrade:                                            ## Upgrade all dependencies to the latest stable versions
@@ -172,14 +172,15 @@ clear-db:											## Remove current db session and load bootstrap data
 	@uv run manage.py makemigrations project activity researcher organisation
 	@uv run manage.py migrate
 
-.PHONY:												
+.PHONY:
 admin:												## Create admin username admin
 	@uv run manage.py createsuperuser --username admin
-.PHONY: run-ui 
+.PHONY: run-ui
 run-ui:												## Run local ui server for development
-	npm run dev 
-.PHONY: run-docker									## Docker compose up and kill existing ports 
+	npm run dev
+.PHONY: run-docker									## Docker compose up and kill existing ports
 run-docker:
+	@kill -9 $$(lsof -ti:5432) 2>/dev/null || echo "No process found on port 5432"
 	@kill -9 $$(lsof -ti:5672) 2>/dev/null || echo "No process found on port 5672"
 	@kill -9 $$(lsof -ti:8000) 2>/dev/null || echo "No process found on port 8000"
 	@kill -9 $$(lsof -ti:3000) 2>/dev/null || echo "No process found on port 3000"
