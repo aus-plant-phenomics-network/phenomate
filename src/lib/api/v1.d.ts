@@ -159,7 +159,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/activity/{activity_id}": {
+    "/api/activity/retry/{activity_id}": {
         parameters: {
             query?: never;
             header?: never;

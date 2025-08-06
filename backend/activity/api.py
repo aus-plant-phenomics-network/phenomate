@@ -10,6 +10,7 @@ from backend.activity.models import Activity
 from backend.activity.service import copy_data
 from backend.activity.tasks import copy_task, preprocess_task, remove_task
 from backend.project.models import Project
+from celery.canvas import chain
 
 router = Router()
 
@@ -37,17 +38,20 @@ def offload_data(request: HttpRequest, project_id: str, form_data: OffloadActivi
 
 
 @router.post(
-    "/{activity_id}",
+    "/retry/{activity_id}",
     summary="Restart FAILED/QUEUED job",
 )
 def restart_activity(request: HttpRequest, activity_id: int) -> None:
     log = get_object_or_404(Activity, pk=activity_id)
     if log.activity == Activity.ActivityChoices.COPIED:
-        copy_task.delay(activity_id)  # pyright: ignore[reportFunctionMemberAccess]
+        task = chain(copy_task.si(log.pk), preprocess_task.s(), remove_task.s())
     elif log.activity == Activity.ActivityChoices.PREPROCESSED:
-        preprocess_task.delay(activity_id)  # pyright: ignore[reportFunctionMemberAccess]
+        task = chain(preprocess_task.s(log.pk), remove_task.s())
     elif log.activity == Activity.ActivityChoices.REMOVED:
-        remove_task.delay(activity_id)  # pyright: ignore[reportFunctionMemberAccess]
+        task = chain(remove_task.s(log.pk))
+    else:
+        raise ValueError(f"Invalid activity: {log.activity}")
+    task.delay()
 
 
 @router.delete(

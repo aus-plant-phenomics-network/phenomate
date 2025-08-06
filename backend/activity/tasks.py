@@ -1,10 +1,10 @@
 import shutil
+import traceback
 from pathlib import Path
 from typing import cast
 
 from appm import ProjectManager
 from appm.exceptions import FileFormatMismatch
-from django.db import transaction
 from phenomate_core import get_preprocessor
 
 from backend.activity.models import Activity
@@ -21,7 +21,7 @@ def remove_task(log_pk: int) -> None:
 
 
 @shared_task
-def preprocess_task(log_pk: int) -> None:
+def preprocess_task(log_pk: int) -> int:
     log = Activity.objects.get(pk=log_pk)
     try:
         src = Path(log.filename)
@@ -37,28 +37,28 @@ def preprocess_task(log_pk: int) -> None:
         processor = processor_class(src)
         processor.extract()
         processor.save(dst)
-        with transaction.atomic():
-            log.status = Activity.StatusChoices.COMPLETED
-            # Queue next task
-            next_log = Activity.objects.create(
-                activity=Activity.ActivityChoices.REMOVED,
-                project=log.project,
-                parent=log,
-                filename=log.filename,
-                status=Activity.StatusChoices.QUEUED,
-            )
-            # Save logs to db
-            next_log.save()
-            log.save()
-        remove_task.delay(next_log.pk)  # type: ignore[attr-defined]
-    except Exception as e:  # noqa: BLE001
-        log.status = Activity.StatusChoices.ERROR
-        log.error_log = str(e)
+        log.status = Activity.StatusChoices.COMPLETED
+        # Queue next task
+        next_log = Activity.objects.create(
+            activity=Activity.ActivityChoices.REMOVED,
+            project=log.project,
+            parent=log,
+            filename=log.filename,
+            status=Activity.StatusChoices.QUEUED,
+        )
+        # Save logs to db
+        next_log.save()
         log.save()
+        return next_log.pk
+    except Exception:
+        log.status = Activity.StatusChoices.ERROR
+        log.error_log = traceback.format_exc()
+        log.save()
+        raise
 
 
 @shared_task
-def copy_task(log_pk: int) -> None:
+def copy_task(log_pk: int) -> int:
     log = Activity.objects.get(pk=log_pk)
     dst = Path(log.target)
     src = Path(log.filename)
@@ -68,30 +68,31 @@ def copy_task(log_pk: int) -> None:
         # If file can be parsed -> put to the correct location and initiate preprocessing
         dst_path = manager.copy_file(src)
         file_path = dst_path / name
-        with transaction.atomic():
-            log.status = Activity.StatusChoices.COMPLETED
-            log.target = str(dst_path.absolute())
-            # Queue next task
-            next_log = Activity.objects.create(
-                activity=Activity.ActivityChoices.PREPROCESSED,
-                project=log.project,
-                parent=log,
-                filename=str(file_path.absolute()),
-                target=str(dst_path.absolute()),
-                status=Activity.StatusChoices.QUEUED,
-            )
-            # Save logs to db
-            next_log.save()
-            log.save()
-        preprocess_task.delay(next_log.pk)  # pyright: ignore[reportFunctionMemberAccess]
+        log.status = Activity.StatusChoices.COMPLETED
+        log.target = str(dst_path.absolute())
+        # Queue next task
+        next_log = Activity.objects.create(
+            activity=Activity.ActivityChoices.PREPROCESSED,
+            project=log.project,
+            parent=log,
+            filename=str(file_path.absolute()),
+            target=str(dst_path.absolute()),
+            status=Activity.StatusChoices.QUEUED,
+        )
+        # Save logs to db
+        next_log.save()
+        log.save()
+        return next_log.pk
     except FileFormatMismatch:
         # If file cannot be matched -> dumped at root dir
         shutil.copy2(src, dst)
         log.status = Activity.StatusChoices.COMPLETED
         log.target = str(dst.absolute())
         log.save()
-    except Exception as e:  # noqa: BLE001
+        raise
+    except Exception:
         # Uncatched exception -> log error
         log.status = Activity.StatusChoices.ERROR
-        log.error_log = str(e)
+        log.error_log = traceback.format_exc()
         log.save()
+        raise

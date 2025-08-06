@@ -1,8 +1,11 @@
 from pathlib import Path
 
+from django.db import transaction
+
 from backend.activity.models import Activity
-from backend.activity.tasks import copy_task
+from backend.activity.tasks import copy_task, preprocess_task, remove_task
 from backend.project.models import Project
+from celery import chain, group
 
 
 def copy_data(src: list[Path], project: Project) -> None:
@@ -32,5 +35,12 @@ def copy_data(src: list[Path], project: Project) -> None:
         queued_jobs.append(log)
     Activity.objects.bulk_create(failed_jobs)
     Activity.objects.bulk_create(queued_jobs)
-    for job in queued_jobs:
-        copy_task.delay(job.pk)  # type: ignore[attr-defined]
+    pipeline = group(
+        chain(
+            copy_task.s(job.pk),
+            preprocess_task.s(),
+            remove_task.s(),
+        )
+        for job in queued_jobs
+    )
+    transaction.on_commit(lambda: pipeline.delay())

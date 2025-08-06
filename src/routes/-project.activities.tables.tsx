@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useParams } from '@tanstack/react-router'
 
 import type { ColumnDef, Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
@@ -19,12 +19,18 @@ function DeleteActivityDialog({
 }: {
   row: Row<components['schemas']['ActivitySchema']>
 }) {
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const mutation = $api.useMutation(
     'delete',
     '/api/activity/activity/{activity_id}',
     {
-      onSuccess: () => navigate({ to: '/project', reloadDocument: true }),
+      onSuccess: () =>
+        navigate({
+          to: '/project/$projectId/activities',
+          reloadDocument: true,
+          params: { projectId: projectId as string },
+        }),
     },
   )
   const confirmHandler = () => {
@@ -52,7 +58,21 @@ function ActivityAction(
     row: Row<components['schemas']['ActivitySchema']>
   },
 ) {
+  const { projectId } = useParams({ strict: false })
   const { row, ...rest } = props
+  const navigate = useNavigate()
+  const mutation = $api.useMutation(
+    'post',
+    '/api/activity/retry/{activity_id}',
+    {
+      onSuccess: () =>
+        navigate({
+          to: '/project/$projectId/activities',
+          reloadDocument: true,
+          params: { projectId: projectId as string },
+        }),
+    },
+  )
   return (
     <ActionDropdownMenu {...rest}>
       <DropdownMenuItem>
@@ -64,14 +84,15 @@ function ActivityAction(
           Details
         </Link>
       </DropdownMenuItem>
-      <DropdownMenuItem>
-        <Link
-          className="w-full"
-          to="/activity/$activityId"
-          params={{ activityId: row.original.id.toString() }}
-        >
-          Rerun Activity
-        </Link>
+      <DropdownMenuItem
+        onSelect={() => {
+          console.log(`Rerun activity for ${row.original.id}`)
+          mutation.mutate({
+            params: { path: { activity_id: row.original.id } },
+          })
+        }}
+      >
+        Rerun Activity
       </DropdownMenuItem>
       <DeleteActivityDialog row={row} />
     </ActionDropdownMenu>
