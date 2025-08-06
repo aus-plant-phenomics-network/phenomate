@@ -15,8 +15,8 @@ services:
       - 5672
       - 15672
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'
     restart: on-failure
     env_file: .env.production
 
@@ -28,7 +28,7 @@ services:
     expose:
       - 8000
     ports:
-      - "8000:8000"
+      - '8000:8000'
     volumes:
       - /:/hostfs
       - /c:/c
@@ -67,10 +67,9 @@ services:
     expose:
       - 3000
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - backend
-
 
 volumes:
   pgdata:
