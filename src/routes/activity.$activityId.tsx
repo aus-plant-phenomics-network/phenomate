@@ -15,7 +15,7 @@ export const Route = createFileRoute('/activity/$activityId')({
 function RouteComponent() {
   const data = Route.useLoaderData()
   return (
-    <div>
+    <div className="w-full overflow-auto">
       <div>Activity: {data.activity}</div>
       <div>Filename: {data.filename}</div>
       <div>Target: {data.target}</div>
