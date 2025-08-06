@@ -164,7 +164,6 @@ export default function OffloadProjectPage() {
                         />
                         <VFS
                           addSelectedFiles={addSelectedFiles}
-                          baseAddr="/home"
                           triggerText="Offload Data"
                           title="Select Offload Data"
                           description="Select File(s) or Folder(s) to offload to project"

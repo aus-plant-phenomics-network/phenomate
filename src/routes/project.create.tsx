@@ -139,7 +139,6 @@ export default function CreateProjectPage() {
                         <Label htmlFor={field.name}>Root</Label>
                         <VFS
                           addSelectedFiles={addSelectedFiles}
-                          baseAddr="/home"
                           triggerText={
                             !field.state.value
                               ? 'Select Root Directory'
@@ -169,7 +168,6 @@ export default function CreateProjectPage() {
                         <Label htmlFor={field.name}>Template</Label>
                         <VFS
                           addSelectedFiles={addSelectedFiles}
-                          baseAddr="/home"
                           triggerText={
                             !field.state.value
                               ? 'Select Template Directory'

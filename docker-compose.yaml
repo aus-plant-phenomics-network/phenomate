@@ -1,0 +1,60 @@
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    expose: 
+      - 5672 
+      - 15672
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+    restart: on-failure
+    env_file: .env.production
+  
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    container_name: backend
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - /:/hostfs
+    depends_on:
+      - rabbitmq
+    command: >
+      sh -c "
+             python manage.py makemigrations project activity researcher organisation &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
+    env_file: .env.production
+
+  celery_worker:
+    build: 
+      context: . 
+      dockerfile: docker/backend/Dockerfile
+    container_name: celery_worker 
+    command: celery -A backend worker -l INFO --concurrency 4
+    volumes:
+      - /:/hostfs
+    depends_on:
+      - rabbitmq
+      - backend
+    env_file: .env.production
+    restart: on-failure 
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: frontend
+    expose: 
+      - 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+

@@ -74,7 +74,7 @@ export interface BaseVFSProps {
   description: string
   multiple: boolean
   dirOnly: boolean
-  baseAddr: string
+  baseAddr?: string
   addSelectedFiles: (files: Array<FileData>) => void
 }
 
@@ -176,7 +176,7 @@ export const BaseVFS = ({
   description,
   multiple,
   dirOnly,
-  baseAddr,
+  baseAddr = import.meta.env.VITE_VFS_BASE_ADDR,
   addSelectedFiles,
 }: BaseVFSProps) => {
   const [currentAddress, setCurrentAddress] = useState<string>(baseAddr)
@@ -250,7 +250,7 @@ export const VFS = ({
   description,
   multiple,
   dirOnly,
-  baseAddr,
+  baseAddr = import.meta.env.VITE_VFS_BASE_ADDR,
   addSelectedFiles,
 }: VFSProps) => {
   return (

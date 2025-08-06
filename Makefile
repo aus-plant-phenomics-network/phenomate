@@ -27,8 +27,11 @@ help:                                               ## Display this help text fo
 # =============================================================================
 # Developer Utils
 # =============================================================================
+.PHONY: install-mq
+install-mq: 										## Install rabbit mq server for local development 
+	@apt-get install rabbitmq-server
 .PHONY: install-libjpeg-turbo
-install-libjpeg-turbo: 
+install-libjpeg-turbo: 								# Install libjpeg turbo - run with sudo
 	@wget -q -O- https://packagecloud.io/dcommander/libjpeg-turbo/gpgkey | gpg --dearmor > /etc/apt/trusted.gpg.d/libjpeg-turbo.gpg
 	@echo "deb [signed-by=/etc/apt/trusted.gpg.d/libjpeg-turbo.gpg] https://packagecloud.io/dcommander/libjpeg-turbo/any/ any main" > /etc/apt/sources.list.d/libjpeg-turbo.list
 	@apt update 
@@ -42,26 +45,28 @@ install-uv:                                         ## Install latest version of
 	@echo "${OK} UV installed successfully"
 
 .PHONY: install-backend-dev
-install-backend-dev: destroy clean                              ## Install the project, dependencies, and pre-commit for local development
+install-backend-dev: destroy clean                  ## Install the project, dependencies, and pre-commit for local development
 	@echo "${INFO} Starting fresh installation..."
 	@uv python pin 3.13 >/dev/null 2>&1
 	@uv venv >/dev/null 2>&1
 	@uv sync --all-extras --dev --group analysis
 
 .PHONY: install-backend 
-install-backend: destroy clean								## Install backend 
+install-backend: destroy clean						## Install backend - for docker
 	@echo "${INFO} Starting fresh installation..."			
 	@uv python pin 3.13 >/dev/null 2>&1
 	@uv pip install --system --no-cache -r pyproject.toml
 
 .PHONY: install-frontend
-install-frontend:
+install-frontend-dev:
 	@if ! command -v npm >/dev/null 2>&1; then \
 		echo "${INFO} Installing Node environment... 📦"; \
 		uvx nodeenv .venv --force --quiet; \
 	fi
 	@NODE_OPTIONS="--no-deprecation --disable-warning=ExperimentalWarning" npm install --no-fund
 	@echo "${OK} Installation complete! 🎉"
+.PHONY: install-dev 
+install-dev: install-backend-dev install-frontend-dev 
 
 .PHONY: upgrade
 upgrade:                                            ## Upgrade all dependencies to the latest stable versions
@@ -84,7 +89,6 @@ clean:                                              ## Cleanup temporary build a
 	@find . -name '__pycache__' -exec rm -rf {} + >/dev/null 2>&1
 	@find . -name '.ipynb_checkpoints' -exec rm -rf {} + >/dev/null 2>&1
 	@echo "${OK} Working directory cleaned"
-	$(MAKE) docs-clean
 
 .PHONY: destroy
 destroy:                                            ## Destroy the virtual environment
@@ -97,14 +101,6 @@ lock:                                              ## Rebuild lockfiles from scr
 	@echo "${INFO} Rebuilding lockfiles... 🔄"
 	@uv lock --upgrade >/dev/null 2>&1
 	@echo "${OK} Lockfiles updated"
-
-.PHONY: release
-release:                                           ## Bump version and create release tag
-	@echo "${INFO} Preparing for release... 📦"
-	@make clean
-	@uv run bump-my-version bump $(bump)
-	@make build
-	@echo "${OK} Release complete 🎉"
 
 
 # =============================================================================
@@ -159,39 +155,6 @@ test-all:                                          ## Run all tests
 check-all: lint test-all coverage                  ## Run all linting, tests, and coverage checks
 
 
-# =============================================================================
-# Docs
-# =============================================================================
-.PHONY: docs-clean
-docs-clean:                                        ## Dump the existing built docs
-	@echo "${INFO} Cleaning documentation build assets... 🧹"
-	@rm -rf docs/_build >/dev/null 2>&1
-	@echo "${OK} Documentation assets cleaned"
-
-.PHONY: docs-serve
-docs-serve: docs-clean                             ## Serve the docs locally
-	@echo "${INFO} Starting documentation server... 📚"
-	@uv run sphinx-autobuild docs docs/_build/ -j auto --watch app --watch docs --watch tests --watch CONTRIBUTING.rst --port 8002
-
-.PHONY: docs
-docs: docs-clean                                   ## Dump the existing built docs and rebuild them
-	@echo "${INFO} Building documentation... 📝"
-	@uv run sphinx-build -M html docs docs/_build/ -E -a -j auto -W --keep-going
-	@echo "${OK} Documentation built successfully"
-
-.PHONY: docs-linkcheck
-docs-linkcheck:                                    ## Run the link check on the docs
-	@echo "${INFO} Checking documentation links... 🔗"
-	@uv run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_ignore='http://.*','https://.*' >/dev/null 2>&1
-	@echo "${OK} Link check complete"
-
-.PHONY: docs-linkcheck-full
-docs-linkcheck-full:                               ## Run the full link check on the docs
-	@echo "${INFO} Running full link check... 🔗"
-	@uv run sphinx-build -b linkcheck ./docs ./docs/_build -D linkcheck_anchors=0 >/dev/null 2>&1
-	@echo "${OK} Full link check complete"
-
-
 # -----------------------------------------------------------------------------
 # Server
 # -----------------------------------------------------------------------------
@@ -199,13 +162,9 @@ docs-linkcheck-full:                               ## Run the full link check on
 run-server:											## Start local django server for debugging
 	@uv run manage.py runserver
 
-.PHONY: install-mq
-install-mq: 										## Install rabbit mq server
-	@apt-get install rabbitmq-server
-
 .PHONY: run-celery
 run-celery: 										## Start celery server
-	@uv run celery -A backend worker --loglevel=info
+	@uv run celery -A backend worker --loglevel=info --concurrency=4
 
 .PHONY: clear-db
 clear-db:											## Remove current db session and load bootstrap data
@@ -213,10 +172,15 @@ clear-db:											## Remove current db session and load bootstrap data
 	@uv run manage.py makemigrations project activity researcher organisation
 	@uv run manage.py migrate
 
-.PHONY: save-db
-save-db:											## Save current data dump to use as bootstrap data
-	@uv run manage.py dumpdata --format json -o bootstrap-data.json
-
-.PHONY:
-admin:
+.PHONY:												
+admin:												## Create admin username admin
 	@uv run manage.py createsuperuser --username admin
+.PHONY: run-ui 
+run-ui:												## Run local ui server for development
+	npm run dev 
+.PHONY: run-docker									## Docker compose up and kill existing ports 
+run-docker:
+	@kill -9 $$(lsof -ti:5672) 2>/dev/null || echo "No process found on port 5672"
+	@kill -9 $$(lsof -ti:8000) 2>/dev/null || echo "No process found on port 8000"
+	@kill -9 $$(lsof -ti:3000) 2>/dev/null || echo "No process found on port 3000"
+	@docker compose up

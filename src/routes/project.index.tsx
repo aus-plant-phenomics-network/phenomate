@@ -132,7 +132,6 @@ function ImportProjectPanelButton({
             <>
               <BaseVFS
                 addSelectedFiles={addSelectedFiles}
-                baseAddr="/home"
                 title="Import Project"
                 description="Select Project Folder to Import"
                 multiple={false}
