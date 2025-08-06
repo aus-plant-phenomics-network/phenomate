@@ -9,6 +9,7 @@ RUN npm install
 RUN npm i -g serve
 
 COPY . .
+RUN rm -rf backend
 
 RUN npm run build
 
