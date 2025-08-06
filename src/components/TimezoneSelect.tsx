@@ -7,23 +7,19 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
+import { usePhenomate } from '@/lib/context'
 
-export const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 const timezones = Intl.supportedValuesOf('timeZone')
 
-export interface TZSelectProps {
-  value: string
-  onValueChange: (value: string) => void
-}
-
-export function TZSelect({ value, onValueChange }: TZSelectProps) {
+export function TZSelect() {
+  const { timezone, setTimezone } = usePhenomate()
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={timezone} onValueChange={setTimezone}>
       <TooltipInfo contentText="Select timezone format">
         <SelectTrigger asChild>
           <Button variant="outline">
             <Clock />
-            {value}
+            {timezone}
           </Button>
         </SelectTrigger>
       </TooltipInfo>

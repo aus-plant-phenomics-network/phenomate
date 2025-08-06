@@ -30,3 +30,15 @@ export function createContext<T>(
   Provider.displayName = rootComponentName + 'Provider'
   return [Provider, useContext] as const
 }
+
+export interface PhenomateContext {
+  timezone: string
+  setTimezone: (tz: string) => void
+  address: string
+  setAddress: (addr: string) => void
+}
+
+const [PhenomateProvider, usePhenomate] =
+  createContext<PhenomateContext>('PhenomateProvider')
+
+export { PhenomateProvider, usePhenomate }

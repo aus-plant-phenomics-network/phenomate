@@ -23,6 +23,7 @@ import type {
   FileData,
 } from '@aperturerobotics/chonky'
 import { $api } from '@/lib/api'
+import { usePhenomate } from '@/lib/context'
 
 // AddressBar
 export interface AddressBarProps {
@@ -74,7 +75,6 @@ export interface BaseVFSProps {
   description: string
   multiple: boolean
   dirOnly: boolean
-  baseAddr?: string
   addSelectedFiles: (files: Array<FileData>) => void
 }
 
@@ -176,18 +176,17 @@ export const BaseVFS = ({
   description,
   multiple,
   dirOnly,
-  baseAddr = import.meta.env.VITE_VFS_BASE_ADDR,
   addSelectedFiles,
 }: BaseVFSProps) => {
-  const [currentAddress, setCurrentAddress] = useState<string>(baseAddr)
+  const { address, setAddress } = usePhenomate()
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
   // Chonky's files and folder chain query hook
-  const folderChain = useFolderChain(currentAddress)
+  const folderChain = useFolderChain(address)
   const queryResult = $api.useQuery('get', '/api/urls/', {
     params: {
       query: {
-        src: currentAddress,
+        src: address,
         dirOnly: dirOnly,
       },
     },
@@ -201,10 +200,7 @@ export const BaseVFS = ({
     addSelectedFiles,
   )
   // Chonky FileHandling Logic
-  const handleFileAction = useFileActionHandler(
-    setCurrentAddress,
-    setDisabledState,
-  )
+  const handleFileAction = useFileActionHandler(setAddress, setDisabledState)
   return (
     // modal = True will mess up Chonky's own popup window
     <Dialog modal={false}>
@@ -215,8 +211,8 @@ export const BaseVFS = ({
           <DialogDescription>{description}</DialogDescription>
           <AddressBar
             className="px-2 py-1 w-1/2 rounded border-1"
-            currentAddress={currentAddress}
-            setCurrentAddress={setCurrentAddress}
+            currentAddress={address}
+            setCurrentAddress={setAddress}
           />
         </DialogHeader>
         <FullFileBrowser
@@ -250,7 +246,6 @@ export const VFS = ({
   description,
   multiple,
   dirOnly,
-  baseAddr = import.meta.env.VITE_VFS_BASE_ADDR,
   addSelectedFiles,
 }: VFSProps) => {
   return (
@@ -259,7 +254,6 @@ export const VFS = ({
       description={description}
       multiple={multiple}
       dirOnly={dirOnly}
-      baseAddr={baseAddr}
       addSelectedFiles={addSelectedFiles}
     >
       <Button className="text-left justify-start" variant="outline">
