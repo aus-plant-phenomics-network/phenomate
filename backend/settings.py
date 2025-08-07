@@ -16,7 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Celery settings
-CELERY_BROKER_URL = "amqp://guest:guest@localhost"
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@localhost")
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -28,12 +28,16 @@ CELERY_TASK_SERIALIZER = "json"
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-qk=zw&3h@zoe10btbj((u^v8%%2m)x%p(i(f+l!g5hgqvz1-51"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-qk=zw&3h@zoe10btbj((u^v8%%2m)x%p(i(f+l!g5hgqvz1-51"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = os.getenv(
+    "DJANGO_ALLOWED_HOST", "127.0.0.1,.localhost,[::1],0.0.0.0"
+).split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -48,6 +52,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "backend.project.apps.ProjectConfig",
+    "backend.organisation.apps.OrganisationConfig",
+    "backend.researcher.apps.ResearcherConfig",
+    "backend.activity.apps.ActivityConfig",
     "corsheaders",
 ]
 
@@ -85,13 +92,26 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+PRODUCTION_MODE = os.getenv("PRODUCTION_MODE", "False").lower() == "true"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if PRODUCTION_MODE:  # Use postgresql for prod
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_HOST"),
+            "PORT": os.getenv("POSTGRES_PORT"),
+        }
     }
-}
+else:  # Use sqlite for dev
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(BASE_DIR / "db.sqlite3"),
+        }
+    }
 
 
 # Password validation
@@ -128,7 +148,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/django_static/"
+STATIC_ROOT = BASE_DIR / "django_static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -136,4 +157,4 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Phenomate settings
-DEFAULT_ROOT_FOLDER = os.getenv("HOME", "/home") + "/Phenomate"
+DEFAULT_ROOT_FOLDER = os.getenv("DEFAULT_ROOT_FOLDER", os.getenv("HOME", "/home")) + "/Phenomate"

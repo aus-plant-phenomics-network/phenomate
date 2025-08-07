@@ -26,11 +26,12 @@ export function Fieldset(props: React.ComponentProps<'fieldset'>) {
 }
 
 export function AlertMessage(props: React.ComponentProps<'div'>) {
+  const { children, ...rest } = props
   return (
-    <Alert variant="destructive">
+    <Alert variant="destructive" {...rest}>
       <AlertCircleIcon />
       <AlertTitle>Submission Error</AlertTitle>
-      <AlertDescription {...props} />
+      <AlertDescription children={children} />
     </Alert>
   )
 }

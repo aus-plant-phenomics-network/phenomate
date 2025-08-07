@@ -23,15 +23,15 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/api/project/researchers': {
+  '/api/project/id/{project_id}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    /** List available researchers */
-    get: operations['backend_project_api_list_researchers']
+    /** Get project by PK */
+    get: operations['backend_project_api_get_project']
     put?: never
     post?: never
     delete?: never
@@ -40,17 +40,17 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/api/project/organisations': {
+  '/api/project/load': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    /** List available organisations */
-    get: operations['backend_project_api_list_organisations']
+    get?: never
     put?: never
-    post?: never
+    /** Load Project */
+    post: operations['backend_project_api_load_project']
     delete?: never
     options?: never
     head?: never
@@ -64,64 +64,11 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** Get project by PK */
-    get: operations['backend_project_api_get_project']
+    get?: never
     put?: never
     post?: never
     /** Remove a project */
     delete: operations['backend_project_api_delete_project']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/project/{project_id}/activity': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** List all activities associated with a project */
-    get: operations['backend_project_api_list_activities']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/project/{project_id}/offload': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Perform data offloading */
-    post: operations['backend_project_api_offload_data']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/project/activity/{activity_id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Restart FAILED/QUEUED job */
-    post: operations['backend_project_api_restart_activity']
-    /** Remove an activity log */
-    delete: operations['backend_project_api_cancel_activity']
     options?: never
     head?: never
     patch?: never
@@ -144,33 +91,174 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/researcher/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List available researchers */
+    get: operations['backend_researcher_api_list_researchers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/organisation/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List available organisations */
+    get: operations['backend_organisation_api_list_organisations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/{project_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List all activities associated with a project */
+    get: operations['backend_activity_api_list_activities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/activity/{activity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get activity by id */
+    get: operations['backend_activity_api_get_activity']
+    put?: never
+    post?: never
+    /** Remove an activity log */
+    delete: operations['backend_activity_api_cancel_activity']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/offload/{project_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Perform data offloading */
+    post: operations['backend_activity_api_offload_data']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/retry/{activity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Restart FAILED/QUEUED job */
+    post: operations['backend_activity_api_restart_activity']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Remove multiple activity logs */
+    delete: operations['backend_activity_api_delete_activities']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/activity/project/{project_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Remove multiple activity logs associated with a project */
+    delete: operations['backend_activity_api_delete_project_activities']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    /** ProjectGetSchema */
-    ProjectGetSchema: {
+    /** ProjectListSchema */
+    ProjectListSchema: {
       /** Id */
       id: number
-      /** Name */
-      name: string
-      /** Location */
-      location: string
-      /** Is Valid */
-      is_valid: boolean
-      /**
-       * Updated
-       * Format: date-time
-       */
-      updated: string
       /** Year */
       year: number
+      /** Summary */
+      summary: string
       /** Internal */
       internal: boolean
       /** Researchername */
       researcherName: string | null
       /** Organisationname */
       organisationName: string | null
+      /**
+       * Updated
+       * Format: date-time
+       */
+      updated: string
+      /** Location */
+      location: string
+      /** Is Valid */
+      is_valid: boolean
+      /** Name */
+      name: string
+      /** Root */
+      root: string
     }
     /** ProjectCreateSchema */
     ProjectCreateSchema: {
@@ -178,47 +266,39 @@ export interface components {
       year: number
       /** Summary */
       summary: string
-      /** Root */
-      root?: string | null
+      /** Template */
+      template?: string | null
       /**
        * Internal
        * @default true
        */
       internal: boolean
-      /** Researcher */
-      researcher?: string | null
-      /** Organisation */
-      organisation?: string | null
+      /** Researchername */
+      researcherName?: string | null
+      /** Organisationname */
+      organisationName?: string | null
+      /** Root */
+      root?: string | null
     }
-    /** ResearcherSchema */
-    ResearcherSchema: {
-      /** Name */
-      name: string
-    }
-    /** OrganisationSchema */
-    OrganisationSchema: {
-      /** Name */
-      name: string
-    }
-    /** ActivitySchema */
-    ActivitySchema: {
+    /** ProjectGetSchema */
+    ProjectGetSchema: {
       /** Id */
       id: number
-      /** Activity */
-      activity: string
-      /** Filename */
-      filename: string
-      /** Target */
-      target: string | null
-      /** Status */
-      status: string
-      /** Error Log */
-      error_log: string | null
+      /** Location */
+      location: string
+      /** Is Valid */
+      is_valid: boolean
+      /** Regex */
+      regex: {
+        [key: string]: string
+      }
     }
-    /** OffloadActivityForm */
-    OffloadActivityForm: {
-      /** Src Files */
-      src_files: string[]
+    /** ProjectImportSchema */
+    ProjectImportSchema: {
+      /** Project Path */
+      project_path: string
+      /** Metadata Path */
+      metadata_path?: string | null
     }
     /** DirFileItem */
     DirFileItem: {
@@ -232,11 +312,54 @@ export interface components {
       isHidden: boolean
       /** Size */
       size: number
+    }
+    /** ResearcherSchema */
+    ResearcherSchema: {
+      /** Name */
+      name: string
+    }
+    /** OrganisationSchema */
+    OrganisationSchema: {
+      /** Name */
+      name: string
+    }
+    /**
+     * ActivityChoices
+     * @enum {string}
+     */
+    ActivityChoices: 'COPY' | 'PREPROC' | 'REMOVE'
+    /** ActivitySchema */
+    ActivitySchema: {
+      /** Id */
+      id: number
+      activity: components['schemas']['ActivityChoices']
+      /** Filename */
+      filename: string
+      /** Target */
+      target: string | null
+      status: components['schemas']['StatusChoices']
+      /** Error Log */
+      error_log: string | null
       /**
-       * Moddate
+       * Created
        * Format: date-time
        */
-      modDate: string
+      created: string
+      /**
+       * Updated
+       * Format: date-time
+       */
+      updated: string
+    }
+    /**
+     * StatusChoices
+     * @enum {string}
+     */
+    StatusChoices: 'QUEUED' | 'ERROR' | 'COMPLETED'
+    /** OffloadActivityForm */
+    OffloadActivityForm: {
+      /** Src Files */
+      src_files: string[]
     }
   }
   responses: never
@@ -262,7 +385,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectGetSchema'][]
+          'application/json': components['schemas']['ProjectListSchema'][]
         }
       }
     }
@@ -286,7 +409,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectGetSchema']
+          'application/json': components['schemas']['ProjectListSchema']
         }
       }
     }
@@ -313,46 +436,6 @@ export interface operations {
       }
     }
   }
-  backend_project_api_list_researchers: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ResearcherSchema'][]
-        }
-      }
-    }
-  }
-  backend_project_api_list_organisations: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['OrganisationSchema'][]
-        }
-      }
-    }
-  }
   backend_project_api_get_project: {
     parameters: {
       query?: never
@@ -375,36 +458,18 @@ export interface operations {
       }
     }
   }
-  backend_project_api_delete_project: {
+  backend_project_api_load_project: {
     parameters: {
       query?: never
       header?: never
-      path: {
-        project_id: number
-      }
+      path?: never
       cookie?: never
     }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProjectImportSchema']
       }
     }
-  }
-  backend_project_api_list_activities: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        project_id: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
     responses: {
       /** @description OK */
       200: {
@@ -412,64 +477,17 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ActivitySchema'][]
+          'application/json': components['schemas']['ProjectListSchema']
         }
       }
     }
   }
-  backend_project_api_offload_data: {
+  backend_project_api_delete_project: {
     parameters: {
       query?: never
       header?: never
       path: {
-        project_id: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/x-www-form-urlencoded': {
-          /** Src Files */
-          src_files: string[]
-        }
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  backend_project_api_restart_activity: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        activity_id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  backend_project_api_cancel_activity: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        activity_id: number
+        project_id: number
       }
       cookie?: never
     }
@@ -504,6 +522,196 @@ export interface operations {
         content: {
           'application/json': components['schemas']['DirFileItem'][]
         }
+      }
+    }
+  }
+  backend_researcher_api_list_researchers: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ResearcherSchema'][]
+        }
+      }
+    }
+  }
+  backend_organisation_api_list_organisations: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrganisationSchema'][]
+        }
+      }
+    }
+  }
+  backend_activity_api_list_activities: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        project_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivitySchema'][]
+        }
+      }
+    }
+  }
+  backend_activity_api_get_activity: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivitySchema']
+        }
+      }
+    }
+  }
+  backend_activity_api_cancel_activity: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activity_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  backend_activity_api_offload_data: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        project_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffloadActivityForm']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  backend_activity_api_restart_activity: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activity_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  backend_activity_api_delete_activities: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  backend_activity_api_delete_project_activities: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        project_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }

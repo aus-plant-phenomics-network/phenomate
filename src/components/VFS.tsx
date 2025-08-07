@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ChonkyActions,
   FileHelper,
@@ -23,6 +23,7 @@ import type {
   FileData,
 } from '@aperturerobotics/chonky'
 import { $api } from '@/lib/api'
+import { usePhenomate } from '@/lib/context'
 
 // AddressBar
 export interface AddressBarProps {
@@ -68,14 +69,17 @@ export const AddressBar = (
 }
 
 // Content
-export interface VFSProps {
+export interface BaseVFSProps {
   title: string
-  triggerText: string
+  children: React.ReactNode
   description: string
   multiple: boolean
   dirOnly: boolean
-  baseAddr: string
   addSelectedFiles: (files: Array<FileData>) => void
+}
+
+export interface VFSProps extends Omit<BaseVFSProps, 'children'> {
+  triggerText: string
 }
 
 export const useFolderChain = (currentAddress: string): Array<FileData> => {
@@ -166,25 +170,23 @@ function handleDisabledState(
 /**
  * Renders Shadcn's `Dialog` components with Chonky `FullFileBrowser` in `DialogContent`.
  */
-export const VFS = ({
+export const BaseVFS = ({
   title,
-  triggerText,
+  children,
   description,
   multiple,
   dirOnly,
-  baseAddr,
   addSelectedFiles,
-}: VFSProps) => {
-  console.log('VFS Rendered')
-  const [currentAddress, setCurrentAddress] = useState<string>(baseAddr)
+}: BaseVFSProps) => {
+  const { address, setAddress } = usePhenomate()
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
   // Chonky's files and folder chain query hook
-  const folderChain = useFolderChain(currentAddress)
+  const folderChain = useFolderChain(address)
   const queryResult = $api.useQuery('get', '/api/urls/', {
     params: {
       query: {
-        src: currentAddress,
+        src: address,
         dirOnly: dirOnly,
       },
     },
@@ -198,26 +200,19 @@ export const VFS = ({
     addSelectedFiles,
   )
   // Chonky FileHandling Logic
-  const handleFileAction = useFileActionHandler(
-    setCurrentAddress,
-    setDisabledState,
-  )
+  const handleFileAction = useFileActionHandler(setAddress, setDisabledState)
   return (
     // modal = True will mess up Chonky's own popup window
     <Dialog modal={false}>
-      <DialogTrigger asChild>
-        <Button className="text-left justify-start" variant="outline">
-          <p className="overflow-hidden">{triggerText}</p>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="flex flex-col h-[600px] md:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
           <AddressBar
             className="px-2 py-1 w-1/2 rounded border-1"
-            currentAddress={currentAddress}
-            setCurrentAddress={setCurrentAddress}
+            currentAddress={address}
+            setCurrentAddress={setAddress}
           />
         </DialogHeader>
         <FullFileBrowser
@@ -242,5 +237,28 @@ export const VFS = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export const VFS = ({
+  title,
+  triggerText,
+  description,
+  multiple,
+  dirOnly,
+  addSelectedFiles,
+}: VFSProps) => {
+  return (
+    <BaseVFS
+      title={title}
+      description={description}
+      multiple={multiple}
+      dirOnly={dirOnly}
+      addSelectedFiles={addSelectedFiles}
+    >
+      <Button className="text-left justify-start" variant="outline">
+        <p className="overflow-hidden">{triggerText}</p>
+      </Button>
+    </BaseVFS>
   )
 }

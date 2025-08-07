@@ -1,37 +1,26 @@
 import { Trash2 } from 'lucide-react'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import type { FileData } from '@aperturerobotics/chonky'
 
+import type { ParsedFileData } from '@/lib/utils'
+import { formatDT, inDateRange } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
-import { DataTableColumnHeader } from '@/components/Table'
-import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DataTableColumnHeader,
+  SelectPageRowsCheckBox,
+  SelectRowCheckBox,
+} from '@/components/Table'
 
 export const makeFileDataColumn = (
-  removeSelectedFileHandler: (data: FileData) => void,
-): Array<ColumnDef<FileData>> => {
-  console.log('Columns rerendered')
+  removeSelectedFileHandler: (data: ParsedFileData) => void,
+  timezone: string,
+): Array<ColumnDef<ParsedFileData>> => {
   return [
     {
       id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
+      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
+      cell: ({ row }) => <SelectRowCheckBox row={row} />,
       enableSorting: false,
       enableHiding: false,
     },
@@ -51,25 +40,58 @@ export const makeFileDataColumn = (
       ),
     },
     {
-      accessorKey: 'id',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="File Path" />
-      ),
-    },
-    {
       accessorKey: 'name',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Name" />
       ),
     },
     {
-      accessorKey: 'size',
+      accessorKey: 'datetime',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Size(B)" />
+        <DataTableColumnHeader column={column} title="Date Time" />
+      ),
+      cell: ({ cell }) => {
+        const value = cell.getValue()
+        return formatDT(timezone, value as string)
+      },
+      filterFn: inDateRange,
+      meta: {
+        filterVariant: 'date',
+      },
+    },
+    {
+      accessorKey: 'sensor',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Sensor" />
       ),
       meta: {
-        filterVariant: 'range',
+        filterVariant: 'select',
       },
+    },
+    {
+      accessorKey: 'site',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Site" />
+      ),
+      meta: {
+        filterVariant: 'select',
+      },
+    },
+    {
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="File Path" />
+      ),
+    },
+    {
+      accessorKey: 'size',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Size(kB)" />
+      ),
+      cell: ({ cell }) => {
+        return (Number(cell.getValue()) / 1000).toFixed(2)
+      },
+      enableColumnFilter: false,
     },
   ]
 }
