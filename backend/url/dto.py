@@ -9,11 +9,14 @@ if TYPE_CHECKING:
 
 
 def get_size(p: Path) -> int:
-    if p.is_file():
-        return p.stat().st_size
-    if p.is_dir():
-        return sum([child.stat().st_size for child in p.iterdir() if child.is_file()])
-    return 0
+    try:
+        if p.is_file():
+            return p.stat().st_size
+        if p.is_dir():
+            return sum([child.stat().st_size for child in p.iterdir() if child.is_file()])
+        return 0
+    except PermissionError:
+        return 0
 
 
 class DirFileItem(Schema):

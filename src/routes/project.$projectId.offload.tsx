@@ -4,6 +4,7 @@ import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { useCallback, useMemo, useState } from 'react'
 import { Trash2 } from 'lucide-react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { makeFileDataColumn } from './-project.offload.tables'
 import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
@@ -19,6 +20,11 @@ import {
   useTableWithFilterSort,
 } from '@/components/Table'
 
+const queryOption = (projectId: number) =>
+  $api.queryOptions('get', '/api/project/id/{project_id}', {
+    params: { path: { project_id: projectId } },
+  })
+
 export const Route = createFileRoute('/project/$projectId/offload')({
   component: OffloadProjectPage,
 })
@@ -32,6 +38,8 @@ export default function OffloadProjectPage() {
   const { projectId } = Route.useParams()
   const [submitError, setError] = useState<string>('')
   const [selectedFiles, setSelectedFiles] = useState<Array<FileData>>([])
+  const { data } = useSuspenseQuery(queryOption(parseInt(projectId)))
+  console.log(data)
 
   const mutation = $api.useMutation(
     'post',
