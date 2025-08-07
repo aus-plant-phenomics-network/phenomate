@@ -177,7 +177,9 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     <SelectFacetFilter
       values={sortedUniqueValues}
       onValueChange={(value: string) =>
-        value !== 'All' ? column.setFilterValue(value) : null
+        value !== 'All'
+          ? column.setFilterValue(value)
+          : column.setFilterValue(null)
       }
     />
   ) : (

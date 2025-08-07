@@ -18,12 +18,20 @@ Note running with privilege is required since we will need to kill rabbitmq proc
 
 ### Local development
 
+The following instructions should work for local development on a Linux machine.
+
 #### Installing local dependencies
 
 Installing `libjpeg-turbo`:
 
 ```bash
 make install-libjpeg-turbo
+```
+
+Installing `rabbitmq`:
+
+```bash
+make install-rabbitmq
 ```
 
 Installing developer environment:
@@ -63,6 +71,14 @@ Then open another terminal and run:
 ```bash
 make run-ui
 ```
+
+To sync dto types between the frontend and backend, run
+
+```bash
+npm run sync-backend
+```
+
+You only need to run this if you have made any changes to any backend dto. Doing this helps eliminate the need to define types twice and is generally improves developer experience by a fair bit.
 
 In development mode, Phenomate uses sqlite as the db. To quickly purge all data from the db, you can use the make utility:
 

@@ -15,10 +15,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, Fieldset } from '@/components/Form'
 import {
+  DataTableAdvancedSelectionOptions,
   DataTablePagination,
   RawDataTable,
   useTableWithFilterSort,
 } from '@/components/Table'
+import { usePhenomate } from '@/lib/context'
+import { parseFileData } from '@/lib/utils'
+import { TZSelect } from '@/components/TimezoneSelect'
 
 const queryOption = (projectId: number) =>
   $api.queryOptions('get', '/api/project/id/{project_id}', {
@@ -34,13 +38,14 @@ const offloadSchema = z.object({
 })
 
 export default function OffloadProjectPage() {
+  const { timezone } = usePhenomate()
   const navigate = useNavigate()
   const { projectId } = Route.useParams()
   const [submitError, setError] = useState<string>('')
   const [selectedFiles, setSelectedFiles] = useState<Array<FileData>>([])
   const { data } = useSuspenseQuery(queryOption(parseInt(projectId)))
-  console.log(data)
-
+  const regexMap = data.regex
+  const formatSelectedFiles = parseFileData(selectedFiles, regexMap)
   const mutation = $api.useMutation(
     'post',
     '/api/activity/offload/{project_id}',
@@ -126,13 +131,13 @@ export default function OffloadProjectPage() {
   )
 
   const columns = useMemo(
-    () => makeFileDataColumn(removeSelectedFile),
-    [removeSelectedFile],
+    () => makeFileDataColumn(removeSelectedFile, timezone),
+    [removeSelectedFile, timezone],
   )
 
   const { table } = useTableWithFilterSort({
     columns: columns,
-    data: selectedFiles,
+    data: formatSelectedFiles,
   })
 
   return (
@@ -202,6 +207,7 @@ export default function OffloadProjectPage() {
       {/* Display Table */}
       <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto gap-y-4">
         <div className="flex justify-end gap-x-2 p-2">
+          <DataTableAdvancedSelectionOptions table={table} />
           <Button
             variant="outline"
             size="sm"
@@ -226,6 +232,7 @@ export default function OffloadProjectPage() {
             <Trash2 />
             Remove All
           </Button>
+          <TZSelect />
         </div>
         <RawDataTable table={table} />
         <DataTablePagination table={table} />

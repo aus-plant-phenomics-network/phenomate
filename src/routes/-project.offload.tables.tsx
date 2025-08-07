@@ -1,8 +1,9 @@
 import { Trash2 } from 'lucide-react'
 
 import type { ColumnDef } from '@tanstack/react-table'
-import type { FileData } from '@aperturerobotics/chonky'
 
+import type { ParsedFileData } from '@/lib/utils'
+import { formatDT, inDateRange } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 import {
@@ -12,8 +13,9 @@ import {
 } from '@/components/Table'
 
 export const makeFileDataColumn = (
-  removeSelectedFileHandler: (data: FileData) => void,
-): Array<ColumnDef<FileData>> => {
+  removeSelectedFileHandler: (data: ParsedFileData) => void,
+  timezone: string,
+): Array<ColumnDef<ParsedFileData>> => {
   return [
     {
       id: 'select',
@@ -38,15 +40,47 @@ export const makeFileDataColumn = (
       ),
     },
     {
-      accessorKey: 'id',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="File Path" />
-      ),
-    },
-    {
       accessorKey: 'name',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="File Name" />
+      ),
+    },
+    {
+      accessorKey: 'datetime',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Date Time" />
+      ),
+      cell: ({ cell }) => {
+        const value = cell.getValue()
+        return formatDT(timezone, value as string)
+      },
+      filterFn: inDateRange,
+      meta: {
+        filterVariant: 'date',
+      },
+    },
+    {
+      accessorKey: 'sensor',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Sensor" />
+      ),
+      meta: {
+        filterVariant: 'select',
+      },
+    },
+    {
+      accessorKey: 'site',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Site" />
+      ),
+      meta: {
+        filterVariant: 'select',
+      },
+    },
+    {
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="File Path" />
       ),
     },
     {
