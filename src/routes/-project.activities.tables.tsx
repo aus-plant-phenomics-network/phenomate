@@ -12,7 +12,7 @@ import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { $api } from '@/lib/api'
 import { DeleteDialog } from '@/components/DeleteDialog'
-import { formatDT } from '@/lib/utils'
+import { formatDT, inDateRange } from '@/lib/utils'
 
 function DeleteActivityDialog({
   row,
@@ -125,6 +125,9 @@ export function makeActivityColumns(
       header: ({ column }) => (
         <DataTableColumnHeader title="Status" column={column} />
       ),
+      meta: {
+        filterVariant: 'select',
+      },
     },
     {
       accessorKey: 'created',
@@ -135,7 +138,10 @@ export function makeActivityColumns(
         const value = cell.getValue()
         return formatDT(timezone, value as string)
       },
-      enableColumnFilter: false,
+      filterFn: inDateRange,
+      meta: {
+        filterVariant: 'date',
+      },
     },
     {
       accessorKey: 'updated',
@@ -146,7 +152,10 @@ export function makeActivityColumns(
         const value = cell.getValue()
         return formatDT(timezone, value as string)
       },
-      enableColumnFilter: false,
+      filterFn: inDateRange,
+      meta: {
+        filterVariant: 'date',
+      },
     },
     {
       accessorKey: 'filename',

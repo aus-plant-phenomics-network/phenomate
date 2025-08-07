@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+import { DateTime } from 'luxon'
 import type { ClassValue } from 'clsx'
 import type { FilterFn, Row } from '@tanstack/react-table'
 
@@ -8,6 +9,14 @@ export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Convert UTC time to locale time for displaying
+ *
+ * @param timezone - local/selected timezone
+ * @param value - UTC time value
+ * @param displayTime - whether to display time component
+ * @returns
+ */
 export function formatDT(
   timezone: string,
   value: string | Date | undefined,
@@ -35,12 +44,53 @@ export function formatDT(
   return formatter.format(new Date(value))
 }
 
+/**
+ * Check whether input is a valid date value
+ * @param date - nullable string or date
+ * @returns
+ */
 export function isValidDate(date: string | Date | undefined | null) {
   if (!date) {
     return false
   }
   const dt = typeof date === 'string' ? new Date(date) : date
   return !isNaN(dt.getTime())
+}
+
+export function extractISODate(
+  date: Date | undefined | null,
+  timezone: string,
+) {
+  if (!date) return null
+  return DateTime.fromObject(
+    {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+      second: date.getSeconds(),
+    },
+    { zone: timezone },
+  ).toISO()
+}
+
+// Filter functions
+
+const equalsBoolean: FilterFn<any> = <TData>(
+  row: Row<TData>,
+  columnId: string,
+  filterValue: boolean | null,
+) => {
+  const data: boolean = row.getValue(columnId)
+  return filterValue === null || data === filterValue
+}
+
+equalsBoolean.autoRemove = (val: any) => val !== 'true' && val !== 'false'
+equalsBoolean.resolveFilterValue = (val: any) => {
+  if (val === 'true') return true
+  if (val === 'false') return false
+  return ''
 }
 
 const equalsDateTime: FilterFn<any> = <TData>(
@@ -72,6 +122,7 @@ const equalsDate: FilterFn<any> = <TData>(
   const data: string | undefined | null = row.getValue(columnId)
   if (!isValidDate(data)) return false
   const dt = new Date(data as string)
+  console.log(dt.toISOString(), filterValue.toISOString())
   return (
     dt.getUTCFullYear() === filterValue.getUTCFullYear() &&
     dt.getUTCMonth() === filterValue.getUTCMonth() &&
@@ -81,6 +132,7 @@ const equalsDate: FilterFn<any> = <TData>(
 equalsDate.autoRemove = (val: any) => !isValidDate(val)
 equalsDate.resolveFilterValue = (val: any) => new Date(val)
 
+// Only inDateRange works as expected, equalsDate and equalsDateTime only work for UTC
 const inDateRange: FilterFn<any> = <TData>(
   row: Row<TData>,
   columnId: string,
@@ -109,4 +161,4 @@ inDateRange.resolveFilterValue = (val: [any, any]) => {
   return [parsedMin, parsedMax] as const
 }
 
-export { equalsDate, equalsDateTime, inDateRange }
+export { equalsDate, equalsDateTime, inDateRange, equalsBoolean }

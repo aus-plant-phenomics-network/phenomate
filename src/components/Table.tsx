@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useEffect, useMemo, useState } from 'react'
 import {
   ArrowDown,
   ArrowUp,
@@ -43,6 +43,7 @@ import {
 } from './ui/select'
 import { Checkbox } from './ui/checkbox'
 import { TooltipInfo } from './TooltipInfo'
+import { DatePicker } from './DatePicker'
 import type {
   Column,
   ColumnDef,
@@ -69,14 +70,7 @@ import { cn } from '@/lib/utils'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?:
-      | 'text'
-      | 'range'
-      | 'boolean'
-      | 'date'
-      | 'date-range'
-      | 'date-facet'
-      | 'select-facet'
+    filterVariant?: 'text' | 'range' | 'boolean' | 'date' | 'select'
   }
 }
 
@@ -84,57 +78,109 @@ const BooleanSelectFilter = memo(
   ({ onValueChange }: { onValueChange: (value: string) => void }) => {
     return (
       <Select onValueChange={onValueChange}>
-        <SelectTrigger>
+        <SelectTrigger className="w-12 border shadow rounded">
           <SelectValue placeholder="All" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="All">All</SelectItem>
-          <SelectItem value="1">true</SelectItem>
-          <SelectItem value="0">false</SelectItem>
+          <SelectItem value="true">true</SelectItem>
+          <SelectItem value="false">false</SelectItem>
         </SelectContent>
       </Select>
     )
   },
 )
 
+const SelectFacetFilter = ({
+  values,
+  onValueChange,
+}: {
+  values: Array<string>
+  onValueChange: (value: string) => void
+}) => {
+  return (
+    <Select onValueChange={onValueChange}>
+      <SelectTrigger className="w-24 border shadow rounded">
+        <SelectValue placeholder="All" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="All">All</SelectItem>
+        {values &&
+          values.map(value => (
+            <SelectItem value={value} key={value}>
+              {value}
+            </SelectItem>
+          ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
 export function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue()
   const { filterVariant } = column.columnDef.meta ?? {}
-  const setFilterValue = column.setFilterValue
-  const booleanSelectOnValueChange = useCallback(
-    (value: string) =>
-      setFilterValue(value === 'All' ? '' : value === '1' ? true : false),
-    [setFilterValue],
+  const sortedUniqueValues = useMemo(
+    () =>
+      filterVariant !== 'select'
+        ? []
+        : Array.from(column.getFacetedUniqueValues().keys())
+            .sort()
+            .slice(0, 5000),
+    [column.getFacetedUniqueValues(), filterVariant],
   )
-
   return filterVariant === 'range' ? (
     // Range
-    <div>
-      <div className="flex space-x-2">
-        <DebouncedInput
-          type="number"
-          value={(columnFilterValue as [number, number])?.[0] ?? ''}
-          onChange={value =>
-            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-          }
-          placeholder={`Min`}
-          className="w-24 border shadow rounded"
-        />
-        <DebouncedInput
-          type="number"
-          value={(columnFilterValue as [number, number])?.[1] ?? ''}
-          onChange={value =>
-            column.setFilterValue((old: [number, number]) => [old?.[0], value])
-          }
-          placeholder={`Max`}
-          className="w-24 border shadow rounded"
-        />
-      </div>
+    <div className="flex space-x-2">
+      <DebouncedInput
+        type="number"
+        value={(columnFilterValue as [number, number])?.[0] ?? ''}
+        onChange={value =>
+          column.setFilterValue((old: [number, number]) => [value, old?.[1]])
+        }
+        placeholder={`Min`}
+        className="w-24 border shadow rounded"
+      />
+      <DebouncedInput
+        type="number"
+        value={(columnFilterValue as [number, number])?.[1] ?? ''}
+        onChange={value =>
+          column.setFilterValue((old: [number, number]) => [old?.[0], value])
+        }
+        placeholder={`Max`}
+        className="w-24 border shadow rounded"
+      />
     </div>
   ) : filterVariant === 'boolean' ? (
     // Boolean
-    <BooleanSelectFilter onValueChange={booleanSelectOnValueChange} />
-  ) : filterVariant === 'text' ? (
+    <BooleanSelectFilter onValueChange={column.setFilterValue} />
+  ) : filterVariant === 'date' ? (
+    // Date
+    <div className="flex space-x-2">
+      <DatePicker
+        value={(columnFilterValue as [string, string])?.[0] ?? ''}
+        onChange={value =>
+          column.setFilterValue((old: [string, string]) => [value, old?.[1]])
+        }
+        placeholder={`Min`}
+        className="w-32 border shadow rounded"
+      />
+      <DatePicker
+        value={(columnFilterValue as [string, string])?.[1] ?? ''}
+        onChange={value =>
+          column.setFilterValue((old: [string, string]) => [old?.[0], value])
+        }
+        placeholder={`Max`}
+        className="w-32 border shadow rounded"
+      />
+    </div>
+  ) : filterVariant === 'select' ? (
+    <SelectFacetFilter
+      values={sortedUniqueValues}
+      onValueChange={(value: string) =>
+        value !== 'All' ? column.setFilterValue(value) : null
+      }
+    />
+  ) : (
     // Text
     <DebouncedInput
       className="w-36 border shadow rounded"
@@ -143,14 +189,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
       type="text"
       value={(columnFilterValue ?? '') as string}
     />
-  ) : filterVariant === 'date' ? (
-    <DebouncedInput
-      className="w-36 border shadow rounded"
-      onChange={value => column.setFilterValue(value)}
-      type="date"
-      value={(columnFilterValue ?? '') as string}
-    />
-  ) : null
+  )
 }
 
 // A typical debounced input react component

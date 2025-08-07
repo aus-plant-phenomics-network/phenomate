@@ -11,7 +11,7 @@ import { $api } from '@/lib/api'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
-import { formatDT } from '@/lib/utils'
+import { equalsBoolean, formatDT, inDateRange } from '@/lib/utils'
 
 function DeleteProjectDialog({
   row,
@@ -103,6 +103,7 @@ export const makeIndexDataColumn = (
         const value = cell.getValue()
         return formatDT(timezone, value as string)
       },
+      filterFn: inDateRange,
       meta: {
         filterVariant: 'date',
       },
@@ -113,6 +114,7 @@ export const makeIndexDataColumn = (
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Valid" />
       ),
+      filterFn: equalsBoolean,
       meta: {
         filterVariant: 'boolean',
       },
