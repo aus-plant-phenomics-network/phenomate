@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import {
   ArrowDown,
   ArrowUp,
@@ -15,6 +15,9 @@ import {
 import {
   flexRender,
   getCoreRowModel,
+  getFacetedMinMaxValues,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -72,16 +75,40 @@ declare module '@tanstack/react-table' {
       | 'boolean'
       | 'date'
       | 'date-range'
+      | 'date-facet'
       | 'select-facet'
   }
 }
 
+const BooleanSelectFilter = memo(
+  ({ onValueChange }: { onValueChange: (value: string) => void }) => {
+    return (
+      <Select onValueChange={onValueChange}>
+        <SelectTrigger>
+          <SelectValue placeholder="All" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="All">All</SelectItem>
+          <SelectItem value="1">true</SelectItem>
+          <SelectItem value="0">false</SelectItem>
+        </SelectContent>
+      </Select>
+    )
+  },
+)
+
 export function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue()
   const { filterVariant } = column.columnDef.meta ?? {}
+  const setFilterValue = column.setFilterValue
+  const booleanSelectOnValueChange = useCallback(
+    (value: string) =>
+      setFilterValue(value === 'All' ? '' : value === '1' ? true : false),
+    [setFilterValue],
+  )
 
   return filterVariant === 'range' ? (
-    // Range filter variant
+    // Range
     <div>
       <div className="flex space-x-2">
         <DebouncedInput
@@ -106,24 +133,9 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
     </div>
   ) : filterVariant === 'boolean' ? (
     // Boolean
-    <Select
-      onValueChange={value =>
-        column.setFilterValue(
-          value === 'All' ? '' : value === '1' ? true : false,
-        )
-      }
-    >
-      <SelectTrigger>
-        <SelectValue placeholder="All" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="All">All</SelectItem>
-        <SelectItem value="1">true</SelectItem>
-        <SelectItem value="0">false</SelectItem>
-      </SelectContent>
-    </Select>
-  ) : (
-    // Text filter variant
+    <BooleanSelectFilter onValueChange={booleanSelectOnValueChange} />
+  ) : filterVariant === 'text' ? (
+    // Text
     <DebouncedInput
       className="w-36 border shadow rounded"
       onChange={value => column.setFilterValue(value)}
@@ -131,7 +143,14 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
       type="text"
       value={(columnFilterValue ?? '') as string}
     />
-  )
+  ) : filterVariant === 'date' ? (
+    <DebouncedInput
+      className="w-36 border shadow rounded"
+      onChange={value => column.setFilterValue(value)}
+      type="date"
+      value={(columnFilterValue ?? '') as string}
+    />
+  ) : null
 }
 
 // A typical debounced input react component
@@ -357,6 +376,9 @@ export function useTableWithFilterSort<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(), // client-side faceting
+    getFacetedUniqueValues: getFacetedUniqueValues(), // generate unique values for select filter/autocomplete
+    getFacetedMinMaxValues: getFacetedMinMaxValues(), // generate min/max values for range filter
   })
   return {
     table: table,

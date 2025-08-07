@@ -103,7 +103,9 @@ export const makeIndexDataColumn = (
         const value = cell.getValue()
         return formatDT(timezone, value as string)
       },
-      enableColumnFilter: false,
+      meta: {
+        filterVariant: 'date',
+      },
     },
     {
       accessorKey: 'is_valid',
