@@ -119,6 +119,9 @@ export function makeActivityColumns(
       header: ({ column }) => (
         <DataTableColumnHeader title="Activity" column={column} />
       ),
+      meta: {
+        filterVariant: 'select',
+      },
     },
     {
       accessorKey: 'status',

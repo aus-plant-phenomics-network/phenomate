@@ -127,3 +127,23 @@ All services aside from `frontend` and `backend` use their default port values. 
 - `POSTGRES_DB`: postgresql image parameters
 - `POSTGRES_HOST`: postgresql image parameters
 - `POSTGRES_PORT`: postgresql image parameters
+
+## Packages and Frameworks
+
+Frontend:
+
+- [React](https://react.dev/) + [Vite](https://vite.dev/)
+- [Tanstack](https://tanstack.com/): router, query, table, form
+- [Shadcn-ui](https://ui.shadcn.com/): for ui components
+- [Tailwindcss](https://tailwindcss.com/): for styling
+- [Openapi-react-query](https://openapi-ts.dev/openapi-react-query/): integrating with backend dto via tanstack router
+
+Backend:
+
+- [Django](https://www.djangoproject.com/): ORM and backend
+- [Django-Ninja](https://django-ninja.dev/): routing
+- [Celery](https://docs.celeryq.dev/en/stable/): task queue
+- [Rabbitmq](https://www.rabbitmq.com/): celery broker
+- [phenomate-core](https://github.com/aus-plant-phenomics-network/phenomate-core): data processing logic
+- [appm](https://github.com/aus-plant-phenomics-network/appn-project-manager): template and project management logic
+- Database: sqlite for local development and postgresql for production
