@@ -1,6 +1,5 @@
 import datetime
 
-from appm.model import Project
 from ninja import Schema
 
 
@@ -18,10 +17,11 @@ class ProjectListSchema(Schema):
     root: str
 
 
-class ProjectGetSchema(Project, Schema):
+class ProjectGetSchema(Schema):
     id: int
     location: str
     is_valid: bool
+    regex: dict[str, str]
 
 
 class ProjectCreateSchema(Schema):

@@ -41,9 +41,9 @@ def list_projects(request: HttpRequest) -> list[Project]:
 def get_project(request: HttpRequest, project_id: int) -> ProjectGetSchema:
     project = get_object_or_404(Project, pk=project_id)
     manager = ProjectManager.load_project(project.location)
-    project_metadata = manager.metadata.model_dump(mode="python")
+    regex = {name: ext.js_regex for name, ext in manager.metadata.file.items()}
     return ProjectGetSchema(
-        id=project.pk, location=project.location, is_valid=project.is_valid, **project_metadata
+        id=project.pk, location=project.location, is_valid=project.is_valid, regex=regex
     )
 
 

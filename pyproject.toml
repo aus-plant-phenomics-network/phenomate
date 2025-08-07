@@ -10,7 +10,7 @@ dependencies = [
     "django-ninja>=1.4.3",
     "phenomate-core>=0.1.6",
     "celery>=5.5.3",
-    "appm>=0.0.6",
+    "appm>=0.0.7",
     "gunicorn>=23.0.0",
     "psycopg[binary]>=3.2.9",
 ]
