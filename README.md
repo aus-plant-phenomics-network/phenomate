@@ -137,6 +137,7 @@ Frontend:
 - [Shadcn-ui](https://ui.shadcn.com/): for ui components
 - [Tailwindcss](https://tailwindcss.com/): for styling
 - [Openapi-react-query](https://openapi-ts.dev/openapi-react-query/): integrating with backend dto via tanstack router
+- [Chonky](https://www.npmjs.com/package/@aperturerobotics/chonky): virtual file system. Note that the github uses the original chonky's [documentation](https://chonky.io/). When running `npm add` or `npm install`, you will see a wall of warning texts about version incompatibility. They are caused by differences in React versions (chonky uses React 16 while other packages React 19). This should still work and can safely be ignored.
 
 Backend:
 
@@ -147,3 +148,7 @@ Backend:
 - [phenomate-core](https://github.com/aus-plant-phenomics-network/phenomate-core): data processing logic
 - [appm](https://github.com/aus-plant-phenomics-network/appn-project-manager): template and project management logic
 - Database: sqlite for local development and postgresql for production
+
+## Contact
+
+If you want to ask questions about this project, the best way is to create a [ticket](https://github.com/aus-plant-phenomics-network/phenomate/issues) addressing my github handle.
