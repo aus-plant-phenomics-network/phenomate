@@ -30,15 +30,15 @@ wheels = [
 
 [[package]]
 name = "appm"
-version = "0.0.7"
+version = "0.0.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "ruamel-yaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/90/479b0b511c3038b6aff81a6665d7c5d5b103f28ae21856be100977d02389/appm-0.0.7.tar.gz", hash = "sha256:10770df1ade4a1da9254ce10bf59e3ab856a7272f382090674fe35e36dde5073", size = 1468135, upload-time = "2025-08-07T07:59:57.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/43/50/34b9a7fb3b75c9754a8df89435f0c5989ef0c813da509684d179390f0aa9/appm-0.0.9.tar.gz", hash = "sha256:93729630f81f449d8053cebac89a5082f9a87eb024ea33d5304ac4ef26cb0452", size = 8469, upload-time = "2025-08-26T05:05:57.613Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/3c/42561681a78232a8e42f821d27d95967b24f27c2565adb78956a02f3b0f2/appm-0.0.7-py3-none-any.whl", hash = "sha256:b43c18492e628bc0312f09ab4e16a41844f79b52f4e652d1db4959cd68ed8925", size = 1987929, upload-time = "2025-08-07T07:59:48.442Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/b9/4c637f8f89b5e1d34e76ed40c9996014c9f89f5d1bb4721e916ad38829f5/appm-0.0.9-py3-none-any.whl", hash = "sha256:d166ebdc1153de2b5d7affe83c4b828d280ce0b573cdefb606ec6e1093728620", size = 9523, upload-time = "2025-08-26T05:05:56.675Z" },
 ]
 
 [[package]]
@@ -483,13 +483,13 @@ analysis = [
 
 [package.metadata]
 requires-dist = [
-    { name = "appm", specifier = ">=0.0.7" },
+    { name = "appm", specifier = ">=0.0.9" },
     { name = "celery", specifier = ">=5.5.3" },
     { name = "django", specifier = ">=5.2.4" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
     { name = "django-ninja", specifier = ">=1.4.3" },
     { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "phenomate-core", specifier = ">=0.1.6" },
+    { name = "phenomate-core", specifier = ">=0.2.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.9" },
 ]
 
@@ -504,7 +504,7 @@ analysis = [
 
 [[package]]
 name = "phenomate-core"
-version = "0.1.6"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google" },
@@ -515,9 +515,9 @@ dependencies = [
     { name = "pyturbojpeg" },
     { name = "spectral" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/38/3efe17d80f8943685b1aad53e5903b23cb42735db99f5509264318f453b2/phenomate_core-0.1.6.tar.gz", hash = "sha256:93ebf6aa6f2ebca9e5ff3e39fad9d301091c3df5709292a3176d5e1b5dc6027d", size = 19419, upload-time = "2025-08-06T03:47:03.783Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/77/dc28d1836db45c15d1f28bbc5fe0201d61c7d8fd2aa776f7f3f543132149/phenomate_core-0.2.0.tar.gz", hash = "sha256:10cb4df97cdf065399112d1067f6ec12d0c134062684274af8a292179941db61", size = 19493, upload-time = "2025-08-28T02:16:50.404Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/d9/51a8ca539b67a1b89cf2dc6615fe5bd3630e564b1eb0dd22b2612c66176a/phenomate_core-0.1.6-py3-none-any.whl", hash = "sha256:97f254bc2f307b0405bdb3e2b9760b6982416735fe51f8efeb5d477ec7b2a9ea", size = 28621, upload-time = "2025-08-06T03:47:02.202Z" },
+    { url = "https://files.pythonhosted.org/packages/10/c1/404ec16b1f146292fcc64c021e0d6490b42a519e27e03d58e2631b22d88b/phenomate_core-0.2.0-py3-none-any.whl", hash = "sha256:41962354414d2b8b2d13a8ca4d471a7b6772b81e19addb90de78811201a8a5cc", size = 28666, upload-time = "2025-08-28T02:16:48.831Z" },
 ]
 
 [[package]]
