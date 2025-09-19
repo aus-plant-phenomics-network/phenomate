@@ -80,7 +80,87 @@ export default function CreateProjectPage() {
               Create Project
             </h1>
             <div className="flex flex-col justify-center gap-y-4 px-6">
-              {/* Year Field */}
+              {/* Root Field */}
+              <form.Field
+                name="root"
+                children={field => {
+                  const addSelectedFiles = (files: Array<FileData>) => {
+                    if (!files || files.length != 1) field.handleChange(null)
+                    else field.handleChange(files[0].id)
+                  }
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Output Directory Path</Label>
+                        <VFS
+                          addSelectedFiles={addSelectedFiles}
+                          triggerText={
+                            !field.state.value
+                              ? 'Select Project Base Directory'
+                              : field.state.value
+                          }
+                          title="Output Directory"
+                          description="Where do you want to save your data?"
+                          multiple={false}
+                          dirOnly={true}
+                        />
+                      </Fieldset>
+                    </>
+                  )
+                }}
+              />
+			  {/* Template Field */}
+              <form.Field
+                name="template"
+                children={field => {
+                  const addSelectedFiles = (files: Array<FileData>) => {
+                    if (!files || files.length != 1) field.handleChange(null)
+                    else field.handleChange(files[0].id)
+                  }
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Project Template</Label>
+                        <VFS
+                          addSelectedFiles={addSelectedFiles}
+                          triggerText={
+                            !field.state.value
+                              ? 'JSON Template File'
+                              : field.state.value
+                          }
+                          title="Select a template file"
+                          description="JSON template that describes the input data filename structure and output directory structure "
+                          multiple={false}
+                          dirOnly={false}
+                        />
+                      </Fieldset>
+                    </>
+                  )
+                }}
+              />
+			  {/* Summary Field */}
+              <form.Field
+                name="summary"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Project Name*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Project Summary"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
+			  {/* Year Field */}
               <form.Field
                 name="year"
                 children={field => {
@@ -102,87 +182,7 @@ export default function CreateProjectPage() {
                     </>
                   )
                 }}
-              />
-              {/* Summary Field */}
-              <form.Field
-                name="summary"
-                children={field => {
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label htmlFor={field.name}>Summary*</Label>
-                        <Input
-                          type="text"
-                          id={field.name}
-                          name={field.name}
-                          placeholder="Project Summary"
-                          onBlur={field.handleBlur}
-                          onChange={e => field.handleChange(e.target.value)}
-                        />
-                      </Fieldset>
-                      <FieldInfo field={field} />
-                    </>
-                  )
-                }}
-              />
-              {/* Root Field */}
-              <form.Field
-                name="root"
-                children={field => {
-                  const addSelectedFiles = (files: Array<FileData>) => {
-                    if (!files || files.length != 1) field.handleChange(null)
-                    else field.handleChange(files[0].id)
-                  }
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label htmlFor={field.name}>Root</Label>
-                        <VFS
-                          addSelectedFiles={addSelectedFiles}
-                          triggerText={
-                            !field.state.value
-                              ? 'Select Root Directory'
-                              : field.state.value
-                          }
-                          title="Select Root Directory"
-                          description="Set project's parent directory"
-                          multiple={false}
-                          dirOnly={true}
-                        />
-                      </Fieldset>
-                    </>
-                  )
-                }}
-              />
-              {/* Template Field */}
-              <form.Field
-                name="template"
-                children={field => {
-                  const addSelectedFiles = (files: Array<FileData>) => {
-                    if (!files || files.length != 1) field.handleChange(null)
-                    else field.handleChange(files[0].id)
-                  }
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label htmlFor={field.name}>Template</Label>
-                        <VFS
-                          addSelectedFiles={addSelectedFiles}
-                          triggerText={
-                            !field.state.value
-                              ? 'Select Template Directory'
-                              : field.state.value
-                          }
-                          title="Select Template Directory"
-                          description="Select template metadata file"
-                          multiple={false}
-                          dirOnly={false}
-                        />
-                      </Fieldset>
-                    </>
-                  )
-                }}
-              />
+              />              
               {/* Internal field */}
               <form.Field
                 name="internal"
@@ -265,7 +265,7 @@ export default function CreateProjectPage() {
                 selector={state => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
                   <Button type="submit" disabled={!canSubmit}>
-                    {isSubmitting ? '...' : 'Submit'}
+                    {isSubmitting ? '...' : 'Create Project'}
                   </Button>
                 )}
               />

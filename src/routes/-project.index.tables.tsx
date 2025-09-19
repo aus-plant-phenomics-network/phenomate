@@ -12,6 +12,7 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { equalsBoolean, formatDT, inDateRange } from '@/lib/utils'
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 function DeleteProjectDialog({
   row,
@@ -42,7 +43,7 @@ function DeleteProjectDialog({
   )
 }
 
-function ProjectAction(
+/*function ProjectAction(
   props: Omit<React.ComponentProps<'button'>, 'children'> & {
     row: Row<components['schemas']['ProjectListSchema']>
   },
@@ -71,7 +72,39 @@ function ProjectAction(
       <DeleteProjectDialog row={row} />
     </ActionDropdownMenu>
   )
+}*/
+type ProjectRow = Row<components['schemas']['ProjectListSchema']>;
+
+function ProjectAction({
+  row,
+  ...rest
+}: Omit<React.ComponentProps<'button'>, 'children'> & { row: ProjectRow }) {
+  const projectId = row.original.id.toString();
+
+  return (
+  
+	<Tooltip.Provider>
+	  <Tooltip.Root>
+		<Tooltip.Trigger asChild>
+
+		<Link
+		  className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-blue-650 transition w-full text-center"
+		  to={`/project/${projectId}/offload`}
+		  {...rest}
+		>
+		  Select Data
+		</Link>
+		
+		</Tooltip.Trigger>
+		<Tooltip.Content side="bottom" className="bg-gray-600 text-white p-2 rounded">
+		  Select Phenomate .bin data files for extraction
+		</Tooltip.Content>
+	  </Tooltip.Root>
+	</Tooltip.Provider>
+
+  );
 }
+
 
 export const makeIndexDataColumn = (
   timezone: string,
@@ -82,7 +115,7 @@ export const makeIndexDataColumn = (
       header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
       cell: ({ row }) => <SelectRowCheckBox row={row} />,
       enableSorting: false,
-      enableHiding: false,
+      enableHiding: true,
     },
     {
       id: 'action',
@@ -91,7 +124,9 @@ export const makeIndexDataColumn = (
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
+
+        <DataTableColumnHeader column={column} title="Name" tooltip="These values will be the output directory name and are derived from the template.yaml file used and the data entered on project creation" />
+		
       ),
     },
     {
@@ -111,18 +146,21 @@ export const makeIndexDataColumn = (
     {
       accessorKey: 'is_valid',
       cell: ({ cell }) => (cell.getValue() as boolean).toString(),
+	  
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Valid" />
+        // <DataTableColumnHeader column={column} title="Valid" />
+		<span title="Indicates if the values are valid (ToDo: check what determines this as true)">Valid</span>
       ),
-      filterFn: equalsBoolean,
+	  enableColumnFilter: false,
+      /*filterFn: equalsBoolean,
       meta: {
         filterVariant: 'boolean',
-      },
+      },*/
     },
     {
       accessorKey: 'location',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Location" />
+        <DataTableColumnHeader column={column} title="Location" tooltip="This is the full directory path to where data will be extracted" />
       ),
     },
     {
@@ -138,11 +176,13 @@ export const makeIndexDataColumn = (
       accessorKey: 'internal',
       cell: ({ cell }) => (cell.getValue() as boolean).toString(),
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Internal" />
+        // <DataTableColumnHeader column={column} title="Internal" />
+		<span title="Indicates if the project is internal to APPN">Internal</span>
       ),
-      meta: {
+	  enableColumnFilter: false,
+      /*meta: {
         filterVariant: 'boolean',
-      },
+      },*/
     },
     {
       accessorKey: 'researcherName',

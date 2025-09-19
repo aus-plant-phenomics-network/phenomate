@@ -24,6 +24,39 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s. - %(name)s - %(levelname)s - %(message)s',
+            'datefmt':'%Y-%m day %d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'celery_shared.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+        'celery': {
+            'handlers': ['console', 'file'],
+            'propagate': True,
+        },
+    },
+}
+
+# from logging.config import dictConfig
+# dictConfig(LOGGING)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 

@@ -226,13 +226,15 @@ export function DebouncedInput({
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
-  column: Column<TData, TValue>
-  title: string
+  column: Column<TData, TValue>;
+  title: string;
+  tooltip?: string;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
+  tooltip,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   const headerTitle = column.getCanSort() ? (
@@ -244,7 +246,7 @@ export function DataTableColumnHeader<TData, TValue>({
             size="sm"
             className="data-[state=open]:bg-accent h-9"
           >
-            <span>{title}</span>
+            <span title={tooltip}>{title}</span>
             {column.getIsSorted() === 'desc' ? (
               <ArrowDown />
             ) : column.getIsSorted() === 'asc' ? (

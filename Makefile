@@ -47,14 +47,14 @@ install-uv:                                         ## Install latest version of
 .PHONY: install-backend-dev
 install-backend-dev: destroy clean                  ## Install the project, dependencies, and pre-commit for local development
 	@echo "${INFO} Starting fresh installation..."
-	@uv python pin 3.12 >/dev/null 2>&1
+	@uv python pin 3.11 >/dev/null 2>&1
 	@uv venv >/dev/null 2>&1
 	@uv sync --all-extras --dev --group analysis
 
 .PHONY: install-backend
 install-backend: destroy clean						## Install backend - for docker
 	@echo "${INFO} Starting fresh installation..."
-	@uv python pin 3.12 >/dev/null 2>&1
+	@uv python pin 3.11 >/dev/null 2>&1
 	@uv pip install --system --no-cache -r pyproject.toml
 
 .PHONY: install-frontend
@@ -163,7 +163,9 @@ run-server:											## Start local django server for debugging
 	@uv run manage.py runserver
 
 .PHONY: run-celery
-run-celery: 										## Start celery server
+
+# loglevel can be overriden in file: backend\settings.py 
+run-celery: 										## Start celery server 
 	@uv run celery -A backend worker --loglevel=info --concurrency=4
 
 .PHONY: clear-db

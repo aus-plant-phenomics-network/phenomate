@@ -39,7 +39,7 @@ function AddProjectPanelButton() {
     <Link to="/project/create">
       <Button variant="outline">
         <Plus />
-        Add
+        Create Offload Project
       </Button>
     </Link>
   )
@@ -59,12 +59,13 @@ function DeleteSelectedButton({
     const selectedIds = selectedRows.map(item => item.original.id)
     mutation.mutate({ body: selectedIds })
   }
-  const disabled = selectedRows.length === 0
+  // const disabled = selectedRows.length === 0
+  const disabled = true
   return (
     <DeleteDialog
       asChild
-      contentTitle="Delete Selected Projects"
-      contentDescription="This action cannot be undone. This will permanently delete the selected projects and remove all data on the computer."
+      contentTitle="Remove Project Data"
+      contentDescription="This will remove imported data from the filesystem. N.B. It cannot be undone. "
       confirmHandler={confirmHandler}
     >
       <Button variant="outline" disabled={disabled}>
