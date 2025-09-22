@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import * as Tooltip from '@radix-ui/react-tooltip';
+import { TooltipInfo } from './TooltipInfo'
 import {
   Dialog,
   DialogTrigger,
@@ -55,9 +55,9 @@ function DeleteProjectDialog({
 
 
 
-interface OffloadOrQueueDialogProps {
-  rowNumber: string | number
-}
+//interface OffloadOrQueueDialogProps {
+//  rowNumber: string | number
+//}
 
 export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
   row,
@@ -93,41 +93,36 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 			  <DialogContent>
 			  
 				<DialogHeader>
-				  <DialogTitle>Choose an action for Row {rowNumber}</DialogTitle>
+				  <DialogTitle>Choose an action for project {rowNumber}</DialogTitle>
 				</DialogHeader>
 				
-				<Tooltip.Provider>
-			    <Tooltip.Root>
 				
 				<div className="flex flex-col gap-3 mt-4">
 				 
-				 <Tooltip.Trigger asChild>
+				 <TooltipInfo contentText="Select .bin data files for extraction">
 				 <button
 					className="w-full px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
 					onClick={() => handleSelect('Offload Data')}
 				  >
 					Select Offload Data
 				  </button>
+				   </TooltipInfo>
 				  
-				  </Tooltip.Trigger>
-			      <Tooltip.Content side="bottom" className="bg-gray-600 text-white p-2 rounded">
-					  Select Phenomate .bin data files for extraction
-				  </Tooltip.Content>
 	  
-				  
+				  <TooltipInfo contentText="View the queue of offload tasks for the currently selected project">
 				  <button
 					className="w-full px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition"
 					onClick={() => handleSelect('View Queue')}
-				  >
+				   >
 					View Queue
 				  </button>
+				  </TooltipInfo>
 				  
 				 <DeleteProjectDialog row={row} />
 				 </div>
 				 
 				 
-				</Tooltip.Root>
-				</Tooltip.Provider>  
+				
 				
 				
 				<DialogFooter>
