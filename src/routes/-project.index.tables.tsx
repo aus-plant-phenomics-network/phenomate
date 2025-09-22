@@ -14,6 +14,13 @@ import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { equalsBoolean, formatDT, inDateRange } from '@/lib/utils'
 import * as Tooltip from '@radix-ui/react-tooltip';
 
+
+import { OffloadOrQueueDialog } from "@/components/OffloadOrQueueDialog";
+
+
+
+
+
 function DeleteProjectDialog({
   row,
 }: {
@@ -73,7 +80,9 @@ function DeleteProjectDialog({
     </ActionDropdownMenu>
   )
 }*/
+
 type ProjectRow = Row<components['schemas']['ProjectListSchema']>;
+
 
 function ProjectAction({
   row,
@@ -86,7 +95,7 @@ function ProjectAction({
 	<Tooltip.Provider>
 	  <Tooltip.Root>
 		<Tooltip.Trigger asChild>
-
+        
 		<Link
 		  className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-blue-650 transition w-full text-center"
 		  to={`/project/${projectId}/offload`}
@@ -106,6 +115,8 @@ function ProjectAction({
 }
 
 
+
+
 export const makeIndexDataColumn = (
   timezone: string,
 ): Array<ColumnDef<components['schemas']['ProjectListSchema']>> => {
@@ -119,7 +130,9 @@ export const makeIndexDataColumn = (
     },
     {
       id: 'action',
-      cell: ({ row }) => <ProjectAction row={row} />,
+	  cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,
+	  // cell: ({ row }) => <OffloadOrQueueDialog  rowNumber={row.original.id.toString()} />,
+      //cell: ({ row }) => <ProjectAction row={row} />,
     },
     {
       accessorKey: 'name',
@@ -127,6 +140,12 @@ export const makeIndexDataColumn = (
 
         <DataTableColumnHeader column={column} title="Name" tooltip="These values will be the output directory name and are derived from the template.yaml file used and the data entered on project creation" />
 		
+      ),
+    },
+	{
+      accessorKey: 'location',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Location" tooltip="This is the full directory path to where data will be extracted" />
       ),
     },
     {
@@ -157,12 +176,7 @@ export const makeIndexDataColumn = (
         filterVariant: 'boolean',
       },*/
     },
-    {
-      accessorKey: 'location',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Location" tooltip="This is the full directory path to where data will be extracted" />
-      ),
-    },
+    
     {
       accessorKey: 'year',
       header: ({ column }) => (
