@@ -103,13 +103,26 @@ export function makeActivityColumns(
   timezone: string,
 ): Array<ColumnDef<components['schemas']['ActivitySchema']>> {
   return [
-    {
+  {
       id: 'select',
       header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
       cell: ({ row }) => <SelectRowCheckBox row={row} />,
       enableSorting: false,
       enableHiding: false,
     },
+     {
+      id: 'activityId',
+      header: 'activityid',
+      cell: ({ row, table }) => {
+        // Get current page index and page size from table state
+        const pageIndex = table.getState().pagination.pageIndex;
+        const pageSize = table.getState().pagination.pageSize;
+        // Calculate the row number
+        // return row.index + 1 + pageIndex * pageSize;
+		return row.id
+      },
+    },	
+    
     {
       id: 'action',
       cell: ({ row }) => <ActivityAction row={row} />,

@@ -14,11 +14,7 @@ import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
 import { equalsBoolean, formatDT, inDateRange } from '@/lib/utils'
 import * as Tooltip from '@radix-ui/react-tooltip';
 
-
 import { OffloadOrQueueDialog } from "@/components/OffloadOrQueueDialog";
-
-
-
 
 
 function DeleteProjectDialog({
@@ -115,12 +111,31 @@ function ProjectAction({
 }
 
 
+function removeLastDirectory(path: string): string {
+  const parts = path.split('/');
+  parts.pop(); // remove the last part
+  return parts.join('/');
+}
+
 
 
 export const makeIndexDataColumn = (
   timezone: string,
 ): Array<ColumnDef<components['schemas']['ProjectListSchema']>> => {
   return [
+  
+	{	 
+	  id: 'rowNumber',
+      header: 'pid',
+      cell: ({ row, table }) => {
+        /*// Get current page index and page size from table state
+        const pageIndex = table.getState().pagination.pageIndex;
+        const pageSize = table.getState().pagination.pageSize;
+        // Calculate the row number
+        return row.index + 1 + pageIndex * pageSize;*/
+		return row.original.id.toString()
+       },
+	},
     {
       id: 'select',
       header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
@@ -130,15 +145,13 @@ export const makeIndexDataColumn = (
     },
     {
       id: 'action',
-	  cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,
-	  // cell: ({ row }) => <OffloadOrQueueDialog  rowNumber={row.original.id.toString()} />,
-      //cell: ({ row }) => <ProjectAction row={row} />,
+	  cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,  // this is our green 'Select Action' button and it's dialog box
     },
     {
       accessorKey: 'name',
       header: ({ column }) => (
 
-        <DataTableColumnHeader column={column} title="Name" tooltip="These values will be the output directory name and are derived from the template.yaml file used and the data entered on project creation" />
+        <DataTableColumnHeader column={column} title="Name" tooltip="These are the output directory names which are derived from the template.yaml file used and the data entered on project creation" />
 		
       ),
     },
@@ -147,6 +160,9 @@ export const makeIndexDataColumn = (
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Location" tooltip="This is the full directory path to where data will be extracted" />
       ),
+	  cell: ({ cell }) => {
+		 return  removeLastDirectory(cell.getValue())
+	  },
     },
     {
       accessorKey: 'updated',

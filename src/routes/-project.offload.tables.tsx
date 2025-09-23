@@ -18,6 +18,17 @@ export const makeFileDataColumn = (
 ): Array<ColumnDef<ParsedFileData>> => {
   return [
     {
+      id: 'taskId',
+      header: '#',
+      cell: ({ row, table }) => {
+        // Get current page index and page size from table state
+        const pageIndex = table.getState().pagination.pageIndex;
+        const pageSize = table.getState().pagination.pageSize;
+        // Calculate the row number
+        return row.index + 1 + pageIndex * pageSize;
+      },
+    },	  
+    {
       id: 'select',
       header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
       cell: ({ row }) => <SelectRowCheckBox row={row} />,

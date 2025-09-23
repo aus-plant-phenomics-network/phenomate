@@ -444,11 +444,11 @@ export function DataTablePagination<TData>({
     <div className="flex items-center justify-between px-2">
       <div className="text-muted-foreground flex-1 text-sm">
         {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {table.getFilteredRowModel().rows.length} row(s) selected.&nbsp;
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
+          <p className="text-sm font-medium">&nbsp;Rows per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={value => {
@@ -459,7 +459,7 @@ export function DataTablePagination<TData>({
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 50, 100].map(pageSize => (
+              {[10, 50, 100, 1000].map(pageSize => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
