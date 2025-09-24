@@ -24,6 +24,7 @@ import type {
 } from '@aperturerobotics/chonky'
 import { $api } from '@/lib/api'
 import { usePhenomate } from '@/lib/context'
+import { TooltipInfo } from './TooltipInfo'
 
 // AddressBar
 export interface AddressBarProps {
@@ -205,12 +206,12 @@ export const BaseVFS = ({
     // modal = True will mess up Chonky's own popup window
     <Dialog modal={false}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="flex flex-col h-[600px] md:max-w-[600px]">
+      <DialogContent className="flex flex-col h-[600px] md:max-w-[900px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
           <AddressBar
-            className="px-2 py-1 w-1/2 rounded border-1"
+            className="px-2 py-1 w-1/1 rounded border-1"
             currentAddress={address}
             setCurrentAddress={setAddress}
           />
@@ -231,7 +232,7 @@ export const BaseVFS = ({
         <DialogFooter>
           <DialogClose asChild>
             <Button onClick={onClickHandler} disabled={disabled}>
-              Submit
+              Add To List
             </Button>
           </DialogClose>
         </DialogFooter>
@@ -256,9 +257,11 @@ export const VFS = ({
       dirOnly={dirOnly}
       addSelectedFiles={addSelectedFiles}
     >
-      <Button className="text-left justify-start" variant="outline">
+	  <TooltipInfo contentText="Select .bin data files for conversion">
+      <Button className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
         <p className="overflow-hidden">{triggerText}</p>
       </Button>
+	  </TooltipInfo>
     </BaseVFS>
   )
 }

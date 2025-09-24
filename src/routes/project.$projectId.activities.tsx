@@ -57,7 +57,7 @@ function DeleteSelectedButton({
     <DeleteDialog
       asChild
       contentTitle="Delete Selected Activities"
-      contentDescription="This action cannot be undone. This will permanently delete the selected activities and remove all data on the computer."
+      contentDescription="This will remove the selected activities from the table and backend log. This action cannot be undone."
       confirmHandler={confirmHandler}
     >
       <Button variant="outline" disabled={disabled}>

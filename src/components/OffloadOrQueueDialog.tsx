@@ -27,9 +27,12 @@ function DeleteProjectDialog({
   row: Row<components['schemas']['ProjectListSchema']>
 }) {
   const navigate = useNavigate()
+  
+  // This functionality runs in backend/project/api.py -> def delete_project/s()
   const mutation = $api.useMutation('delete', '/api/project/{project_id}', {
     onSuccess: () => navigate({ to: '/project', reloadDocument: true }),
   })
+  
   const confirmHandler = () => {
     mutation.mutate({
       params: { path: { project_id: row.original.id } },
@@ -39,14 +42,14 @@ function DeleteProjectDialog({
     <TooltipInfo contentText="Remove the selected project from the list">
     <DeleteDialog
       contentTitle="Delete Confirmation?"
-      contentDescription="This will remove the Project row
+      contentDescription="This will remove the Project row from the table
             (the project data will remain). The project directory can be re-imported at a later stage to add more data."
       confirmHandler={confirmHandler}
       asChild
     >
 	
      <button
-		className="w-full px-4 py-2 rounded-full bg-green-50 text-red-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
+		className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
 	  >
 		Remove Row
 	</button>
@@ -56,9 +59,6 @@ function DeleteProjectDialog({
   )
 }
 
-//interface OffloadOrQueueDialogProps {
-//  rowNumber: string | number
-//}
 
 interface OffloadOrQueueDialogProps {
   row: Row<components['schemas']['ProjectListSchema']>;
@@ -71,21 +71,19 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
  {
 	
   const navigate = useNavigate();
-  const rowNumber = row.original.id.toString()
-  const rowIndex  = row.index + 1
-  // const rowIndex_const = rowIndex;
+  const projectRowId = row.original.id.toString()
+  // const rowIndex  = row.index + 1
   const projectName = row.original.name.toString()	
 
   const handleSelect = (option: 'Offload Data' | 'View Queue') => {    
 	if (option === 'Offload Data') {
-        navigate({ to: `/project/${rowNumber}/offload` })
+        navigate({ to: `/project/${projectRowId}/offload` })
     } else if (option === 'View Queue') {
-	    navigate({ to: `/project/${rowNumber}/activities` })
+	    navigate({ to: `/project/${projectRowId}/activities` })
     } 
   }
 
   return (
-  
 			<Dialog>
 			  
 			  <DialogTrigger asChild>
@@ -101,13 +99,13 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 			  <DialogContent>
 			  
 				<DialogHeader>
-				  <DialogTitle className="text-med text-gray-500"> Choose an action for project (row: {rowIndex}):<br /> <br /> {projectName}</DialogTitle>
+				  <DialogTitle className="text-med text-gray-500"> Select operation for project (pid: {projectRowId}):</DialogTitle>
 				</DialogHeader>
 				
 				
 				<div className="flex flex-col gap-3 mt-4">
 				 
-				  <TooltipInfo contentText="Select .bin data files for extraction">
+				  <TooltipInfo contentText="Add data (.bin) to queue for extraction">
 				    <button
 					  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
 					  onClick={() => handleSelect('Offload Data')}

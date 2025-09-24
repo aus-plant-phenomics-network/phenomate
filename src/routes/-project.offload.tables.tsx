@@ -18,8 +18,15 @@ export const makeFileDataColumn = (
 ): Array<ColumnDef<ParsedFileData>> => {
   return [
     {
+      id: 'select',
+      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
+      cell: ({ row }) => <SelectRowCheckBox row={row} />,
+      enableSorting: false,
+      enableHiding: false,
+    },
+	{
       id: 'taskId',
-      header: '#',
+      header: 'taskid',
       cell: ({ row, table }) => {
         // Get current page index and page size from table state
         const pageIndex = table.getState().pagination.pageIndex;
@@ -28,13 +35,7 @@ export const makeFileDataColumn = (
         return row.index + 1 + pageIndex * pageSize;
       },
     },	  
-    {
-      id: 'select',
-      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
-      cell: ({ row }) => <SelectRowCheckBox row={row} />,
-      enableSorting: false,
-      enableHiding: false,
-    },
+    
     {
       id: 'remove',
       cell: ({ row }) => (

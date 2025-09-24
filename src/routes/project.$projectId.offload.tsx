@@ -23,6 +23,7 @@ import {
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
 import { TZSelect } from '@/components/TimezoneSelect'
+import { TooltipInfo } from '@/components/TooltipInfo'
 
 const queryOption = (projectId: number) =>
   $api.queryOptions('get', '/api/project/id/{project_id}', {
@@ -176,10 +177,11 @@ export default function OffloadProjectPage() {
                           aria-hidden
                         />
                         <VFS
+						  
                           addSelectedFiles={addSelectedFiles}
-                          triggerText="Offload Data"
+                          triggerText="Select Data"
                           title="Select Offload Data"
-                          description="Select File(s) or Folder(s) to offload to project"
+                          description="Select data file(s) or folder(s) to convert and save to project directory"
                           multiple={true}
                           dirOnly={false}
                         />
@@ -194,9 +196,11 @@ export default function OffloadProjectPage() {
               <form.Subscribe
                 selector={state => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-                  <Button type="submit" disabled={!canSubmit}>
-                    {isSubmitting ? '...' : 'Submit'}
+				<TooltipInfo contentText="Send the data conversion tasks to the processing queue">
+                  <Button type="submit" disabled={!canSubmit}  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
+                    {isSubmitting ? '...' : 'Submit to Queue'}
                   </Button>
+				  </TooltipInfo>
                 )}
               />
             </div>
@@ -221,17 +225,7 @@ export default function OffloadProjectPage() {
             <Trash2 />
             Remove Selected
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              table.toggleAllRowsSelected(false)
-              removeAllFiles()
-            }}
-          >
-            <Trash2 />
-            Remove All
-          </Button>
+          
           <TZSelect />
         </div>
         <RawDataTable table={table} />

@@ -123,9 +123,15 @@ export const makeIndexDataColumn = (
   timezone: string,
 ): Array<ColumnDef<components['schemas']['ProjectListSchema']>> => {
   return [
-  
+    {
+      id: 'select',
+      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
+      cell: ({ row }) => <SelectRowCheckBox row={row} />,
+      enableSorting: false,
+      enableHiding: true,
+    },
 	{	 
-	  id: 'rowNumber',
+	  id: 'projectId',
       header: 'pid',
       cell: ({ row, table }) => {
         /*// Get current page index and page size from table state
@@ -136,13 +142,6 @@ export const makeIndexDataColumn = (
 		return row.original.id.toString()
        },
 	},
-    {
-      id: 'select',
-      header: ({ table }) => <SelectPageRowsCheckBox table={table} />,
-      cell: ({ row }) => <SelectRowCheckBox row={row} />,
-      enableSorting: false,
-      enableHiding: true,
-    },
     {
       id: 'action',
 	  cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,  // this is our green 'Select Action' button and it's dialog box
@@ -178,7 +177,43 @@ export const makeIndexDataColumn = (
         filterVariant: 'date',
       },
     },
+    
+    
     {
+      accessorKey: 'year',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Year" />
+      ),
+      meta: {
+        filterVariant: 'range',
+      },
+    },
+    
+    {
+      accessorKey: 'researcherName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Researcher" />
+      ),
+    },
+    {
+      accessorKey: 'organisationName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Organisation" />
+      ),
+    },
+	{
+      accessorKey: 'internal',
+      cell: ({ cell }) => (cell.getValue() as boolean).toString(),
+      header: ({ column }) => (
+        // <DataTableColumnHeader column={column} title="Internal" />
+		<span title="Indicates if the project is internal to APPN">Internal</span>
+      ),
+	  enableColumnFilter: false,
+      /*meta: {
+        filterVariant: 'boolean',
+      },*/
+    },
+	{
       accessorKey: 'is_valid',
       cell: ({ cell }) => (cell.getValue() as boolean).toString(),
 	  
@@ -191,40 +226,6 @@ export const makeIndexDataColumn = (
       meta: {
         filterVariant: 'boolean',
       },*/
-    },
-    
-    {
-      accessorKey: 'year',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Year" />
-      ),
-      meta: {
-        filterVariant: 'range',
-      },
-    },
-    {
-      accessorKey: 'internal',
-      cell: ({ cell }) => (cell.getValue() as boolean).toString(),
-      header: ({ column }) => (
-        // <DataTableColumnHeader column={column} title="Internal" />
-		<span title="Indicates if the project is internal to APPN">Internal</span>
-      ),
-	  enableColumnFilter: false,
-      /*meta: {
-        filterVariant: 'boolean',
-      },*/
-    },
-    {
-      accessorKey: 'researcherName',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Researcher" />
-      ),
-    },
-    {
-      accessorKey: 'organisationName',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Organisation" />
-      ),
     },
   ]
 }

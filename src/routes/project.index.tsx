@@ -22,6 +22,7 @@ import { BaseVFS } from '@/components/VFS'
 import { TZSelect } from '@/components/TimezoneSelect'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { usePhenomate } from '@/lib/context'
+import { TooltipInfo } from '@/components/TooltipInfo'
 
 const queryOption = $api.queryOptions('get', '/api/project/')
 
@@ -36,15 +37,21 @@ const projectImportSchema = z.object({
 
 function AddProjectPanelButton() {
   return (
+    <TooltipInfo contentText="Add a project entry to the list">
     <Link to="/project/create">
-      <Button variant="outline">
+      <Button variant="outline" >
         <Plus />
-        Create Offload Project
+        Create Project
       </Button>
     </Link>
+	</TooltipInfo>
   )
 }
 
+
+// This function calls backend/projects/api.py -> delete_projects()
+// which has been modified to only remove the project entry in the table and
+// and the data on disk remains (def rm_projects() has been dissabled)
 function DeleteSelectedButton({
   table,
 }: {
@@ -59,18 +66,18 @@ function DeleteSelectedButton({
     const selectedIds = selectedRows.map(item => item.original.id)
     mutation.mutate({ body: selectedIds })
   }
-  // const disabled = selectedRows.length === 0
-  const disabled = true
+  const disabled = selectedRows.length === 0
+  // const disabled = true
   return (
     <DeleteDialog
       asChild
-      contentTitle="Remove Project Data"
-      contentDescription="This will remove imported data from the filesystem. N.B. It cannot be undone. "
+      contentTitle="Remove Project Row"
+      contentDescription="This will remove the selected project from the list below. Project data will remain on disk."
       confirmHandler={confirmHandler}
     >
       <Button variant="outline" disabled={disabled}>
         <Trash2 />
-        Delete
+        Remove Project
       </Button>
     </DeleteDialog>
   )
@@ -141,7 +148,7 @@ function ImportProjectPanelButton({
               >
                 <Button variant="outline">
                   <FolderUp />
-                  Import
+                  Import Project
                 </Button>
               </BaseVFS>
             </>
