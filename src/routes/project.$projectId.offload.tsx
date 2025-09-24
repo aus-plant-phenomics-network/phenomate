@@ -196,11 +196,11 @@ export default function OffloadProjectPage() {
               <form.Subscribe
                 selector={state => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-				<TooltipInfo contentText="Send the data conversion tasks to the processing queue">
+				
                   <Button type="submit" disabled={!canSubmit}  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
                     {isSubmitting ? '...' : 'Submit to Queue'}
                   </Button>
-				  </TooltipInfo>
+				
                 )}
               />
             </div>

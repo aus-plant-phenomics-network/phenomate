@@ -257,11 +257,11 @@ export const VFS = ({
       dirOnly={dirOnly}
       addSelectedFiles={addSelectedFiles}
     >
-	  <TooltipInfo contentText="Select .bin data files for conversion">
+	 
       <Button className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
         <p className="overflow-hidden">{triggerText}</p>
       </Button>
-	  </TooltipInfo>
+	
     </BaseVFS>
   )
 }
