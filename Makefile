@@ -19,6 +19,9 @@ OK := $(shell printf "$(GREEN)✓$(NC)")
 WARN := $(shell printf "$(YELLOW)⚠$(NC)")
 ERROR := $(shell printf "$(RED)✖$(NC)")
 
+LOCAL_PHENOMATE_CORE := ../phenomate-core
+LOCAL_APPM := ../appn-project-manager
+
 .PHONY: help
 help:                                               ## Display this help text for Makefile
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -102,6 +105,15 @@ lock:                                              ## Rebuild lockfiles from scr
 	@uv lock --upgrade >/dev/null 2>&1
 	@echo "${OK} Lockfiles updated"
 
+# Update the path to phenomate-core as needed
+.PHONY: install-local-phenomate-core
+install-local-phenomate-core:
+	uv pip install ${LOCAL_PHENOMATE_CORE}
+
+# Update the path to appn-project-manager as needed
+.PHONY: install-local-appm
+install-local-phenomate-core:
+	uv pip install ${LOCAL_APPM}
 
 # =============================================================================
 # Tests, Linting, Coverage
@@ -162,8 +174,9 @@ check-all: lint test-all coverage                  ## Run all linting, tests, an
 run-server:											## Start local django server for debugging
 	@uv run manage.py runserver
 
+# sudo systemctl status rabbitmq-server
+# sudo systemctl start rabbitmq-server
 .PHONY: run-celery
-
 # loglevel can be overriden in file: backend\settings.py 
 run-celery: 										## Start celery server 
 	@uv run celery -A backend worker --loglevel=info --concurrency=4

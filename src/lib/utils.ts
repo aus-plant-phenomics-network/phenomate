@@ -218,4 +218,10 @@ inDateRange.resolveFilterValue = (val: [any, any]) => {
   return [parsedMin, parsedMax] as const
 }
 
-export { equalsDate, equalsDateTime, inDateRange, equalsBoolean }
+function saveDirectory(whichdir: string, directory: string) {
+  localStorage.setItem(whichdir, JSON.stringify(directory));
+}
+
+
+
+export { equalsDate, equalsDateTime, inDateRange, equalsBoolean, saveDirectory }

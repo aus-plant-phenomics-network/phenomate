@@ -9,7 +9,7 @@ import { makeFileDataColumn } from './-project.offload.tables'
 import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
 import { $api } from '@/lib/api'
-import { VFS } from '@/components/VFS'
+import { VFS_GRN } from '@/components/VFS'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -176,14 +176,15 @@ export default function OffloadProjectPage() {
                           hidden
                           aria-hidden
                         />
-                        <VFS
-						  
+                        <VFS_GRN
+						  name_local_storage={field.name}
                           addSelectedFiles={addSelectedFiles}
                           triggerText="Select Data"
                           title="Select Offload Data"
                           description="Select data file(s) or folder(s) to convert and save to project directory"
                           multiple={true}
                           dirOnly={false}
+						  tooltip="Choose data for transfer and conversion"
                         />
                       </Fieldset>
                     </>

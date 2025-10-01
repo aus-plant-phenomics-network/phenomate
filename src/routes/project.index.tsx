@@ -18,7 +18,8 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { AlertMessage } from '@/components/Form'
-import { BaseVFS } from '@/components/VFS'
+// import { BaseVFS } from '@/components/VFS'
+import { VFS_GREY } from '@/components/VFS'
 import { TZSelect } from '@/components/TimezoneSelect'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { usePhenomate } from '@/lib/context'
@@ -52,7 +53,7 @@ function AddProjectPanelButton() {
 // This function calls backend/projects/api.py -> delete_projects()
 // which has been modified to only remove the project entry in the table and
 // and the data on disk remains (def rm_projects() has been dissabled)
-function DeleteSelectedButton({
+function RemoveSelectedButton({
   table,
 }: {
   table: Table<components['schemas']['ProjectListSchema']>
@@ -139,18 +140,18 @@ function ImportProjectPanelButton({
           }
           return (
             <>
-              <BaseVFS
-                addSelectedFiles={addSelectedFiles}
-                title="Import Project"
-                description="Select Project Folder to Import"
-                multiple={false}
-                dirOnly={true}
-              >
-                <Button variant="outline">
-                  <FolderUp />
-                  Import Project
-                </Button>
-              </BaseVFS>
+              <VFS_GREY
+				  addSelectedFiles={addSelectedFiles}
+				  triggerText={
+					"Import Project"
+				  }
+				  name_local_storage={"root"}
+				  title="Import Project"
+				  description="Select Project Folder to Import"
+				  multiple={false}
+				  dirOnly={true}
+				  tooltip="Select the directory of a previously created project to import it and add data"
+				/>
             </>
           )
         }}
@@ -179,7 +180,7 @@ function RouteComponent() {
         <AddProjectPanelButton />
         <ImportProjectPanelButton setError={setError} />
         <DataTableAdvancedSelectionOptions table={table} />
-        <DeleteSelectedButton table={table} />
+        <RemoveSelectedButton table={table} />
         <DataTableViewOptions table={table} />
         <TZSelect />
       </div>

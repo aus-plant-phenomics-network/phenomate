@@ -39,7 +39,7 @@ function DeleteProjectDialog({
     })
   }
   return (
-    <TooltipInfo contentText="Remove the selected project from the list">
+    
     <DeleteDialog
       contentTitle="Delete Confirmation?"
       contentDescription="This will remove the Project row from the table
@@ -47,15 +47,15 @@ function DeleteProjectDialog({
       confirmHandler={confirmHandler}
       asChild
     >
-	
+	<TooltipInfo contentText="Remove the selected project from the list">
      <button
 		className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
 	  >
 		Remove Row
 	</button>
-
+    </TooltipInfo>
     </DeleteDialog>
-	</TooltipInfo>
+
   )
 }
 
@@ -72,8 +72,6 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 	
   const navigate = useNavigate();
   const projectRowId = row.original.id.toString()
-  // const rowIndex  = row.index + 1
-  const projectName = row.original.name.toString()	
 
   const handleSelect = (option: 'Offload Data' | 'View Queue') => {    
 	if (option === 'Offload Data') {
@@ -105,7 +103,7 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 				
 				<div className="flex flex-col gap-3 mt-4">
 				 
-				  <TooltipInfo contentText="Add data (.bin) to queue for extraction">
+				  <TooltipInfo contentText="Add Phenomate data files to queue for extraction">
 				    <button
 					  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
 					  onClick={() => handleSelect('Offload Data')}
@@ -123,7 +121,7 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 				    </button>
 				  </TooltipInfo>
 				  
-				 <DeleteProjectDialog row={row} />
+				 {/* <DeleteProjectDialog row={row} /> */}
 				 
 				</div>
 

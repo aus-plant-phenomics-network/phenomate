@@ -7,12 +7,13 @@ import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
 import { $api } from '@/lib/api'
 import { Autocomplete } from '@/components/Autocomplete'
-import { VFS } from '@/components/VFS'
+import { VFS_GREY } from '@/components/VFS'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
+import { saveDirectory } from '@/lib/utils'
 
 export const Route = createFileRoute('/project/create')({
   component: CreateProjectPage,
@@ -92,17 +93,19 @@ export default function CreateProjectPage() {
                     <>
                       <Fieldset>
                         <Label htmlFor={field.name}>Output Directory Path</Label>
-                        <VFS
+                        <VFS_GREY
                           addSelectedFiles={addSelectedFiles}
                           triggerText={
                             !field.state.value
                               ? 'Select Project Base Directory'
                               : field.state.value
                           }
+						  name_local_storage={field.name}
                           title="Output Directory"
                           description="Where do you want to save your data?"
                           multiple={false}
                           dirOnly={true}
+						  tooltip="Select an output directory where output data will be stored"
                         />
                       </Fieldset>
                     </>
@@ -121,24 +124,26 @@ export default function CreateProjectPage() {
                     <>
                       <Fieldset>
                         <Label htmlFor={field.name}>Project Template</Label>
-                        <VFS
+                        <VFS_GREY
                           addSelectedFiles={addSelectedFiles}
                           triggerText={
                             !field.state.value
-                              ? 'JSON Template File'
+                              ? 'YAML Template File'
                               : field.state.value
                           }
+						  name_local_storage={field.name}
                           title="Select a template file"
-                          description="JSON template that describes the input data filename structure and output directory structure "
+                          description="YAML template that describes the input data filename structure and output directory structure (from APPM project) "
                           multiple={false}
                           dirOnly={false}
+						  tooltip="Choose a template.yaml file that describes the expected file name format and output directory structure"
                         />
                       </Fieldset>
                     </>
                   )
                 }}
               />
-			  {/* Summary Field */}
+			  {/* Project Name */}
               <form.Field
                 name="summary"
                 children={field => {

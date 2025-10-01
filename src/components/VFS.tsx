@@ -71,6 +71,7 @@ export const AddressBar = (
 
 // Content
 export interface BaseVFSProps {
+  name_local_storage: string
   title: string
   children: React.ReactNode
   description: string
@@ -81,6 +82,7 @@ export interface BaseVFSProps {
 
 export interface VFSProps extends Omit<BaseVFSProps, 'children'> {
   triggerText: string
+  tootip: string
 }
 
 export const useFolderChain = (currentAddress: string): Array<FileData> => {
@@ -135,14 +137,30 @@ export const handleSelect = (
   files: Array<FileData> | undefined,
   fileBrowserHandleRef: React.RefObject<FileBrowserHandle | null>,
   addSelectedFiles?: (files: Array<FileData>) => void,
+  storageKey?: string
 ) => {
+	
+	
   if (!fileBrowserHandleRef.current || !addSelectedFiles || !files)
     return undefined
+
+  
+  
   const fileBrowserHandle = fileBrowserHandleRef.current
   return () => {
+
     const currentSelection = fileBrowserHandle.getFileSelection()
     const selectedFile = files.filter(item => currentSelection.has(item.id))
+
     addSelectedFiles(selectedFile)
+	// always remove one level - file or directory
+	const pathOnly = selectedFile[0].id.split('/').slice(0, -1).join('/');
+
+	if (storageKey) {
+        localStorage.setItem(storageKey, pathOnly)
+		console.info('handleSelect is valid: ', storageKey, ' ; path: ', pathOnly)
+      }
+	  
     // Clean up - remove all selected file in Chonky's internal store
     fileBrowserHandle.setFileSelection(new Set())
   }
@@ -171,7 +189,8 @@ function handleDisabledState(
 /**
  * Renders Shadcn's `Dialog` components with Chonky `FullFileBrowser` in `DialogContent`.
  */
-export const BaseVFS = ({
+export const BaseVFS = ({ 
+  name_local_storage,
   title,
   children,
   description,
@@ -183,15 +202,48 @@ export const BaseVFS = ({
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
   // Chonky's files and folder chain query hook
-  const folderChain = useFolderChain(address)
+  // let folderChain = useFolderChain(address)
+  
+  // Reactive localStorage key based on field name
+  /*const [storageKey, setStorageKey] = useState('');
+
+  useEffect(() => {
+    if (storageKey) {
+      setStorageKey(`${name_local_storage}`);
+    }
+  }, [storageKey]);
+  */
+  // load current path for particular name field from local
+  // storage (if key is available)
+  /*let savedAddress = localStorage.getItem(name_local_storage);
+  if (! savedAddress) {
+      savedAddress = address
+   }*/
+   
+   let savedAddress = address
+   /*useEffect(() => {
+	   savedAddress = localStorage.getItem(storageKey)
+	   if (savedAddress) {
+		   setAddress(savedAddress)
+		 }
+   }, [storageKey])
+  
+  if (! savedAddress)
+	  savedAddress = address
+  */
+   
+  // let savedAddress = address
+  const folderChain = useFolderChain(savedAddress)
+  
   const queryResult = $api.useQuery('get', '/api/urls/', {
     params: {
       query: {
-        src: address,
+        src: savedAddress,
         dirOnly: dirOnly,
       },
     },
   })
+  
   // Select button disable state logic
   const [disabled, setDisabled] = useState<boolean>(true)
   const setDisabledState = handleDisabledState(multiple, setDisabled)
@@ -199,6 +251,7 @@ export const BaseVFS = ({
     queryResult.data,
     fileBrowserRef,
     addSelectedFiles,
+    name_local_storage
   )
   // Chonky FileHandling Logic
   const handleFileAction = useFileActionHandler(setAddress, setDisabledState)
@@ -212,7 +265,7 @@ export const BaseVFS = ({
           <DialogDescription>{description}</DialogDescription>
           <AddressBar
             className="px-2 py-1 w-1/1 rounded border-1"
-            currentAddress={address}
+            currentAddress={savedAddress}
             setCurrentAddress={setAddress}
           />
         </DialogHeader>
@@ -241,27 +294,110 @@ export const BaseVFS = ({
   )
 }
 
-export const VFS = ({
+export const VFS_GRN = ({
+  name_local_storage,
   title,
   triggerText,
   description,
   multiple,
   dirOnly,
   addSelectedFiles,
+  tooltip,
 }: VFSProps) => {
   return (
     <BaseVFS
+	  name_local_storage={name_local_storage}
       title={title}
       description={description}
       multiple={multiple}
       dirOnly={dirOnly}
       addSelectedFiles={addSelectedFiles}
     >
-	 
+	
       <Button className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
-        <p className="overflow-hidden">{triggerText}</p>
+        <TooltipInfo contentText={tooltip}>
+		  <p className="overflow-hidden">{triggerText}</p>
+		</TooltipInfo>
       </Button>
 	
     </BaseVFS>
   )
 }
+
+
+export const VFS_GREY = ({
+  name_local_storage,
+  title,
+  triggerText,
+  description,
+  multiple,
+  dirOnly,
+  addSelectedFiles,
+  tooltip,
+}: VFSProps) => {
+  return (
+    
+    <BaseVFS
+	  name_local_storage={name_local_storage}
+      title={title}
+      description={description}
+      multiple={multiple}
+      dirOnly={dirOnly}
+      addSelectedFiles={addSelectedFiles}
+    >
+     
+      <Button className="w-full px-4 py-2 rounded-half bg-grey-50 text-grey-600 border border-grey-200 hover:bg-grey-100 shadow-sm transition" >
+        <TooltipInfo contentText={tooltip}>
+		  <p className="overflow-hidden">{triggerText}</p>
+		</TooltipInfo>
+      </Button>
+	   
+    </BaseVFS>
+   
+  )
+}
+
+
+/*export const VFS_GREY = ({
+  name_local_storage,
+  title,
+  triggerText,
+  description,
+  multiple,
+  dirOnly,
+  addSelectedFiles,
+  tooltip,
+}: VFSProps) => {
+  const [isOpen, setIsOpen] = useState(false); // controls visibility
+
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  return (
+    <>
+      <Button
+        className="w-full px-4 py-2 rounded-half bg-grey-50 text-grey-600 border border-grey-200 hover:bg-grey-100 shadow-sm transition"
+        onClick={handleOpen}
+      >
+        <TooltipInfo contentText={tooltip}>
+          <p className="overflow-hidden">{triggerText}</p>
+        </TooltipInfo>
+      </Button>
+
+      {isOpen && (
+        <BaseVFS
+          name_local_storage={name_local_storage}
+          title={title}
+          description={description}
+          multiple={multiple}
+          dirOnly={dirOnly}
+          addSelectedFiles={addSelectedFiles}
+        >
+
+        </BaseVFS>
+      )}
+    </>
+  );
+};
+*/
