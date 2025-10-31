@@ -22,6 +22,9 @@ export const Route = createFileRoute('/project/create')({
 const projectCreateSchema = z.object({
   year: z.int().gte(1000),
   summary: z.string().max(50).min(1),
+  project: z.string().max(50).min(1),
+  site: z.string().max(50).min(1),
+  platform: z.string().max(50).min(1),
   root: z.string(),
   internal: z.boolean(),
   template: z.string().nullable(),
@@ -44,6 +47,9 @@ export default function CreateProjectPage() {
     {
       year: new Date().getFullYear(),
       summary: '',
+	  project: '',
+	  site: '',
+	  platform: '',
       root: '',
       internal: true,
       template: null,
@@ -143,14 +149,81 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
+			  {/* Platform Name */}
+              <form.Field
+                name="platform"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Platform Name*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Platform Name"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
 			  {/* Project Name */}
+              <form.Field
+                name="project"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Project Name*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Project Name"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
+			  {/* Site Name */}
+              <form.Field
+                name="site"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Site Name*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Site Name"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
+			  
+			  {/* Summary String */}
               <form.Field
                 name="summary"
                 children={field => {
                   return (
                     <>
                       <Fieldset>
-                        <Label htmlFor={field.name}>Project Name*</Label>
+                        <Label htmlFor={field.name}>Project Summary*</Label>
                         <Input
                           type="text"
                           id={field.name}
@@ -262,7 +335,7 @@ export default function CreateProjectPage() {
                 }}
               />
 
-              {/* End of form */}
+            {/* End of form */}
             </div>
             {/* Form submit button */}
             <div className="flex justify-end px-6 py-4">

@@ -112,7 +112,7 @@ install-local-phenomate-core:
 
 # Update the path to appn-project-manager as needed
 .PHONY: install-local-appm
-install-local-phenomate-core:
+install-local-appm:
 	uv pip install ${LOCAL_APPM}
 
 # =============================================================================
@@ -190,9 +190,11 @@ clear-db:											## Remove current db session and load bootstrap data
 .PHONY:
 admin:												## Create admin username admin
 	@uv run manage.py createsuperuser --username admin
+
 .PHONY: run-ui
 run-ui:												## Run local ui server for development
 	npm run dev
+	
 .PHONY: run-docker									## Docker compose up and kill existing ports
 run-docker:
 	@kill -9 $$(lsof -ti:5432) 2>/dev/null || echo "No process found on port 5432"

@@ -10,6 +10,10 @@ from phenomate_core import get_preprocessor
 from backend.activity.models import Activity
 from celery import shared_task
 
+from appm.utils import get_logger
+
+shared_logger = get_logger('django')
+
 
 @shared_task
 def remove_task(log_pk: int) -> None:
@@ -26,6 +30,7 @@ def preprocess_task(log_pk: int) -> int:
     try:
         src = Path(log.filename)
         dst = Path(log.target)
+        shared_logger.info(f'Phenomate: preprocess_task():project.location : {log.project.location}')
         manager = ProjectManager.load_project(log.project.location)
         name = src.name
         components = manager.match(name)
@@ -67,9 +72,11 @@ def copy_task(log_pk: int) -> int:
     try:
         # If file can be parsed -> put to the correct location and initiate preprocessing
         dst_path = manager.copy_file(src)
+        shared_logger.info(f'Phenomate: copy_task() dst_path : {dst_path}')
         file_path = dst_path / name
         log.status = Activity.StatusChoices.COMPLETED
         log.target = str(dst_path.absolute())
+        shared_logger.info(f'Phenomate: copy_task():log.target : {log.target}')
         # Queue next task
         next_log = Activity.objects.create(
             activity=Activity.ActivityChoices.PREPROCESSED,

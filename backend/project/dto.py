@@ -27,6 +27,9 @@ class ProjectGetSchema(Schema):
 class ProjectCreateSchema(Schema):
     year: int
     summary: str
+    project: str
+    site: str
+    platform: str
     template: str | None = None
     internal: bool = True
     researcherName: str | None = None

@@ -10,6 +10,9 @@ from backend.researcher.models import Researcher
 class Project(models.Model):
     year = models.IntegerField()
     summary = models.CharField(max_length=50)
+    project = models.CharField(max_length=50, default="")
+    site = models.CharField(max_length=50, default="")
+    platform = models.CharField(max_length=50, default="phenomate")
     internal = models.BooleanField()
     researcher = models.ForeignKey(Researcher, on_delete=models.SET_NULL, null=True, blank=True)
     organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True)

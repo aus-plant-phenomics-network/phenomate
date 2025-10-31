@@ -24,6 +24,11 @@ if TYPE_CHECKING:
 router = Router()
 
 
+from appm.utils import get_logger
+
+shared_logger = get_logger('django')
+
+
 @router.get(
     "/",
     response=list[ProjectListSchema],
@@ -40,7 +45,9 @@ def list_projects(request: HttpRequest) -> list[Project]:
 )
 def get_project(request: HttpRequest, project_id: int) -> ProjectGetSchema:
     project = get_object_or_404(Project, pk=project_id)
+    shared_logger.info(f'Phenomate: get_project(): project.location : {project.location}')
     manager = ProjectManager.load_project(project.location)
+    shared_logger.info(f'Phenomate: get_project(): manager.root : {manager.root}')
     regex = {name: ext.js_regex for name, ext in manager.metadata.file.items()}
     return ProjectGetSchema(
         id=project.pk, location=project.location, is_valid=project.is_valid, regex=regex
@@ -64,10 +71,14 @@ def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
         else (None, None)
     )
     root = data.root if data.root else getattr(settings, "DEFAULT_ROOT_FOLDER", "/Project")
+    shared_logger.info(f'Phenomate: create_project(): root : {root}')
     manager = ProjectManager.from_template(
         root=root,
         year=data.year,
         summary=data.summary,
+        project=data.project,
+        site=data.site,
+        platform=data.platform,
         internal=data.internal,
         researcherName=researcher.name if researcher else None,
         organisationName=organisation.name if organisation else None,
@@ -76,6 +87,9 @@ def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
     project = Project.objects.create(
         year=data.year,
         summary=data.summary,
+        project=data.project,
+        site=data.site,
+        platform=data.platform,
         internal=data.internal,
         researcher=researcher,
         organisation=organisation,
@@ -88,6 +102,7 @@ def create_project(request: HttpRequest, data: ProjectCreateSchema) -> Project:
 @router.post("/load", response=ProjectListSchema)
 def load_project(request: HttpRequest, data: ProjectImportSchema) -> Project:
     manager = ProjectManager.load_project(data.project_path, data.metadata_path)
+    shared_logger.info(f'Phenomate: load_project(): manager.root : {manager.root}')
     if not Project.objects.filter(location=manager.location).exists():
         researcherName = manager.metadata.meta.researcherName
         researcher, rstatus = (
