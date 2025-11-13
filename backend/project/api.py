@@ -15,7 +15,7 @@ from backend.project.dto import (
     ProjectListSchema,
 )
 from backend.project.models import Project
-from backend.project.service import rm_project
+# from backend.project.service import rm_project
 from backend.researcher.models import Researcher
 
 if TYPE_CHECKING:
@@ -133,6 +133,7 @@ def load_project(request: HttpRequest, data: ProjectImportSchema) -> Project:
 )
 def delete_project(request: HttpRequest, project_id: int) -> None:
     p = get_object_or_404(Project, pk=project_id)
+    shared_logger.info(f'Phenomate: delete_project(): project : {p}')
     # Remove stored folder
     #if p.is_valid:
     #    rm_project(p.location)
@@ -143,6 +144,7 @@ def delete_project(request: HttpRequest, project_id: int) -> None:
 def delete_projects(request: HttpRequest, project_ids: list[int]) -> None:
     to_remove = set(project_ids)
     projects = [get_object_or_404(Project, pk=project_id) for project_id in project_ids]
+    shared_logger.info(f'Phenomate: delete_projects(): about to delete a number of projects: {len(projects)}')
     #for project in projects:
     #    if project.is_valid:
     #        rm_project(project.location)

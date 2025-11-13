@@ -23,10 +23,10 @@ class Activity(models.Model):
         "self", on_delete=models.SET_NULL, blank=True, null=True, related_name="children"
     )
     activity = models.CharField(choices=ActivityChoices, default=ActivityChoices.COPIED)
-    filename = models.CharField()
-    target = models.CharField(default="")
+    filename = models.CharField(max_length=2048)
+    target = models.CharField(max_length=2048, default="")
     status = models.CharField(choices=StatusChoices, default=StatusChoices.QUEUED)
-    error_log = models.CharField(default="")
+    error_log = models.CharField(max_length=2048, default="")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

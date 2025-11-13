@@ -14,6 +14,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+LOG_DIR = os.getenv("LOG_DIR", "/tmp/log/phenomate")
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # Celery settings
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@localhost")
@@ -23,33 +25,82 @@ CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "amqp://guest:guest@localhost
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
+CELERY_WORKER_HIJACK_ROOT_LOGGER = False    # prevent Celery from altering root logger
+CELERY_WORKER_REDIRECT_STDOUTS = True      # send print/stdout/stderr into logger
+CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = 'INFO'
+
+CELERY_WORKER_LOG_FORMAT = (
+    '%(asctime)s %(levelname)s %(name)s %(processName)s '
+    '[%(filename)s:%(lineno)d] %(message)s'
+)
+CELERY_WORKER_TASK_LOG_FORMAT = (
+    '%(asctime)s %(levelname)s %(name)s [task:%(task_name)s id:%(task_id)s] %(message)s'
+)
+
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(asctime)s. - %(name)s - %(levelname)s - %(message)s',
-            'datefmt':'%Y-%m day %d %H:%M:%S'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s %(levelname)s %(name)s [%(process)d] %(module)s:%(lineno)d - %(message)s",
+        },
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        # Django app file
+        "django_file": {
+            "class": "logging.handlers.WatchedFileHandler",
+            "filename": os.path.join(LOG_DIR, "django.log"),
+            "formatter": "verbose",
+            "level": "INFO",
+        },
+        # Celery worker file
+        "celery_worker_file": {
+            "class": "logging.handlers.WatchedFileHandler",
+            "filename": os.path.join(LOG_DIR, "celery-worker.log"),
+            "formatter": "verbose",
+            "level": "INFO",
+        },
+        # Optional: task logger file (if you want separate)
+        "celery_task_file": {
+            "class": "logging.handlers.WatchedFileHandler",
+            "filename": os.path.join(LOG_DIR, "celery-tasks.log"),
+            "formatter": "verbose",
+            "level": "INFO",
+        },
+        # Errors (shared)
+        "errors_file": {
+            "class": "logging.handlers.WatchedFileHandler",
+            "filename": os.path.join(LOG_DIR, "errors.log"),
+            "formatter": "verbose",
+            "level": "WARNING",
         },
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+    "loggers": {
+        # Django app
+        "django": {
+            "handlers": ["django_file", "errors_file"],
+            "level": "INFO",
+            "propagate": False,
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'celery_shared.log'),
+        # Celery top-level logger
+        "celery": {
+            "handlers": ["celery_worker_file", "errors_file"],
+            "level": "INFO",
+            "propagate": False,
         },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
+        # Celery worker internals
+        "celery.worker": {
+            "handlers": ["celery_worker_file", "errors_file"],
+            "level": "INFO",
+            "propagate": False,
         },
-        'celery': {
-            'handlers': ['console', 'file'],
-            'propagate': True,
+        # Task loggers (when you use get_task_logger) #  was celery_task_file
+        "celery.task": {
+            "handlers": ["celery_task_file", "errors_file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
