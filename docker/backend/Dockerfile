@@ -22,8 +22,8 @@ RUN sh /uv-installer.sh && rm /uv-installer.sh
 # Ensure the installed binary is on the `PATH`
 ENV PATH="/root/.local/bin/:$PATH"
 
-# Create the app directory
-RUN mkdir /app
+# Create the app directory and logfile mount position directory
+RUN mkdir -p /app/phenomate/log
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1

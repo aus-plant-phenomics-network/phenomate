@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = os.getenv("LOG_DIR", "/tmp/log/phenomate")
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Celery settings
@@ -29,13 +31,6 @@ CELERY_WORKER_HIJACK_ROOT_LOGGER = False    # prevent Celery from altering root 
 CELERY_WORKER_REDIRECT_STDOUTS = True      # send print/stdout/stderr into logger
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = 'INFO'
 
-CELERY_WORKER_LOG_FORMAT = (
-    '%(asctime)s %(levelname)s %(name)s %(processName)s '
-    '[%(filename)s:%(lineno)d] %(message)s'
-)
-CELERY_WORKER_TASK_LOG_FORMAT = (
-    '%(asctime)s %(levelname)s %(name)s [task:%(task_name)s id:%(task_id)s] %(message)s'
-)
 
 
 LOGGING = {
@@ -43,6 +38,9 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
+            "format": "%(asctime)s %(levelname)s %(name)s [%(process)d] %(module)s:%(lineno)d - %(message)s",
+        },
+        "task": {
             "format": "%(asctime)s %(levelname)s %(name)s [%(process)d] %(module)s:%(lineno)d - %(message)s",
         },
         "simple": {"format": "%(levelname)s %(message)s"},
@@ -53,21 +51,21 @@ LOGGING = {
             "class": "logging.handlers.WatchedFileHandler",
             "filename": os.path.join(LOG_DIR, "django.log"),
             "formatter": "verbose",
-            "level": "INFO",
+            "level": LOG_LEVEL,
         },
         # Celery worker file
         "celery_worker_file": {
             "class": "logging.handlers.WatchedFileHandler",
             "filename": os.path.join(LOG_DIR, "celery-worker.log"),
             "formatter": "verbose",
-            "level": "INFO",
+            "level": LOG_LEVEL,
         },
         # Optional: task logger file (if you want separate)
         "celery_task_file": {
             "class": "logging.handlers.WatchedFileHandler",
-            "filename": os.path.join(LOG_DIR, "celery-tasks.log"),
-            "formatter": "verbose",
-            "level": "INFO",
+            "filename": os.path.join(LOG_DIR, "celery-phenomate.log"),
+            "formatter": "task",
+            "level": LOG_LEVEL,
         },
         # Errors (shared)
         "errors_file": {
@@ -81,25 +79,25 @@ LOGGING = {
         # Django app
         "django": {
             "handlers": ["django_file", "errors_file"],
-            "level": "INFO",
+            "level": LOG_LEVEL,
             "propagate": False,
         },
         # Celery top-level logger
         "celery": {
             "handlers": ["celery_worker_file", "errors_file"],
-            "level": "INFO",
+            "level": LOG_LEVEL,
             "propagate": False,
         },
         # Celery worker internals
         "celery.worker": {
             "handlers": ["celery_worker_file", "errors_file"],
-            "level": "INFO",
+            "level": LOG_LEVEL,
             "propagate": False,
         },
         # Task loggers (when you use get_task_logger) #  was celery_task_file
         "celery.task": {
             "handlers": ["celery_task_file", "errors_file"],
-            "level": "INFO",
+            "level": LOG_LEVEL,
             "propagate": False,
         },
     },

@@ -24,9 +24,10 @@ if TYPE_CHECKING:
 router = Router()
 
 
-from appm.utils import get_logger
+from appm.utils import get_task_logger
 
-shared_logger = get_logger('django')
+shared_logger = get_task_logger(__name__)
+# shared_logger = get_logger('django')
 
 
 @router.get(

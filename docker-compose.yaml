@@ -29,9 +29,10 @@ services:
       - 8000
     ports:
       - '8000:8000'
+    # N.B. directory  ${HOME}/phenomate/log must exist on the host machine
     volumes:
       - /:/hostfs
-      - /var/log/phenomate:/app/logs
+      - ${HOME}/phenomate/log:/app/phenomate/log
     depends_on:
       - rabbitmq
     command: >
@@ -41,8 +42,6 @@ services:
         python manage.py collectstatic --noinput &&
         gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
     env_file: .env.production
-    environment:
-      - LOG_DIR=/app/logs
 
   celery_worker:
     build:
@@ -50,16 +49,15 @@ services:
       dockerfile: docker/backend/Dockerfile
     container_name: celery_worker
     command: celery -A backend worker -l INFO --concurrency 4
+    # N.B. directory  ${HOME}/phenomate/log must exist on the host machine
     volumes:
       - /:/hostfs
-      - /var/log/phenomate:/app/logs
+      - ${HOME}/phenomate/log:/app/phenomate/log
     depends_on:
       - rabbitmq
       - backend
     env_file: .env.production
     restart: on-failure
-    environment:
-      - LOG_DIR=/app/logs
 
   frontend:
     build:
