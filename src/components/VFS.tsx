@@ -82,7 +82,7 @@ export interface BaseVFSProps {
 
 export interface VFSProps extends Omit<BaseVFSProps, 'children'> {
   triggerText: string
-  tootip: string
+  tooltip: string
 }
 
 export const useFolderChain = (currentAddress: string): Array<FileData> => {

@@ -5,6 +5,13 @@
 Building services:
 
 ```bash
+# stop containers and remove volume data from postgres volume
+docker compose down --volumes --remove-orphans
+
+# Rebuild all containers
+docker compose build --no-cache
+
+# start containers (or tru the sudo make run-docker command)
 docker compose up
 ```
 
@@ -32,6 +39,8 @@ Installing `rabbitmq`:
 
 ```bash
 make install-rabbitmq
+sudo systemctl status rabbitmq-server
+sudo systemctl start rabbitmq-server
 ```
 
 Installing developer environment:
@@ -46,12 +55,14 @@ Run the celery server:
 
 ```bash
 make run-celery
+# uv run celery -A backend worker --loglevel=info --concurrency=4
 ```
 
 Then open a new terminal and run:
 
 ```bash
 make run-server
+# uv run manage.py runserver
 ```
 
 Note that you may need to apply migration the first time running the server. To do this, you can do either:
@@ -70,7 +81,10 @@ Then open another terminal and run:
 
 ```bash
 make run-ui
+# npm run dev
 ```
+
+Now open a browser and point to localhost:3000
 
 To sync dto types between the frontend and backend, run
 

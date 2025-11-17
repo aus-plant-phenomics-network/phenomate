@@ -8,7 +8,7 @@ export default function Header() {
   const router = useRouter();
   const pathname = router.state.location.pathname;
 
-  const isProjectPage = pathname === '/project';
+  // const isProjectPage = pathname === '/project';
   
 
   console.log(pathname);

@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:17
     restart: always
     # set shared memory limit when using docker compose
     shm_size: 128mb
@@ -35,6 +35,7 @@ services:
       - ${HOME}/phenomate/log:/app/phenomate/log
     depends_on:
       - rabbitmq
+      - db
     command: >
       sh -c "
         python manage.py makemigrations project activity researcher organisation &&

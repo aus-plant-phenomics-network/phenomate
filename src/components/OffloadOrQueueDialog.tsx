@@ -13,51 +13,9 @@ import {
   DialogClose,
 } from './ui/dialog' // Adjust the import path as needed
 
-import type { ColumnDef, Row } from '@tanstack/react-table'
+import type { Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 
-import { $api } from '@/lib/api'
-import { DeleteDialog } from './DeleteDialog'
-
-
-
-function DeleteProjectDialog({
-  row,
-}: {
-  row: Row<components['schemas']['ProjectListSchema']>
-}) {
-  const navigate = useNavigate()
-  
-  // This functionality runs in backend/project/api.py -> def delete_project/s()
-  const mutation = $api.useMutation('delete', '/api/project/{project_id}', {
-    onSuccess: () => navigate({ to: '/project', reloadDocument: true }),
-  })
-  
-  const confirmHandler = () => {
-    mutation.mutate({
-      params: { path: { project_id: row.original.id } },
-    })
-  }
-  return (
-    
-    <DeleteDialog
-      contentTitle="Delete Confirmation?"
-      contentDescription="This will remove the Project row from the table
-            (the project data will remain). The project directory can be re-imported at a later stage to add more data."
-      confirmHandler={confirmHandler}
-      asChild
-    >
-	<TooltipInfo contentText="Remove the selected project from the list">
-     <button
-		className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
-	  >
-		Remove Row
-	</button>
-    </TooltipInfo>
-    </DeleteDialog>
-
-  )
-}
 
 
 interface OffloadOrQueueDialogProps {

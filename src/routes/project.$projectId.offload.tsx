@@ -23,7 +23,6 @@ import {
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
 import { TZSelect } from '@/components/TimezoneSelect'
-import { TooltipInfo } from '@/components/TooltipInfo'
 
 const queryOption = (projectId: number) =>
   $api.queryOptions('get', '/api/project/id/{project_id}', {
@@ -100,11 +99,6 @@ export default function OffloadProjectPage() {
     },
     [setSelectedFiles, form],
   )
-
-  const removeAllFiles = useCallback(() => {
-    setSelectedFiles([])
-    form.setFieldValue('src_files', [])
-  }, [setSelectedFiles, form])
 
   const removeSelectedFiles = useCallback(
     (files: Array<FileData>) => {

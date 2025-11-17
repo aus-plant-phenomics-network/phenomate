@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { FolderUp, Plus, Trash2 } from 'lucide-react'
+import { /*FolderUp,*/ Plus, Trash2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from '@tanstack/react-form'
 import { useMemo, useState } from 'react'
@@ -18,7 +18,6 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { AlertMessage } from '@/components/Form'
-// import { BaseVFS } from '@/components/VFS'
 import { VFS_GREY } from '@/components/VFS'
 import { TZSelect } from '@/components/TimezoneSelect'
 import { DeleteDialog } from '@/components/DeleteDialog'
@@ -48,7 +47,6 @@ function AddProjectPanelButton() {
 	</TooltipInfo>
   )
 }
-
 
 // This function calls backend/projects/api.py -> delete_projects()
 // which has been modified to only remove the project entry in the table and

@@ -1,6 +1,6 @@
-import { Link, useNavigate, useParams } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 
-import type { ColumnDef, Row } from '@tanstack/react-table'
+import type { ColumnDef, Row  } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 
 import {
@@ -8,107 +8,16 @@ import {
   SelectPageRowsCheckBox,
   SelectRowCheckBox,
 } from '@/components/Table'
-import { ActionDropdownMenu } from '@/components/ActionDropdownMenu'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { $api } from '@/lib/api'
-import { DeleteDialog } from '@/components/DeleteDialog'
+
 import { formatDT, inDateRange } from '@/lib/utils'
-import { ActivityOptionsDialog } from "@/components/ActivityOptionsDialog";
 
 
-/*
-function DeleteActivityDialog({
-  row,
-}: {
-  row: Row<components['schemas']['ActivitySchema']>
-}) {
-  const { projectId } = useParams({ strict: false })
-  const navigate = useNavigate()
-  const mutation = $api.useMutation(
-    'delete',
-    '/api/activity/activity/{activity_id}',
-    {
-      onSuccess: () =>
-        navigate({
-          to: '/project/$projectId/activities',
-          reloadDocument: true,
-          params: { projectId: projectId as string },
-        }),
-    },
-  )
-  const confirmHandler = () => {
-    mutation.mutate({
-      params: { path: { activity_id: row.original.id } },
-    })
-  }
-  return (
-    <DeleteDialog
-      contentTitle="Delete Confirmation?"
-      contentDescription="This action cannot be undone. This will permanently delete the
-            activity and remove all data on the computer."
-      confirmHandler={confirmHandler}
-      asChild
-    >
-      <DropdownMenuItem onSelect={e => e.preventDefault()}>
-        Delete Activity
-      </DropdownMenuItem>
-    </DeleteDialog>
-  )
+const ActivityButton = ({ row  }: {
+  row: Row<components['schemas']['ActivitySchema']>;
 }
-*/
-
-/*
-function ActivityAction(
-  props: Omit<React.ComponentProps<'button'>, 'children'> & {
-    row: Row<components['schemas']['ActivitySchema']>
-  },
-) {
-  const { projectId } = useParams({ strict: false })
-  const { row, ...rest } = props
-  const navigate = useNavigate()
-  const mutation = $api.useMutation(
-    'post',
-    '/api/activity/retry/{activity_id}',
-    {
-      onSuccess: () =>
-        navigate({
-          to: '/project/$projectId/activities',
-          reloadDocument: true,
-          params: { projectId: projectId as string },
-        }),
-    },
-  )
-  return (
-    <ActionDropdownMenu {...rest}>
-      <DropdownMenuItem>
-        <Link
-          className="w-full"
-          to="/activity/$activityId"
-          params={{ activityId: row.original.id.toString() }}
-        >
-          Details
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem
-        onSelect={() => {
-          console.log(`Rerun activity for ${row.original.id}`)
-          mutation.mutate({
-            params: { path: { activity_id: row.original.id } },
-          })
-        }}
-      >
-        Rerun Activity
-      </DropdownMenuItem>
-      <DeleteActivityDialog row={row} />
-    </ActionDropdownMenu>
-  )
-}
-*/
-
-
-const ActivityButton = ({ row  }) => {
+) => {
   const navigate = useNavigate();
-
+  
   const handleClick = () => {
     navigate({
       to: '/activity/$activityId',
@@ -143,10 +52,10 @@ export function makeActivityColumns(
      {
       id: 'activityId',
       header: 'activityid',
-      cell: ({ row, table }) => {
+      cell: ({ row /*, table*/ }) => {
         // Get current page index and page size from table state
-        const pageIndex = table.getState().pagination.pageIndex;
-        const pageSize = table.getState().pagination.pageSize;
+        // const pageIndex = table.getState().pagination.pageIndex;
+        // const pageSize = table.getState().pagination.pageSize;
         // Calculate the row number
         // return row.index + 1 + pageIndex * pageSize;
 		return row.id

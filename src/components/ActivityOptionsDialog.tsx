@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Link, useNavigate, useParams } from '@tanstack/react-router'
+import {  useNavigate, useParams } from '@tanstack/react-router'
 import { TooltipInfo } from './TooltipInfo'
 import {
   Dialog,
@@ -13,13 +13,13 @@ import {
   DialogClose,
 } from './ui/dialog' // Adjust the import path as needed
 
-import type { ColumnDef, Row } from '@tanstack/react-table'
+import type {  Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 
 import { $api } from '@/lib/api'
-import { DeleteDialog } from './DeleteDialog'
+// import { DeleteDialog } from './DeleteDialog'
 
-
+/*
 
 function DeleteActivityDialog({
   row,
@@ -64,7 +64,7 @@ function DeleteActivityDialog({
     </DeleteDialog>
 	</TooltipInfo>
   )
-}
+}*/
 
 
 interface ActivityOptionsDialogProps {
@@ -76,7 +76,7 @@ export const ActivityOptionsDialog: React.FC<ActivityOptionsDialogProps> = ({
   row,
 }) =>
  {
-	
+  const { projectId } = useParams({ strict: false })	
   const navigate = useNavigate();
   const activity_id = row.original.id.toString()
   // const rowIndex  = row.index + 1
