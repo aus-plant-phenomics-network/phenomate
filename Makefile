@@ -108,11 +108,15 @@ lock:                                              ## Rebuild lockfiles from scr
 # Update the path to phenomate-core as needed
 .PHONY: install-local-phenomate-core
 install-local-phenomate-core:
+	echo "Installing local phenomate-core from ${LOCAL_PHENOMATE_CORE}"
+	echo "ensure pyproject.toml [tool.uv.sources] section has phenomate-core path set correctly"
 	uv pip install ${LOCAL_PHENOMATE_CORE}
 
 # Update the path to appn-project-manager as needed
 .PHONY: install-local-appm
 install-local-appm:
+	echo "Installing local appm from ${LOCAL_APPM}"
+	echo "ensure pyproject.toml [tool.uv.sources] section has appm path set correctly"
 	uv pip install ${LOCAL_APPM}
 
 # =============================================================================
@@ -172,14 +176,14 @@ check-all: lint test-all coverage                  ## Run all linting, tests, an
 # -----------------------------------------------------------------------------
 .PHONY: run-server
 run-server:											## Start local django server for debugging
-	@uv run manage.py runserver
+	uv run manage.py runserver
 
 # sudo systemctl status rabbitmq-server
 # sudo systemctl start rabbitmq-server
 .PHONY: run-celery
 # loglevel can be overriden in file: backend\settings.py 
 run-celery: 										## Start celery server 
-	@uv run celery -A backend worker --loglevel=info --concurrency=4
+	uv run celery -A backend worker --loglevel=info --concurrency=4
 
 .PHONY: clear-db
 clear-db:											## Remove current db session and load bootstrap data

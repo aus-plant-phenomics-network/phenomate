@@ -15,56 +15,7 @@ import {
 
 import type {  Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
-
 import { $api } from '@/lib/api'
-// import { DeleteDialog } from './DeleteDialog'
-
-/*
-
-function DeleteActivityDialog({
-  row,
-}: {
-  row: Row<components['schemas']['ActivitySchema']>
-}) {
-  const { projectId } = useParams({ strict: false })
-  const navigate = useNavigate()
-  const mutation = $api.useMutation(
-    'delete',
-    '/api/activity/activity/{activity_id}',
-    {
-      onSuccess: () =>
-        navigate({
-          to: '/project/$projectId/activities',
-          reloadDocument: true,
-          params: { projectId: projectId as string },
-        }),
-    },
-  )
-  const confirmHandler = () => {
-    mutation.mutate({
-      params: { path: { activity_id: row.original.id } },
-    })
-  }
-  return (
-	<TooltipInfo contentText="Remove the selected activity from the list">
-    <DeleteDialog
-      contentTitle="Delete Confirmation?"
-      contentDescription="This will permanently delete the
-            activity from the list and related backend logs. This action cannot be undone."
-      confirmHandler={confirmHandler}
-      asChild
-    >
-	
-     <button
-		className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
-	  >
-		Delete Activity
-	</button>
-
-    </DeleteDialog>
-	</TooltipInfo>
-  )
-}*/
 
 
 interface ActivityOptionsDialogProps {
@@ -79,8 +30,6 @@ export const ActivityOptionsDialog: React.FC<ActivityOptionsDialogProps> = ({
   const { projectId } = useParams({ strict: false })	
   const navigate = useNavigate();
   const activity_id = row.original.id.toString()
-  // const rowIndex  = row.index + 1
-  // const projectName = row.original.name.toString()
   const mutation = $api.useMutation(
     'post',
     '/api/activity/retry/{activity_id}',

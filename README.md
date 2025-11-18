@@ -5,14 +5,17 @@
 Building services:
 
 ```bash
-# stop containers and remove volume data from postgres volume
-docker compose down --volumes --remove-orphans
+# stop containers ( add "--volumes --remove-orphans" to remove volume data from postgres volume
+docker compose down 
 
-# Rebuild all containers
+# Rebuild all containers if they need updating
 docker compose build --no-cache
+docker compose up -d --force-recreate --build
+# or, if only once image has changed 
+docker compose up -d --force-recreate --build celery_worker
 
-# start containers (or tru the sudo make run-docker command)
-docker compose up
+# start containers (or through the sudo make run-docker command)
+docker compose up -d
 ```
 
 Running the containers:
@@ -102,7 +105,7 @@ make clear-db
 
 ## Accessing Phenomate
 
-If you manage to set up Phenomate using either the docker version or the local version, you should be able to access Phenomate through the following URLs:
+Once Phenomate is set up using either the docker version or the local version, you should be able to access Phenomate through the following URLs:
 
 UI: `http://localhost:3000`
 
@@ -110,22 +113,45 @@ API: `http://localhost:8000/api/docs`
 
 ## Modifying Phenomate configurations
 
-Environment variables for Phenomate can be found in the `.env` files. The local environment uses the `.env` file while the docker environment uses the `.env.production` file.
+Environment variables for Phenomate can be found in the `.env` files. The local environment uses the `.env` file while the 
+docker environment uses the `.env.production` file.
+
+# Logging output and errors
+ 
+Log output is redirected to files using the ```Celery``` logging system via ```Django```. What this means is that the logging system is 
+configured in the ```backend/settings.py``` file.
+  
+For the docker application, the mapping of the logs is specified in the ```docker-compose.yaml``` ```volumes:``` section, 
+currently as  ```- ${HOME}/phenomate/log:```. This directory should exist on the host system (the system where the docker app is running)
+So make sure it is created:
+  
+```bash
+mkdir -p - ${HOME}/phenomate/log
+```
+
+In the development environment, the log files can be controlled through setting the environemt variable LOG_DIR :
+```
+export LOG_DIR=${HOME}/phenomate/log_dev
+```
+otherwise they will be fond in ```/tmp/log/phenomete```
 
 ### Mounting directory
 
-By default, both the backend and the celery services mount the host (local environment) file system as volume accessible at `/hostfs` within the service environment.
+By default, both the backend and the celery services mount the host (local environment) file system as volume accessible
+ at `/hostfs` within the service environment.
 
 ```yaml
 volumes:
   - /:/hostfs
 ```
 
-Check out the [official documentation](https://docs.docker.com/reference/compose-file/volumes/) to configure additional mounting points if needed.
+Check out the [official documentation](https://docs.docker.com/reference/compose-file/volumes/) to configure additional 
+mounting points if needed.
 
 ### Changing ports
 
-All services aside from `frontend` and `backend` use their default port values. If modification is made, make sure to update the corresponding environment variables in the dotenv file. This will allow the services to discover and communicate with one another.
+All services aside from `frontend` and `backend` use their default port values. If modification is made, make sure to 
+update the corresponding environment variables in the dotenv file. This will allow the services to discover and communicate with one another.
 
 ### Environment variables:
 
