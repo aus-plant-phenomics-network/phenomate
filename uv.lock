@@ -30,32 +30,15 @@ wheels = [
 
 [[package]]
 name = "appm"
-version = "0.1.0"
-source = { directory = "../appn-project-manager" }
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "ruamel-yaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "pydantic", specifier = ">=2.11.7" },
-    { name = "ruamel-yaml", specifier = ">=0.18.14" },
-    { name = "sphinx", marker = "extra == 'docs'" },
-]
-provides-extras = ["docs"]
-
-[package.metadata.requires-dev]
-analysis = [
-    { name = "bump-my-version", specifier = ">=0.21.0" },
-    { name = "mypy", specifier = ">=1.17.0" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "ruff", specifier = ">=0.12.5" },
-]
-dev = [
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pytest-cov", specifier = ">=6.2.1" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+sdist = { url = "https://files.pythonhosted.org/packages/25/b2/d404200ec32ea5e4fecb8cfab259985ee0c21c6ce6bcd8a986d27c56004d/appm-0.1.1.tar.gz", hash = "sha256:42a069d914dccd3c5cbe2999c1ffd89b3c8340259591964b6c372eb9c7bb90b0", size = 13909, upload-time = "2025-11-18T05:55:55.718Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/bc/9f2ca905047f231bcb6000f6e48c77b4fe04af5112bc3bf941d02f5a031c/appm-0.1.1-py3-none-any.whl", hash = "sha256:af46964c750f8ba195f4591866e1c6f9d089c18f0d9e82ad3d9812eb35f8e3ec", size = 15246, upload-time = "2025-11-18T05:55:54.274Z" },
 ]
 
 [[package]]
@@ -999,14 +982,14 @@ analysis = [
 
 [package.metadata]
 requires-dist = [
-    { name = "appm", directory = "../appn-project-manager" },
+    { name = "appm", specifier = ">=0.1.1" },
     { name = "celery", specifier = ">=5.5.3" },
     { name = "datatable", specifier = ">=1.0.0" },
     { name = "django", specifier = ">=5.2.4" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
     { name = "django-ninja", specifier = ">=1.4.3" },
     { name = "gunicorn", specifier = ">=23.0.0" },
-    { name = "phenomate-core", directory = "../phenomate-core" },
+    { name = "phenomate-core", specifier = ">=0.3.0" },
     { name = "psutil", specifier = ">=7.1.3" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.9" },
 ]
@@ -1023,7 +1006,7 @@ analysis = [
 [[package]]
 name = "phenomate-core"
 version = "0.3.0"
-source = { directory = "../phenomate-core" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google" },
     { name = "numpy" },
@@ -1034,31 +1017,9 @@ dependencies = [
     { name = "spectral" },
     { name = "tifffile", extra = ["all"] },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "google", specifier = ">=3.0.0" },
-    { name = "numpy", specifier = ">=2.3.1" },
-    { name = "opencv-python", specifier = ">=4.11.0.86" },
-    { name = "pillow", specifier = ">=11.3.0" },
-    { name = "protobuf", specifier = ">=6.31.1" },
-    { name = "pyturbojpeg", git = "https://github.com/lilohuang/PyTurboJPEG.git" },
-    { name = "spectral", specifier = ">=0.24" },
-    { name = "tifffile", extras = ["all"], specifier = ">=2025.9.30" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "bump-my-version", specifier = ">=1.2.1" },
-    { name = "grpcio-tools", specifier = ">=1.74.0" },
-    { name = "mypy", specifier = ">=1.17.0" },
-    { name = "mypy-protobuf", specifier = ">=3.6.0" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "pytest-cov", specifier = ">=6.2.1" },
-    { name = "ruff", specifier = ">=0.12.7" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
-    { name = "types-protobuf", specifier = ">=6.30.2.20250703" },
+sdist = { url = "https://files.pythonhosted.org/packages/1b/70/72404af98c75b96d1e6bd0797e8f7e75e3edd69df9058da3ee7f37f10f56/phenomate_core-0.3.0.tar.gz", hash = "sha256:796bd82f62c3be28eb25aae4b1b3fff7a1102f4503a468ed769ea7738403c935", size = 49609, upload-time = "2025-11-14T05:40:55.624Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/66/8d795cfb61147fbf63f10a5a442e473bcf09d72732804f04d9abb836a430/phenomate_core-0.3.0-py3-none-any.whl", hash = "sha256:a4bde8f0f28357d1816c9c77e2a306df0b76fa47e9ef44feda0bb943e5cb1391", size = 59844, upload-time = "2025-11-14T05:40:53.955Z" },
 ]
 
 [[package]]
@@ -1341,10 +1302,11 @@ wheels = [
 [[package]]
 name = "pyturbojpeg"
 version = "1.8.2"
-source = { git = "https://github.com/lilohuang/PyTurboJPEG.git#ef7660a0e738f49a33d0a144d1e573c7f4eabfcc" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/d2/e8/0cbd6e4f086a3b9261b2539ab5ddb1e3ba0c94d45b47832594d4b4607586/PyTurboJPEG-1.8.2.tar.gz", hash = "sha256:b7d9625bbb2121b923228fc70d0c2b010b386687501f5b50acec4501222e152b", size = 12694, upload-time = "2025-06-22T07:26:45.861Z" }
 
 [[package]]
 name = "pyyaml"
