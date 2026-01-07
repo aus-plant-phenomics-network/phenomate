@@ -7,6 +7,9 @@ from backend.activity.tasks import copy_task, preprocess_task, remove_task
 from backend.project.models import Project
 from celery import chain, group
 
+from celery.utils.log import get_task_logger
+shared_logger = get_task_logger(__name__)
+
 
 def copy_data(src: list[Path], project: Project) -> None:
     all_items: set[Path] = set()
@@ -27,12 +30,16 @@ def copy_data(src: list[Path], project: Project) -> None:
         elif item.is_dir():
             all_items.update(set(item.rglob("*")))
     for file in all_items:
-        log = Activity(
-            project=project,
-            filename=str(file.absolute()),
-            target=project.location,
-        )
-        queued_jobs.append(log)
+        if not file.is_dir(): 
+            log = Activity(
+                project=project,
+                filename=str(file.absolute()),
+                target=project.location,
+            )
+            queued_jobs.append(log)
+            shared_logger.info(f'Phenomate: copy_data(): File was added to the queue: {file}')
+        else:
+            shared_logger.info(f'Phenomate: copy_data(): Path is a directory, nothing to process: {file}')
     Activity.objects.bulk_create(failed_jobs)
     Activity.objects.bulk_create(queued_jobs)
     pipeline = group(

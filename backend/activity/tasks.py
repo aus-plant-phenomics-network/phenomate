@@ -20,7 +20,14 @@ shared_logger = get_task_logger(__name__)
 def remove_task(log_pk: int) -> None:
     log = Activity.objects.get(pk=log_pk)
     src = Path(log.filename)
-    src.unlink()
+    
+    shared_logger.info(f'Phenomate: remove_task(): src.suffix.lower(): {src.suffix.lower()}')
+    
+    if src.suffix.lower() != ".pcap" and src.suffix.lower() != ".25b" :
+        src.unlink()
+    # else:
+        
+        
     log.status = Activity.StatusChoices.COMPLETED
     log.save()
 
@@ -40,7 +47,10 @@ def preprocess_task(log_pk: int) -> int:
         processor_class = get_preprocessor(
             components["sensor"], cast("str", components.get("rest", ""))
         )
-        processor = processor_class(src)
+        
+        exten = components.get("rest", "")
+        
+        processor = processor_class(src, exten)
         processor.extract()
         processor.save(dst)
         log.status = Activity.StatusChoices.COMPLETED

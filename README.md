@@ -2,6 +2,10 @@
 
 ### Using docker
 
+First, you should set up the docker-compose.yaml file, which mostly requires specifying the 
+directory and creating it (on the host PC) the logging directory. If reinstalling the application
+you may also want to reinitialise the database storage volume (see below).
+
 Building services:
 
 ```bash
@@ -11,7 +15,7 @@ docker compose down
 # Rebuild all containers if they need updating
 docker compose build --no-cache
 docker compose up -d --force-recreate --build
-# or, if only once image has changed 
+# or, if only a particular image has changed 
 docker compose up -d --force-recreate --build celery_worker
 
 # start containers (or through the sudo make run-docker command)
@@ -42,8 +46,6 @@ Installing `rabbitmq`:
 
 ```bash
 make install-rabbitmq
-sudo systemctl status rabbitmq-server
-sudo systemctl start rabbitmq-server
 ```
 
 Installing developer environment:
@@ -54,9 +56,20 @@ make install-dev
 
 #### Running local phenomate application:
 
-Run the celery server:
+Set up the Celery server:
 
 ```bash
+# First make sure Rabbitmq has started
+sudo systemctl status rabbitmq-server
+# If it is not started then start it:
+sudo systemctl start rabbitmq-server
+
+# Install dependencies appn-project-manager and pheonmate-core
+# N.B. Ensure pyproject.toml has the [tool.uv.sources] section *uncommented*
+make install-local-phenomate-core
+make install-local-appm
+
+# Now run the Celery workers
 make run-celery
 # uv run celery -A backend worker --loglevel=info --concurrency=4
 ```
@@ -148,6 +161,22 @@ volumes:
 Check out the [official documentation](https://docs.docker.com/reference/compose-file/volumes/) to configure additional 
 mounting points if needed.
 
+# Removing and reinitialising the Docker volume database storage
+
+```
+# stop services and remove containers
+docker compose down
+
+# find and remove the compose-created pgdata volume
+# docker volume ls | grep pgdata
+docker volume rm phenomate_pgdata
+
+# recreate images/containers
+docker compose up -d --build
+# run migrations after containers are up
+docker compose exec backend python manage.py migrate
+```
+
 ### Changing ports
 
 All services aside from `frontend` and `backend` use their default port values. If modification is made, make sure to 
@@ -167,6 +196,7 @@ update the corresponding environment variables in the dotenv file. This will all
 - `POSTGRES_DB`: postgresql image parameters
 - `POSTGRES_HOST`: postgresql image parameters
 - `POSTGRES_PORT`: postgresql image parameters
+- `LOG_DIR` : the directory the the application should place the log files. Development and prodduction (e.g. docker) environments should specify different directories.
 
 ## Packages and Frameworks
 
