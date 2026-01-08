@@ -23,7 +23,8 @@ def remove_task(log_pk: int) -> None:
     
     shared_logger.info(f'Phenomate: remove_task(): src.suffix.lower(): {src.suffix.lower()}')
     
-    if src.suffix.lower() != ".pcap" and src.suffix.lower() != ".25b" :
+    
+    if src.suffix.lower() != ".pcap" and src.suffix.lower() != ".25b" and 'canbus' not in src.stem.lower() :
         src.unlink()
     # else:
         
@@ -44,12 +45,17 @@ def preprocess_task(log_pk: int) -> int:
         components = manager.match(name)
         if "sensor" not in components or components["sensor"] is None:
             raise ValueError("Missing component information for preprocessing")
+            
+        # Retrieve the correct phenomate-core preprocessing class from the calss factory
+        # The correct class is found by keyword found in the data file filename
+        # e.g. sensor = one of: jai, rs3, oak, [hyperspec, dark, white], canbus
         processor_class = get_preprocessor(
             components["sensor"], cast("str", components.get("rest", ""))
         )
         
         exten = components.get("rest", "")
         
+        # Instantiate a phenomate-core preprocessing object from the BasePreprocessor
         processor = processor_class(src, exten)
         processor.extract()
         processor.save(dst)
