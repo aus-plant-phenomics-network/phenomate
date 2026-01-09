@@ -23,11 +23,13 @@ def remove_task(log_pk: int) -> None:
     
     shared_logger.info(f'Phenomate: remove_task(): src.suffix.lower(): {src.suffix.lower()}')
     
+    CANBUS  = 'canbus' not in src.stem.lower()
+    RS3     = src.suffix.lower() != ".25b"
+    LIDAR3D = src.suffix.lower() != ".pcap"
+    IMU     = 'imu1' in src.stem.lower()
     
-    if src.suffix.lower() != ".pcap" and src.suffix.lower() != ".25b" and 'canbus' not in src.stem.lower() :
-        src.unlink()
-    # else:
-        
+    if LIDAR3D and RS3 and CANBUS and IMU :
+        src.unlink()  
         
     log.status = Activity.StatusChoices.COMPLETED
     log.save()
