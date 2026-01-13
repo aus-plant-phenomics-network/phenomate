@@ -17,6 +17,20 @@ class ProjectListSchema(Schema):
     root: str
 
 
+class ProjectPreviewSchema(Schema):
+    year: int
+    summary: str
+    project: str
+    site: str
+    platform: str
+    root: str
+    internal: bool
+    template: str | None
+    researcherName: str | None
+    organisationName: str | None
+
+
+
 class ProjectGetSchema(Schema):
     id: int
     location: str
@@ -25,16 +39,17 @@ class ProjectGetSchema(Schema):
 
 
 class ProjectCreateSchema(Schema):
+    root: str | None = None
     year: int
     summary: str
+    platform: str
     project: str
     site: str
-    platform: str
-    template: str | None = None
     internal: bool = True
     researcherName: str | None = None
     organisationName: str | None = None
-    root: str | None = None
+    template: str | None = None
+    
 
 
 class ProjectImportSchema(Schema):

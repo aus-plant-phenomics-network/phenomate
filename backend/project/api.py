@@ -13,6 +13,7 @@ from backend.project.dto import (
     ProjectGetSchema,
     ProjectImportSchema,
     ProjectListSchema,
+    ProjectPreviewSchema
 )
 from backend.project.models import Project
 # from backend.project.service import rm_project
@@ -150,3 +151,44 @@ def delete_projects(request: HttpRequest, project_ids: list[int]) -> None:
     #    if project.is_valid:
     #        rm_project(project.location)
     Project.objects.filter(pk__in=to_remove).delete()
+
+
+
+
+@router.post(
+    "/preview/",
+    response=str,
+    summary="Generate project location preview",
+)
+def preview_project(request: HttpRequest, payload: ProjectPreviewSchema) -> str:
+    """Generate a preview of the project location based on input parameters."""
+    # Create a temporary ProjectManager instance with the input data
+    # Adjust this based on how your ProjectManager (pm) is instantiated
+    # pm = None
+    try:
+        pm = ProjectManager.from_template(
+            root=payload.root,
+            year=payload.year,
+            summary=payload.summary,
+            platform=payload.platform,
+            project=payload.project,
+            site=payload.site,
+            internal=payload.internal,            
+            researcherName=payload.researcherName,
+            organisationName=payload.organisationName,
+            template=payload.template,
+        )
+    except Exception as e:
+        shared_logger.debug(f'Phenomate: preview_project(): Error creating ProjectManager: {e}')
+        pm = None
+    
+    if pm is None:
+        return "Insufficient input data for project preview. | Exists: False"
+    # Return the location string
+
+    Path_exists = 'False'
+    if pm.location.exists() :
+        Path_exists = 'True'
+
+
+    return str(pm.location) + ' | Exists: ' + Path_exists

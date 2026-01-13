@@ -2,7 +2,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
 import { $api } from '@/lib/api'
@@ -47,16 +47,16 @@ export default function CreateProjectPage() {
     {
       year: new Date().getFullYear(),
       summary: '',
-	  project: '',
-	  site: '',
-	  platform: '',
+	    project: '',
+	    site: '',
+	    platform: '',
       root: '',
       internal: true,
       template: null,
       researcherName: null,
       organisationName: null,
     }
-  const form = useForm({
+  const FormApi = useForm({
     defaultValues: defaultProjectCreateValues,
     validators: {
       onMount: projectCreateSchema,
@@ -71,6 +71,94 @@ export default function CreateProjectPage() {
     },
   })
 
+  // New preview component that calls the backend with current form inputs
+  function ProjectPreview({
+    input,
+  }: {
+    input: Partial<typeof defaultProjectCreateValues>
+  }) {
+    const [preview, setPreview] = useState<string>('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string>('')
+    const timerRef = useRef<number | null>(null)
+
+    const previewMutation = $api.useMutation('post', '/api/project/preview/', {
+      onSuccess(data) {
+        console.log('Preview received:', data)
+        setPreview(data)
+      },
+      onError(err) {
+        console.error('Preview error:', err)
+        setError((err as Error).message)
+      },
+    })
+
+    useEffect(() => {
+      console.log('Effect triggered with input:', input)
+      
+      if (timerRef.current) window.clearTimeout(timerRef.current)
+      timerRef.current = window.setTimeout(() => {
+        console.log('Debounce timeout fired, fetching preview')
+        if (!input) {
+          console.log('Input is empty, returning early')
+          return
+        }
+        
+        console.log('Sending preview request with input:', input)
+        setLoading(true)
+        setError('')
+        previewMutation.mutate({ body: input })
+      }, 500)
+
+      return () => {
+        if (timerRef.current) {
+          window.clearTimeout(timerRef.current)
+          timerRef.current = null
+        }
+      }
+    }, [
+      input.root,
+      input.template,
+      input.platform,
+      input.project,
+      input.site,
+      input.summary,
+      input.year,
+      input.internal,
+      input.researcherName,
+      input.organisationName,
+    ])
+
+    return (
+      <div className="px-6 py-4 mt-4 border-t">
+        {previewMutation.isPending ? (
+          <div>Loading preview...</div>
+        ) : error ? (
+          <div className="text-red-500">Preview error: {error}</div>
+        ) : preview ? (
+          <div className="space-y-2">
+            {(() => {
+              // split the incoming preview string into path and directory existence status
+              const [path, status] = preview.split('| Exists:').map(s => s.trim())
+              return (
+                <>
+                  <div>
+                    <span className="font-semibold">Directory:</span>{' '}
+                    <span className="font-mono">{path}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold">Exists:</span>{'    '}
+                    <span className="font-mono">{status}</span>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="flex flex-col gap-y-4 items-center h-full">
@@ -79,7 +167,7 @@ export default function CreateProjectPage() {
           onSubmit={e => {
             e.preventDefault()
             e.stopPropagation()
-            form.handleSubmit()
+            FormApi.handleSubmit()
           }}
         >
           <div className="flex flex-col gap-y-6 w-[410px] sm:w-[600px]">
@@ -88,7 +176,7 @@ export default function CreateProjectPage() {
             </h1>
             <div className="flex flex-col justify-center gap-y-4 px-6">
               {/* Root Field */}
-              <form.Field
+              <FormApi.Field
                 name="root"
                 children={field => {
                   const addSelectedFiles = (files: Array<FileData>) => {
@@ -119,7 +207,7 @@ export default function CreateProjectPage() {
                 }}
               />
 			  {/* Template Field */}
-              <form.Field
+              <FormApi.Field
                 name="template"
                 children={field => {
                   const addSelectedFiles = (files: Array<FileData>) => {
@@ -150,7 +238,7 @@ export default function CreateProjectPage() {
                 }}
               />
 			  {/* Platform Name */}
-              <form.Field
+              <FormApi.Field
                 name="platform"
                 children={field => {
                   return (
@@ -172,7 +260,7 @@ export default function CreateProjectPage() {
                 }}
               />
 			  {/* Project Name */}
-              <form.Field
+              <FormApi.Field
                 name="project"
                 children={field => {
                   return (
@@ -194,7 +282,7 @@ export default function CreateProjectPage() {
                 }}
               />
 			  {/* Site Name */}
-              <form.Field
+              <FormApi.Field
                 name="site"
                 children={field => {
                   return (
@@ -217,7 +305,7 @@ export default function CreateProjectPage() {
               />
 			  
 			  {/* Summary String */}
-              <form.Field
+              <FormApi.Field
                 name="summary"
                 children={field => {
                   return (
@@ -239,7 +327,7 @@ export default function CreateProjectPage() {
                 }}
               />
 			  {/* Year Field */}
-              <form.Field
+              <FormApi.Field
                 name="year"
                 children={field => {
                   return (
@@ -262,7 +350,7 @@ export default function CreateProjectPage() {
                 }}
               />              
               {/* Internal field */}
-              <form.Field
+              <FormApi.Field
                 name="internal"
                 children={field => {
                   return (
@@ -283,7 +371,7 @@ export default function CreateProjectPage() {
                 }}
               />
               {/* Researcher */}
-              <form.Field
+              <FormApi.Field
                 name="researcherName"
                 children={field => {
                   return (
@@ -309,7 +397,7 @@ export default function CreateProjectPage() {
                 }}
               />
               {/* Organisation */}
-              <form.Field
+              <FormApi.Field
                 name="organisationName"
                 children={field => {
                   return (
@@ -339,10 +427,10 @@ export default function CreateProjectPage() {
             </div>
             {/* Form submit button */}
             <div className="flex justify-end px-6 py-4">
-              <form.Subscribe
+              <FormApi.Subscribe
                 selector={state => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-                  <Button type="submit" disabled={!canSubmit}>
+                  <Button type="submit" disabled={!canSubmit} title="project directory will be created if it is not existing">
                     {isSubmitting ? '...' : 'Create Project'}
                   </Button>
                 )}
@@ -350,6 +438,49 @@ export default function CreateProjectPage() {
             </div>
           </div>
         </form>
+
+        {/* Subscribe to current form values and render the ProjectPreview */}
+        <FormApi.Subscribe
+          selector={state => [
+            state.values.root,
+            state.values.template,
+            state.values.platform,
+            state.values.project,
+            state.values.site,
+            state.values.summary,
+            state.values.year,
+            state.values.internal,
+            state.values.researcherName,
+            state.values.organisationName,
+          ]}
+          children={([
+            root,
+            template,
+            platform,
+            projectName,
+            site,
+            summary,
+            year,
+            internal,
+            researcherName,
+            organisationName,
+          ]) => (
+            <ProjectPreview
+              input={{
+                root,
+                year,    
+                summary,        
+                platform,
+                project: projectName,
+                site,
+                internal,
+                researcherName,
+                organisationName,
+                template,
+              }}
+            />
+          )}
+        />
       </div>
       {submitError ? (
         <AlertMessage className="w-fit absolute bottom-10 right-8">
