@@ -74,6 +74,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/project/preview/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate project location preview
+         * @description Generate a preview of the project location based on input parameters.
+         */
+        post: operations["backend_project_api_preview_project"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/urls/": {
         parameters: {
             query?: never;
@@ -262,18 +282,18 @@ export interface components {
         };
         /** ProjectCreateSchema */
         ProjectCreateSchema: {
+            /** Root */
+            root?: string | null;
             /** Year */
             year: number;
             /** Summary */
             summary: string;
+            /** Platform */
+            platform: string;
             /** Project */
             project: string;
             /** Site */
             site: string;
-            /** Platform */
-            platform: string;
-            /** Template */
-            template?: string | null;
             /**
              * Internal
              * @default true
@@ -283,8 +303,8 @@ export interface components {
             researcherName?: string | null;
             /** Organisationname */
             organisationName?: string | null;
-            /** Root */
-            root?: string | null;
+            /** Template */
+            template?: string | null;
         };
         /** ProjectGetSchema */
         ProjectGetSchema: {
@@ -305,6 +325,29 @@ export interface components {
             project_path: string;
             /** Metadata Path */
             metadata_path?: string | null;
+        };
+        /** ProjectPreviewSchema */
+        ProjectPreviewSchema: {
+            /** Year */
+            year: number;
+            /** Summary */
+            summary: string;
+            /** Project */
+            project: string;
+            /** Site */
+            site: string;
+            /** Platform */
+            platform: string;
+            /** Root */
+            root: string;
+            /** Internal */
+            internal: boolean;
+            /** Template */
+            template: string | null;
+            /** Researchername */
+            researcherName: string | null;
+            /** Organisationname */
+            organisationName: string | null;
         };
         /** DirFileItem */
         DirFileItem: {
@@ -505,6 +548,30 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    backend_project_api_preview_project: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProjectPreviewSchema"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
             };
         };
     };

@@ -8,6 +8,7 @@ dependencies = [
     "django>=5.2.4",
     "django-cors-headers>=4.7.0",
     "django-ninja>=1.4.3",
+    "drf-spectacular>=0.27.0",
     "phenomate-core>=0.4.0",
     "celery>=5.5.3",
     "appm>=0.2.0",
@@ -25,10 +26,10 @@ analysis = [
     "pre-commit>=4.2.0",
     "ruff>=0.12.4",
 ]
-
+ 
 # [tool.uv.sources]
-# phenomate-core = { path = "../phenomate-core" }
-# appm = { path = "../appn-project-manager" }
+#  phenomate-core = { path = "../phenomate-core" }
+#  appm = { path = "../appn-project-manager" }
 
 [tool.django-stubs]
 django_settings_module = "backend.settings"

@@ -146,7 +146,7 @@ In the development environment, the log files can be controlled through setting 
 ```
 export LOG_DIR=${HOME}/phenomate/log_dev
 ```
-otherwise they will be fond in ```/tmp/log/phenomete```
+otherwise they will be found in ```/tmp/log/phenomete```
 
 ### Mounting directory
 

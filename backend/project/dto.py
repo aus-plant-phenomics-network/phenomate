@@ -18,12 +18,12 @@ class ProjectListSchema(Schema):
 
 
 class ProjectPreviewSchema(Schema):
-    year: int
-    summary: str
-    project: str
-    site: str
-    platform: str
-    root: str
+    year: int | None = None
+    summary: str | None = None
+    project: str | None = None
+    site: str | None = None
+    platform: str | None = None
+    root: str | None = None
     internal: bool
     template: str | None
     researcherName: str | None

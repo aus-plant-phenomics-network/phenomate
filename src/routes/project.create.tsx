@@ -2,7 +2,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import type { FileData } from '@aperturerobotics/chonky'
 import type { components } from '@/lib/api/v1'
 import { $api } from '@/lib/api'
@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
 // import { saveDirectory } from '@/lib/utils'
+
+import { ProjectPreview } from '@/components/ProjectPreview'
 
 export const Route = createFileRoute('/project/create')({
   component: CreateProjectPage,
@@ -31,6 +33,9 @@ const projectCreateSchema = z.object({
   researcherName: z.string().nullable(),
   organisationName: z.string().nullable(),
 })
+
+
+
 
 export default function CreateProjectPage() {
   const navigate = useNavigate()
@@ -71,93 +76,7 @@ export default function CreateProjectPage() {
     },
   })
 
-  // New preview component that calls the backend with current form inputs
-  function ProjectPreview({
-    input,
-  }: {
-    input: Partial<typeof defaultProjectCreateValues>
-  }) {
-    const [preview, setPreview] = useState<string>('')
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string>('')
-    const timerRef = useRef<number | null>(null)
-
-    const previewMutation = $api.useMutation('post', '/api/project/preview/', {
-      onSuccess(data) {
-        console.log('Preview received:', data)
-        setPreview(data)
-      },
-      onError(err) {
-        console.error('Preview error:', err)
-        setError((err as Error).message)
-      },
-    })
-
-    useEffect(() => {
-      console.log('Effect triggered with input:', input)
-      
-      if (timerRef.current) window.clearTimeout(timerRef.current)
-      timerRef.current = window.setTimeout(() => {
-        console.log('Debounce timeout fired, fetching preview')
-        if (!input) {
-          console.log('Input is empty, returning early')
-          return
-        }
-        
-        console.log('Sending preview request with input:', input)
-        setLoading(true)
-        setError('')
-        previewMutation.mutate({ body: input })
-      }, 500)
-
-      return () => {
-        if (timerRef.current) {
-          window.clearTimeout(timerRef.current)
-          timerRef.current = null
-        }
-      }
-    }, [
-      input.root,
-      input.template,
-      input.platform,
-      input.project,
-      input.site,
-      input.summary,
-      input.year,
-      input.internal,
-      input.researcherName,
-      input.organisationName,
-    ])
-
-    return (
-      <div className="px-6 py-4 mt-4 border-t">
-        {previewMutation.isPending ? (
-          <div>Loading preview...</div>
-        ) : error ? (
-          <div className="text-red-500">Preview error: {error}</div>
-        ) : preview ? (
-          <div className="space-y-2">
-            {(() => {
-              // split the incoming preview string into path and directory existence status
-              const [path, status] = preview.split('| Exists:').map(s => s.trim())
-              return (
-                <>
-                  <div>
-                    <span className="font-semibold">Directory:</span>{' '}
-                    <span className="font-mono">{path}</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Exists:</span>{'    '}
-                    <span className="font-mono">{status}</span>
-                  </div>
-                </>
-              )
-            })()}
-          </div>
-        ) : null}
-      </div>
-    )
-  }
+  
 
   return (
     <>
@@ -388,7 +307,7 @@ export default function CreateProjectPage() {
                           data={
                             researcherQuery.data
                               ? researcherQuery.data.map(item => item.name)
-                              : []
+                              : ['default']
                           }
                         />
                       </Fieldset>
@@ -414,7 +333,7 @@ export default function CreateProjectPage() {
                           data={
                             orgQuery.data
                               ? orgQuery.data.map(item => item.name)
-                              : []
+                              : ['default']
                           }
                         />
                       </Fieldset>
@@ -467,16 +386,16 @@ export default function CreateProjectPage() {
           ]) => (
             <ProjectPreview
               input={{
-                root,
-                year,    
-                summary,        
-                platform,
-                project: projectName,
-                site,
-                internal,
-                researcherName,
-                organisationName,
-                template,
+                root: String(root ?? ""),
+                year: (year === null ? undefined : Number(year)),
+                summary: String(summary ?? ""),        
+                platform: String(platform ?? ""),
+                project:  String(projectName ?? ""),
+                site: String(site ?? "")  ,                
+                internal: Boolean(internal ?? true),
+                researcherName: String(researcherName ?? ""),
+                organisationName: String(organisationName ?? "")  ,
+                template  : String(template ?? "") === "null" ? null : String(template ?? ""),
               }}
             />
           )}

@@ -138,6 +138,7 @@ INSTALLED_APPS = [
     "backend.researcher.apps.ResearcherConfig",
     "backend.activity.apps.ActivityConfig",
     "corsheaders",
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
