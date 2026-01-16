@@ -79,6 +79,11 @@ function RouteComponent() {
   const { table } = useTableWithFilterSort({
     columns: activityColumns,
     data: data,
+	initialState: {
+    pagination: {
+      pageSize: 1000,
+    },
+  },
   })
   return (
     <>

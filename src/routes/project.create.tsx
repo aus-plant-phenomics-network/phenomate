@@ -78,14 +78,15 @@ export default function CreateProjectPage() {
     input: Partial<typeof defaultProjectCreateValues>
   }) {
     const [preview, setPreview] = useState<string>('')
-    const [loading, setLoading] = useState(false)
+    //const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string>('')
     const timerRef = useRef<number | null>(null)
 
     const previewMutation = $api.useMutation('post', '/api/project/preview/', {
       onSuccess(data) {
         console.log('Preview received:', data)
-        setPreview(data)
+
+         setPreview(data)
       },
       onError(err) {
         console.error('Preview error:', err)
@@ -105,9 +106,22 @@ export default function CreateProjectPage() {
         }
         
         console.log('Sending preview request with input:', input)
-        setLoading(true)
+        //setLoading(true)
         setError('')
-        previewMutation.mutate({ body: input })
+        // Ensure all required fields are present before sending
+        const completeInput = {
+          year: input.year ?? 2000,
+          summary: input.summary ?? '',
+          project: input.project ?? '',
+          site: input.site ?? '',
+          platform: input.platform ?? '',
+          root: input.root ?? '',
+          internal: input.internal ?? true,
+          template: input.template ?? null,
+          researcherName: input.researcherName ?? null,
+          organisationName: input.organisationName ?? null,
+        }
+        previewMutation.mutate({ body: completeInput })
       }, 500)
 
       return () => {
@@ -441,37 +455,26 @@ export default function CreateProjectPage() {
 
         {/* Subscribe to current form values and render the ProjectPreview */}
         <FormApi.Subscribe
-          selector={state => [
-            state.values.root,
-            state.values.template,
-            state.values.platform,
-            state.values.project,
-            state.values.site,
-            state.values.summary,
-            state.values.year,
-            state.values.internal,
-            state.values.researcherName,
-            state.values.organisationName,
-          ]}
-          children={([
+          selector={state => state.values}
+          children={({
             root,
             template,
             platform,
-            projectName,
+            project,
             site,
             summary,
             year,
             internal,
             researcherName,
             organisationName,
-          ]) => (
+          }) => (
             <ProjectPreview
               input={{
                 root,
-                year,    
-                summary,        
+                year,
+                summary,
                 platform,
-                project: projectName,
+                project,
                 site,
                 internal,
                 researcherName,

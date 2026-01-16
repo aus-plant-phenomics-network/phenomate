@@ -11,8 +11,12 @@ def list_dir(src: str, dirOnly: bool = False) -> list[DirFileItem]:
         raise ValueError(f"Path {src} is not a directory.")
     result: list[DirFileItem] = []
     for child in psrc.iterdir():
-        if not dirOnly or (dirOnly and child.is_dir()):
-            item = DirFileItem.from_path(child)
-            if item:
-                result.append(item)
+        try:
+            if not dirOnly or (dirOnly and child.is_dir()):
+                item = DirFileItem.from_path(child)
+                if item:
+                    result.append(item)
+        except PermissionError:
+            # Skip files/directories we don't have permission to access
+            continue
     return result

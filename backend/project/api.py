@@ -6,6 +6,8 @@ from appm import ProjectManager
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ninja import Router
+from pydantic import ValidationError
+import re
 
 from backend.organisation.models import Organisation
 from backend.project.dto import (
@@ -178,12 +180,24 @@ def preview_project(request: HttpRequest, payload: ProjectPreviewSchema) -> str:
             organisationName=payload.organisationName,
             template=payload.template,
         )
+    except ValidationError as e:
+        shared_logger.debug(f'Phenomate: preview_project(): Error creating ProjectManager: {e}')
+        match = re.search(r'invalid field:\s*(.*?)\s*Structure', str(e), re.IGNORECASE)
+        invalidfieldstr = ''
+        if match:
+            invalidfieldstr = match.group(1)          
+            if invalidfieldstr.endswith('.'):
+                invalidfieldstr = invalidfieldstr[:-1]
+
+        errorstr = f'Invalid input in naming_convention of template file: \'{invalidfieldstr}\'. \nTemplate file: {payload.template}. Please choose from the following list [\'year\', \'site\', \'researcherName\', \'platform\', \'internal\', \'summary\', \'project\', \'organisationName\']. Options are case sensitive.'
+        pm = None
     except Exception as e:
         shared_logger.debug(f'Phenomate: preview_project(): Error creating ProjectManager: {e}')
+        errorstr = f'{e}'
         pm = None
     
     if pm is None:
-        return "Insufficient input data for project preview. | Exists: False"
+        return f'{errorstr} Failed to return project preview directory. | Exists: False'
     # Return the location string
 
     Path_exists = 'False'

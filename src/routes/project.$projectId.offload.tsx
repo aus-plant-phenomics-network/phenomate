@@ -29,6 +29,7 @@ const queryOption = (projectId: number) =>
     params: { path: { project_id: projectId } },
   })
 
+
 export const Route = createFileRoute('/project/$projectId/offload')({
   component: OffloadProjectPage,
 })
@@ -148,7 +149,7 @@ export default function OffloadProjectPage() {
           }}
         >
           <h1 className="flex justify-center text-2xl font-bold items-center px-6 pb-4">
-            Offload Data
+            Transfer Data
           </h1>
           <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
             <div className="flex flex-col justify-center gap-y-4 px-6">
@@ -174,7 +175,7 @@ export default function OffloadProjectPage() {
 						  name_local_storage={field.name}
                           addSelectedFiles={addSelectedFiles}
                           triggerText="Select Data"
-                          title="Select Offload Data"
+                          title="Select Data to Transfer"
                           description="Select data file(s) or folder(s) to convert and save to project directory"
                           multiple={true}
                           dirOnly={false}
@@ -195,7 +196,7 @@ export default function OffloadProjectPage() {
                   <Button type="submit" disabled={!canSubmit}  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
                     {isSubmitting ? '...' : 'Submit to Queue'}
                   </Button>
-				
+				  
                 )}
               />
             </div>

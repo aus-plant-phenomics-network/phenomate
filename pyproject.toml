@@ -26,9 +26,9 @@ analysis = [
     "ruff>=0.12.4",
 ]
 
-# [tool.uv.sources]
-# phenomate-core = { path = "../phenomate-core" }
-# appm = { path = "../appn-project-manager" }
+[tool.uv.sources]
+  phenomate-core = { path = "../phenomate-core" }
+  appm = { path = "../appn-project-manager" }
 
 [tool.django-stubs]
 django_settings_module = "backend.settings"

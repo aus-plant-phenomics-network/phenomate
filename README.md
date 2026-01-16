@@ -116,6 +116,16 @@ In development mode, Phenomate uses sqlite as the db. To quickly purge all data 
 make clear-db
 ```
 
+### Recreating the Typescript interface to a changed backend API
+If adding or modifying the backend API data requirements the frontend code needs to be informed about the new types.
+
+```
+# N.B. firstly make sure the backend is running : uv run manage.py runserver
+
+# Run the openapi parser
+npx openapi-typescript http://localhost:8000/api/openapi.json -o ./src/lib/api/v1.d.ts
+```
+
 ## Accessing Phenomate
 
 Once Phenomate is set up using either the docker version or the local version, you should be able to access Phenomate through the following URLs:
@@ -123,6 +133,8 @@ Once Phenomate is set up using either the docker version or the local version, y
 UI: `http://localhost:3000`
 
 API: `http://localhost:8000/api/docs`
+
+You will need to have made an admin user first so you can log in
 
 ## Modifying Phenomate configurations
 
@@ -146,7 +158,7 @@ In the development environment, the log files can be controlled through setting 
 ```
 export LOG_DIR=${HOME}/phenomate/log_dev
 ```
-otherwise they will be fond in ```/tmp/log/phenomete```
+otherwise they will be found in ```/tmp/log/phenomete```
 
 ### Mounting directory
 
