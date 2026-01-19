@@ -50,7 +50,8 @@ function AddProjectPanelButton() {
 
 // This function calls backend/projects/api.py -> delete_projects()
 // which has been modified to only remove the project entry in the table and
-// and the data on disk remains (def rm_projects() has been dissabled)
+// and the project data on disk (instrument data files) remains 
+// (def rm_projects() has been dissabled)
 function RemoveSelectedButton({
   table,
 }: {

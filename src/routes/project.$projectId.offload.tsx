@@ -24,6 +24,63 @@ import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
 import { TZSelect } from '@/components/TimezoneSelect'
 
+import { useAppSelector } from '../store/hooks'
+
+
+
+const th: React.CSSProperties = {
+  textAlign: "left",
+  padding: "6px 8px",
+  borderBottom: "1px solid #ddd",
+  background: "#f7f7f7",
+  fontWeight: 600,
+};
+
+const td: React.CSSProperties = {
+  padding: "6px 8px",
+  borderBottom: "1px solid #eee",
+
+};
+
+
+
+
+function ReviewPage() {
+  const form = useAppSelector((state) => state.form)
+
+  return (
+    
+    <div>
+    <table aria-label="Project details" style={{ borderCollapse: "collapse", width: "100%" }}>
+      <thead>
+        <tr>
+          <th style={th}>Project Details:</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th style={th}>Project</th>
+          <td style={td}>{form.projectData}</td>
+        </tr>
+        <tr>
+          <th style={th}>Site</th>
+          <td style={td}>{form.siteData}</td>
+        </tr>
+        <tr>
+          <th style={th}>Platform</th>
+          <td style={td}>{form.platformData}</td>
+        </tr>
+        <tr>
+          <th style={th}>Directory</th>
+          <td style={td}>{form.projectDirectory}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  );
+}
+
+
 const queryOption = (projectId: number) =>
   $api.queryOptions('get', '/api/project/id/{project_id}', {
     params: { path: { project_id: projectId } },
@@ -196,11 +253,12 @@ export default function OffloadProjectPage() {
                   <Button type="submit" disabled={!canSubmit}  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
                     {isSubmitting ? '...' : 'Submit to Queue'}
                   </Button>
-				  
+
                 )}
               />
             </div>
           </div>
+          <ReviewPage />
         </form>
         {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
       </div>

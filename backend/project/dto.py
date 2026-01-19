@@ -7,6 +7,9 @@ class ProjectListSchema(Schema):
     id: int
     year: int
     summary: str
+    platform: str
+    project: str
+    site: str
     internal: bool
     researcherName: str | None
     organisationName: str | None

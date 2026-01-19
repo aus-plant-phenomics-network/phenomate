@@ -3,21 +3,16 @@ import { useRouter } from '@tanstack/react-router'
 import { TooltipInfo } from './TooltipInfo'
 
 
+
 export default function Header() {
   
   const router = useRouter();
   const pathname = router.state.location.pathname;
 
   // const isProjectPage = pathname === '/project';
-  
-
   console.log(pathname);
 
-
-
-  
   return (
-
     <header >
       <nav className="flex flex-col ">
 	   
@@ -28,10 +23,10 @@ export default function Header() {
 	    </TooltipInfo>
 		<nav className="flex flex-row ">
 		  <button className="w-full px-4 py-2 rounded-full bg-grey-50 text-grey-700 border border-grey-200 hover:bg-grey-100 shadow-sm transition" 
-		            onClick={() => window.history.back()}>← Back</button>
+		            onClick={() => router.history.back()}>← Back</button>
 		
 		  <button className="w-full px-4 py-2 rounded-full bg-grey-50 text-grey-700 border border-grey-200 hover:bg-grey-100 shadow-sm transition" 
-		            onClick={() => window.history.forward()}>Forward →</button>
+		            onClick={() => router.history.forward()}>Forward →</button>
 
       </nav>
 	  </nav>

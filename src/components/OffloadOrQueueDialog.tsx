@@ -16,22 +16,36 @@ import {
 import type { Row } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
 
+import { useAppDispatch } from '../store/hooks'
+import { setForm }        from '../store/projectFormSlice'
 
+// import { useSessionMirror } from '../utils/useSessionMirror'
 
 interface OffloadOrQueueDialogProps {
   row: Row<components['schemas']['ProjectListSchema']>;
 }
 
-
 export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
   row,
 }) =>
  {
-	
+
   const navigate = useNavigate();
   const projectRowId = row.original.id.toString()
+  const dispatch = useAppDispatch()
 
-  const handleSelect = (option: 'Offload Data' | 'View Queue') => {    
+  const handleSelect = (option: 'Offload Data' | 'View Queue') => {  
+	// useSessionMirror()
+	// Save to Redux
+	dispatch(
+		setForm({
+			projectData: row.original.project,
+			siteData: row.original.site,
+			platformData: row.original.platform,
+			projectDirectory: row.original.location,
+		})
+	)
+
 	if (option === 'Offload Data') {
         navigate({ to: `/project/${projectRowId}/offload` })
     } else if (option === 'View Queue') {
@@ -61,7 +75,7 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 				
 				<div className="flex flex-col gap-3 mt-4">
 				 
-				  <TooltipInfo contentText="Add Phenomate data files to queue for extraction">
+				  <TooltipInfo contentText="Add Phenomate data files to queue for transfer to project folder">
 				    <button
 					  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition"
 					  onClick={() => handleSelect('Offload Data')}

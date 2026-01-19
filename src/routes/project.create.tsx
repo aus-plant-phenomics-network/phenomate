@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
+
 // import { saveDirectory } from '@/lib/utils'
 
 export const Route = createFileRoute('/project/create')({
@@ -33,6 +34,7 @@ const projectCreateSchema = z.object({
 })
 
 export default function CreateProjectPage() {
+
   const navigate = useNavigate()
   const [submitError, setError] = useState<string>('')
   const mutation = $api.useMutation('post', '/api/project/', {
@@ -65,6 +67,8 @@ export default function CreateProjectPage() {
     canSubmitWhenInvalid: false,
     onSubmit: ({ value }) => {
       console.log(value)
+      // Save to Redux
+     
       mutation.mutate({
         body: value,
       })

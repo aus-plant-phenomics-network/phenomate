@@ -260,6 +260,12 @@ export interface components {
             year: number;
             /** Summary */
             summary: string;
+            /** Platform */
+            platform: string;
+            /** Project */
+            project: string;
+            /** Site */
+            site: string;
             /** Internal */
             internal: boolean;
             /** Researchername */
