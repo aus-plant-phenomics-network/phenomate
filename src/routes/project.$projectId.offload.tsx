@@ -31,18 +31,17 @@ import { useAppSelector } from '../store/hooks'
 const th: React.CSSProperties = {
   textAlign: "left",
   padding: "6px 8px",
-  borderBottom: "1px solid #ddd",
+
   background: "#f7f7f7",
   fontWeight: 600,
+  borderRadius: "8px",
 };
 
 const td: React.CSSProperties = {
   padding: "6px 8px",
   borderBottom: "1px solid #eee",
-
+  borderRadius: "8px",
 };
-
-
 
 
 function ReviewPage() {
@@ -52,26 +51,22 @@ function ReviewPage() {
     
     <div>
     <table aria-label="Project details" style={{ borderCollapse: "collapse", width: "100%" }}>
-      <thead>
-        <tr>
-          <th style={th}>Project Details:</th>
-        </tr>
-      </thead>
+
       <tbody>
         <tr>
-          <th style={th}>Project</th>
+          <th style={th}>Project:</th>
           <td style={td}>{form.projectData}</td>
         </tr>
         <tr>
-          <th style={th}>Site</th>
+          <th style={th}>Site:</th>
           <td style={td}>{form.siteData}</td>
         </tr>
         <tr>
-          <th style={th}>Platform</th>
+          <th style={th}>Platform:</th>
           <td style={td}>{form.platformData}</td>
         </tr>
         <tr>
-          <th style={th}>Directory</th>
+          <th style={th}>Directory:</th>
           <td style={td}>{form.projectDirectory}</td>
         </tr>
       </tbody>
@@ -191,6 +186,11 @@ export default function OffloadProjectPage() {
   const { table } = useTableWithFilterSort({
     columns: columns,
     data: formatSelectedFiles,
+	initialState: {
+    pagination: {
+      pageSize: 100,
+    },
+	},
   })
 
   return (
@@ -198,7 +198,7 @@ export default function OffloadProjectPage() {
       {/* Form */}
       <div className="flex flex-col gap-y-4 items-center min-w-[350px]">
         <form
-          id="project-create-form"
+          id="project-data-offload-form"
           onSubmit={e => {
             e.preventDefault()
             e.stopPropagation()

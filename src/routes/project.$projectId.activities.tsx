@@ -70,7 +70,10 @@ function DeleteSelectedButton({
 
 function RouteComponent() {
   const { projectId } = Route.useParams()
-  const { data } = useSuspenseQuery(queryOption(projectId))
+  const { data } = useSuspenseQuery({ ...queryOption(projectId),
+									refetchInterval: 3000,
+									refetchOnWindowFocus: true,
+									staleTime: 2000,})
   const { timezone } = usePhenomate()
   const activityColumns = useMemo(
     () => makeActivityColumns(timezone),

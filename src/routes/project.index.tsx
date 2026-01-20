@@ -90,7 +90,10 @@ function ImportProjectPanelButton({
 }) {
   const navigate = useNavigate()
   const mutation = $api.useMutation('post', '/api/project/load', {
-    onSuccess: () => navigate({ to: '/project', reloadDocument: true }),
+	onSuccess: (data) => {
+		console.log("Success:", data)
+		navigate({ to: '/project', reloadDocument: true })
+	  },
     onError(error) {
       console.log(error)
       setError((error as Error).message)
