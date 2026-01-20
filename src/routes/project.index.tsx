@@ -184,7 +184,7 @@ function RouteComponent() {
         <DataTableAdvancedSelectionOptions table={table} />
         <RemoveSelectedButton table={table} />
         <DataTableViewOptions table={table} />
-        <TZSelect />
+        
       </div>
       {/* Table and Pagination */}
       <RawDataTable table={table} />

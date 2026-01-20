@@ -15,7 +15,7 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { DeleteDialog } from '@/components/DeleteDialog'
-import { TZSelect } from '@/components/TimezoneSelect'
+// import { TZSelect } from '@/components/TimezoneSelect'
 import { usePhenomate } from '@/lib/context'
 
 const queryOption = (projectId: string) =>
@@ -103,7 +103,7 @@ function RouteComponent() {
         </Link>
         <DeleteSelectedButton table={table} projectId={projectId} />
         <DataTableViewOptions table={table} />
-        <TZSelect />
+        
       </div>
       <RawDataTable table={table} />
       <DataTablePagination table={table} />

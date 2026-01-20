@@ -22,7 +22,7 @@ import {
 } from '@/components/Table'
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
-import { TZSelect } from '@/components/TimezoneSelect'
+// import { TZSelect } from '@/components/TimezoneSelect'
 
 import { useAppSelector } from '../store/hooks'
 
@@ -53,15 +53,6 @@ const tdFull: React.CSSProperties = {
   // Optional: set a max width if your table isn't already constraining width:
   maxWidth: 500,
 };
-
-const tdInnerEllipsis: React.CSSProperties = {
-  whiteSpace: "nowrap",
-  overflow: "clip",
-  textOverflow: "ellipsis",
-  // Optional: set a max width if your table isn't already constraining width:
-  maxWidth: 500,
-};
-
 
 const cellScroll: React.CSSProperties = {
   overflowX: "auto",
@@ -330,7 +321,7 @@ export default function OffloadProjectPage() {
             <Trash2 />
             Remove Selected
           </Button>
-          <TZSelect />
+         
         </div>
            
           <RawDataTable table={table} />
