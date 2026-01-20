@@ -23,26 +23,25 @@ import {
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
 // import { TZSelect } from '@/components/TimezoneSelect'
-
 import { useAppSelector } from '../store/hooks'
 
 
 
-
+// Styles for the review table  
 const th: React.CSSProperties = {
   textAlign: "left",
   padding: "6px 8px",
   background: "#f7f7f7ff",
   fontWeight: 600,
   borderRadius: "8px",
-  maxWidth: 300,
+  maxWidth: "50%",
 };
 
 const td: React.CSSProperties = {
   padding: "6px 8px",
   borderBottom: "1px solid #eee",
   borderRadius: "8px",
-  maxWidth: 500,
+  maxWidth: "50%",
   // Ensure the column has a width constraint (via table layout or container width)
 };
 
@@ -51,7 +50,7 @@ const tdFull: React.CSSProperties = {
   overflow: "clip",
   textOverflow: "ellipsis",
   // Optional: set a max width if your table isn't already constraining width:
-  maxWidth: 500,
+  maxWidth: "50%",
 };
 
 const cellScroll: React.CSSProperties = {
@@ -65,12 +64,17 @@ function ReviewPage() {
   const form = useAppSelector((state) => state.form)
 
   return (
-    <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
+    
       <table
         aria-label="Project details"
-        className="table-fixed w-full border-separate border-spacing-0"
+        className="table-fixed w-full border-separate border-spacing-0 text-sm md:text-base"
         style={{ tableLayout: "fixed", width: "100%" }}
       >
+	  {/* 👇 Control column widths here */}
+      <colgroup>
+        <col style={{ width: "150px" }} /> {/* first column fixed at 200px */}
+        <col /> {/* second column takes remaining space */}
+      </colgroup>
         <tbody>
           <tr>
             <th style={th}>Project:</th>
@@ -106,11 +110,8 @@ function ReviewPage() {
           </tr>
         </tbody>
       </table>
-    </div>
   )
 }
-
-
 
 const queryOption = (projectId: number) =>
   $api.queryOptions('get', '/api/project/id/{project_id}', {
@@ -222,21 +223,14 @@ export default function OffloadProjectPage() {
   const { table } = useTableWithFilterSort({
     columns: columns,
     data: formatSelectedFiles,
-	initialState: {
-    pagination: {
-      pageSize: 100,
-    },
-	},
   })
 
   return (
-    <div className="flex flex-col xl:flex-row w-full gap-4 flex-grow-1 min-h-0">
+    <div className="flex flex-col xl:flex-row w-full gap-4 flex-grow-1 min-h-0 min-w-[1050px]">
       {/* Form */}
-      
-      <div className="flex flex-col gap-y-4 items-center min-w-[350px]">
-        
+      <div className="flex flex-col gap-y-4 items-center min-w-[450px]">
         <form
-          id="project-data-offload-form"
+          id="project-create-form"
           onSubmit={e => {
             e.preventDefault()
             e.stopPropagation()
@@ -291,22 +285,21 @@ export default function OffloadProjectPage() {
                   <Button type="submit" disabled={!canSubmit}  className="w-full px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 shadow-sm transition" >
                     {isSubmitting ? '...' : 'Submit to Queue'}
                   </Button>
-
+				  
                 )}
               />
+			  
             </div>
+			<ReviewPage />
           </div>
-
+		  
         </form>
-
-        <ReviewPage />
-        
+		
         {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
       </div>
-      
       {/* Display Table */}
-      <div className="flex flex-col flex-1 min-h-0 gap-y-4">
-        <div className="flex justify-end gap-x-2 p-2 shrink-0 z-10 bg-white">
+      <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto gap-y-4 min-w-[650px]">
+        <div className="flex justify-end gap-x-2 p-2">
           <DataTableAdvancedSelectionOptions table={table} />
           <Button
             variant="outline"
@@ -321,16 +314,13 @@ export default function OffloadProjectPage() {
             <Trash2 />
             Remove Selected
           </Button>
+          
          
         </div>
-           
-          <RawDataTable table={table} />
-          
-        
-          <DataTablePagination table={table} />
-          
+        <RawDataTable table={table} />
+        <DataTablePagination table={table} />
       </div>
-
     </div>
   )
 }
+
