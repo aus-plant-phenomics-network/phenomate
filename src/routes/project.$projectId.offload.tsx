@@ -28,19 +28,45 @@ import { useAppSelector } from '../store/hooks'
 
 
 
+
 const th: React.CSSProperties = {
   textAlign: "left",
   padding: "6px 8px",
-
-  background: "#f7f7f7",
+  background: "#f7f7f7ff",
   fontWeight: 600,
   borderRadius: "8px",
+  maxWidth: 300,
 };
 
 const td: React.CSSProperties = {
   padding: "6px 8px",
   borderBottom: "1px solid #eee",
   borderRadius: "8px",
+  maxWidth: 500,
+  // Ensure the column has a width constraint (via table layout or container width)
+};
+
+const tdFull: React.CSSProperties = {
+  whiteSpace: "normal",
+  overflow: "clip",
+  textOverflow: "ellipsis",
+  // Optional: set a max width if your table isn't already constraining width:
+  maxWidth: 500,
+};
+
+const tdInnerEllipsis: React.CSSProperties = {
+  whiteSpace: "nowrap",
+  overflow: "clip",
+  textOverflow: "ellipsis",
+  // Optional: set a max width if your table isn't already constraining width:
+  maxWidth: 500,
+};
+
+
+const cellScroll: React.CSSProperties = {
+  overflowX: "auto",
+  overflowY: "hidden",
+  whiteSpace: "nowrap",
 };
 
 
@@ -48,32 +74,51 @@ function ReviewPage() {
   const form = useAppSelector((state) => state.form)
 
   return (
-    
-    <div>
-    <table aria-label="Project details" style={{ borderCollapse: "collapse", width: "100%" }}>
-
-      <tbody>
-        <tr>
-          <th style={th}>Project:</th>
-          <td style={td}>{form.projectData}</td>
-        </tr>
-        <tr>
-          <th style={th}>Site:</th>
-          <td style={td}>{form.siteData}</td>
-        </tr>
-        <tr>
-          <th style={th}>Platform:</th>
-          <td style={td}>{form.platformData}</td>
-        </tr>
-        <tr>
-          <th style={th}>Directory:</th>
-          <td style={td}>{form.projectDirectory}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div className="flex flex-col gap-y-6 max-w-[600px] py-6">
+      <table
+        aria-label="Project details"
+        className="table-fixed w-full border-separate border-spacing-0"
+        style={{ tableLayout: "fixed", width: "100%" }}
+      >
+        <tbody>
+          <tr>
+            <th style={th}>Project:</th>
+            <td style={td}>
+              <div style={tdFull} title={form.projectData}>
+                {form.projectData}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th style={th}>Site:</th>
+            <td style={td}>
+              <div style={tdFull} title={form.siteData}>
+                {form.siteData}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th style={th}>Platform:</th>
+            <td style={td}>
+              <div style={tdFull} title={form.platformData}>
+                {form.platformData}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th style={th}>Directory:</th>
+            <td style={td}>
+              <div style={cellScroll} title={form.projectDirectory || ''}>
+                {form.projectDirectory}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  );
+  )
 }
+
 
 
 const queryOption = (projectId: number) =>
@@ -196,7 +241,9 @@ export default function OffloadProjectPage() {
   return (
     <div className="flex flex-col xl:flex-row w-full gap-4 flex-grow-1 min-h-0">
       {/* Form */}
+      
       <div className="flex flex-col gap-y-4 items-center min-w-[350px]">
+        
         <form
           id="project-data-offload-form"
           onSubmit={e => {
@@ -258,13 +305,17 @@ export default function OffloadProjectPage() {
               />
             </div>
           </div>
-          <ReviewPage />
+
         </form>
+
+        <ReviewPage />
+        
         {submitError ? <AlertMessage>{submitError}</AlertMessage> : null}
       </div>
+      
       {/* Display Table */}
-      <div className="flex flex-col flex-grow-1 min-h-0 overflow-x-auto gap-y-4">
-        <div className="flex justify-end gap-x-2 p-2">
+      <div className="flex flex-col flex-1 min-h-0 gap-y-4">
+        <div className="flex justify-end gap-x-2 p-2 shrink-0 z-10 bg-white">
           <DataTableAdvancedSelectionOptions table={table} />
           <Button
             variant="outline"
@@ -279,12 +330,16 @@ export default function OffloadProjectPage() {
             <Trash2 />
             Remove Selected
           </Button>
-          
           <TZSelect />
         </div>
-        <RawDataTable table={table} />
-        <DataTablePagination table={table} />
+           
+          <RawDataTable table={table} />
+          
+        
+          <DataTablePagination table={table} />
+          
       </div>
+
     </div>
   )
 }
