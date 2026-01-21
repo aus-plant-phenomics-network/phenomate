@@ -22,7 +22,7 @@ import {
 } from '@/components/Table'
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
-// import { TZSelect } from '@/components/TimezoneSelect'
+
 import { useAppSelector } from '../store/hooks'
 
 
@@ -72,7 +72,7 @@ function ReviewPage() {
       >
 	  {/* 👇 Control column widths here */}
       <colgroup>
-        <col style={{ width: "150px" }} /> {/* first column fixed at 200px */}
+        <col style={{ width: "30%" }} /> {/* first column fixed at 200px */}
         <col /> {/* second column takes remaining space */}
       </colgroup>
         <tbody>

@@ -20,7 +20,7 @@ const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    setForm(state, action: PayloadAction<MyFormProjectData>) {
+    setForm(_state, action: PayloadAction<MyFormProjectData>) {
       return action.payload
     },
   },

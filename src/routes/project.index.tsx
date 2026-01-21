@@ -19,7 +19,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { AlertMessage } from '@/components/Form'
 import { VFS_GREY } from '@/components/VFS'
-import { TZSelect } from '@/components/TimezoneSelect'
 import { DeleteDialog } from '@/components/DeleteDialog'
 import { usePhenomate } from '@/lib/context'
 import { TooltipInfo } from '@/components/TooltipInfo'
