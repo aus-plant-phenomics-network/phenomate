@@ -128,14 +128,15 @@ const offloadSchema = z.object({
 })
 
 export default function OffloadProjectPage() {
-  const { timezone } = usePhenomate()
-  const navigate = useNavigate()
-  const { projectId } = Route.useParams()
-  const [submitError, setError] = useState<string>('')
-  const [selectedFiles, setSelectedFiles] = useState<Array<FileData>>([])
-  const { data } = useSuspenseQuery(queryOption(parseInt(projectId)))
-  const regexMap = data.regex
-  const formatSelectedFiles = parseFileData(selectedFiles, regexMap)
+  const { timezone } = usePhenomate() ;
+  const navigate = useNavigate() ;
+  const { projectId } = Route.useParams() ;
+  console.log('projectId:', projectId, 'type:', typeof projectId)
+  const [submitError, setError] = useState<string>('') ;
+  const [selectedFiles, setSelectedFiles] = useState<Array<FileData>>([]) ;
+  const { data } = useSuspenseQuery(queryOption(parseInt(projectId))) ;
+  const regexMap = data.regex ;
+  const formatSelectedFiles = parseFileData(selectedFiles, regexMap) ;
   const mutation = $api.useMutation(
     'post',
     '/api/activity/offload/{project_id}',

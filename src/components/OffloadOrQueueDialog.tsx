@@ -47,9 +47,9 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 	)
 
 	if (option === 'Offload Data') {
-        navigate({ to: `/project/${projectRowId}/offload` })
+        navigate({ to: `/project/$projectId/offload` , params: { projectId: projectRowId } })
     } else if (option === 'View Queue') {
-	    navigate({ to: `/project/${projectRowId}/activities` })
+	    navigate({ to: `/project/$projectId/activities` , params: { projectId: projectRowId } })
     } 
   }
 

@@ -29,6 +29,10 @@ class DirFileItem(Schema):
     @classmethod
     def from_path(cls, path: Path) -> DirFileItem | None:
         try:
+            # Skip hidden files and directories
+            if path.name.startswith("."):
+                return None
+
             # size = file size or total size of children files in a dir
             size = get_size(path)
             return DirFileItem(

@@ -28,7 +28,7 @@ Running the containers:
 sudo make run-docker
 ```
 
-Note running with privilege is required since we will need to kill rabbitmq process listening on 5672. Running the previous two commands should allow you to access Phenomate.
+
 
 ### Local development
 
@@ -55,6 +55,8 @@ make install-dev
 ```
 
 #### Running local phenomate application:
+
+Note running with privilege is required since we will need to kill rabbitmq process listening on 5672. Running the previous two commands should allow you to access Phenomate.
 
 Set up the Celery server:
 
