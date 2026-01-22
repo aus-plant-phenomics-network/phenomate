@@ -395,7 +395,7 @@ export function useTableWithFilterSort<TData, TValue>({
   data,
   initialState,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>(initialState?.sorting ?? [])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -404,6 +404,7 @@ export function useTableWithFilterSort<TData, TValue>({
     columns,
     initialState: initialState,
     filterFns: {},
+
     autoResetPageIndex: false,
     state: {
       sorting,

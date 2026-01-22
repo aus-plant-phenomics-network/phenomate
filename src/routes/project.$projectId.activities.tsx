@@ -83,6 +83,7 @@ function RouteComponent() {
     columns: activityColumns,
     data: data,
 	initialState: {
+    sorting: [{ id: 'status', desc: true }],
     pagination: {
       pageSize: 1000,
     },
