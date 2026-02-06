@@ -23,6 +23,7 @@ def remove_task(log_pk: int) -> None:
     
     shared_logger.info(f'Phenomate: remove_task(): src.suffix.lower(): {src.suffix.lower()}')
     
+    # if any of these result in True, then do not delete the file
     CANBUS  = 'canbus' not in src.stem.lower()
     RS3     = src.suffix.lower() != ".25b"
     LIDAR3D = src.suffix.lower() != ".pcap"
@@ -50,7 +51,7 @@ def preprocess_task(log_pk: int) -> int:
         if "sensor" not in components or components["sensor"] is None:
             raise ValueError("Missing component information for preprocessing")
             
-        # Retrieve the correct phenomate-core preprocessing class from the calss factory
+        # Retrieve the correct phenomate-core preprocessing class from the class factory
         # The correct class is found by keyword found in the data file filename
         # e.g. sensor = one of: jai, rs3, oak, [hyperspec, dark, white], canbus
         processor_class = get_preprocessor(

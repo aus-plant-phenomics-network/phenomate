@@ -60,7 +60,9 @@ const cellScroll: React.CSSProperties = {
 };
 
 
-function ReviewPage() {
+// Table component to list the current project details 
+function ReviewPage() { 
+  // retrieve data from the Redux store
   const form = useAppSelector((state) => state.form)
 
   return (
@@ -70,9 +72,9 @@ function ReviewPage() {
         className="table-fixed w-full border-separate border-spacing-0 text-sm md:text-base"
         style={{ tableLayout: "fixed", width: "100%" }}
       >
-	  {/* 👇 Control column widths here */}
+	  {/* Control column widths here */}
       <colgroup>
-        <col style={{ width: "30%" }} /> {/* first column fixed at 200px */}
+        <col style={{ width: "30%" }} /> {/* first column  */}
         <col /> {/* second column takes remaining space */}
       </colgroup>
         <tbody>
