@@ -16,6 +16,20 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = os.getenv("LOG_DIR", "/tmp/log/phenomate")
+
+# Absolute paths to specific logs
+ALLOWED_LOG_FILES = {
+    # key                 # absolute path (build from env/base to suit your deployment)
+    "errors.log":          os.path.join(LOG_DIR, "errors.log"),
+    "django.log":          os.path.join(LOG_DIR, "django.log"),
+    "celery-worker.log":   os.path.join(LOG_DIR, "celery-worker.log"),
+    "celery-phenomate.log":os.path.join(LOG_DIR, "celery-phenomate.log"),
+}
+
+# Tail limits/defaults
+MAX_TAIL_BYTES = int(os.environ.get("MAX_TAIL_BYTES", 5 * 1024 * 1024))   # 5 MB cap per request
+DEFAULT_TAIL_BYTES = int(os.environ.get("DEFAULT_TAIL_BYTES", 256 * 1024)) # default 256 KB
+
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 os.makedirs(LOG_DIR, exist_ok=True)
 
