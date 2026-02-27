@@ -1,10 +1,15 @@
 import os
 from typing import Optional
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseNotFound, StreamingHttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseNotFound, StreamingHttpResponse
 from ninja import Router, Query
 
-logs_router = Router(tags=["logs"])
+from appm.utils import get_task_logger
+
+shared_logger = get_task_logger(__name__)
+
+# logs_router = Router(tags=["logs"])
+router = Router()
 
 def _resolve_log_path(log_key: str) -> Optional[str]:
     """
@@ -20,11 +25,30 @@ def _resolve_log_path(log_key: str) -> Optional[str]:
         return None
     return path
 
-@logs_router.get("/logs/download", auth=None)
-def download_log(request, log: str = Query(..., description="One of: errors.log, django.log, celery-worker.log, celery-phenomate.log")):
+@router.get("/download", 
+            response=str,
+            summary="Download specified log file",
+            description="Download the entire log file as an attachment. If the file is larger than MAX_TAIL_BYTES, only the last MAX_TAIL_BYTES are returned.")
+def download_log(request: HttpRequest, log: str = Query(..., description="One of: errors.log, django.log, celery-worker.log, celery-phenomate.log")):
     """
     Download the entire log file as an attachment.
     If the file is larger than MAX_TAIL_BYTES, we return only the last MAX_TAIL_BYTES to avoid huge transfers.
+
+
+    ### Example: get all of `errors.log`, if under a max size value (5MB)
+    curl -v \
+  -X GET "http://localhost:8000/api/logs/download?log=errors.log" \
+  -o errors.log
+
+
+
+    ### Example: download `celery-worker.log`
+   curl -v \
+  -G "http://localhost:8000/api/logs/download" \
+  --data-urlencode "log=celery-worker.log" \
+  -o celery-worker.log
+
+
     """
     log_path = _resolve_log_path(log)
     if not log_path:
@@ -32,6 +56,9 @@ def download_log(request, log: str = Query(..., description="One of: errors.log,
 
     max_tail = getattr(settings, "MAX_TAIL_BYTES", 10 * 1024 * 1024)
     file_size = os.path.getsize(log_path)
+
+    shared_logger.debug(f'Phenomate: download_log(): Downloading log file {log} of size {file_size}')
+    print(f'Phenomate: download_log(): Downloading log file {log} of size {file_size}')
 
     # If the file is too large, return a tail to prevent massive response sizes.
     if file_size > max_tail:
@@ -59,14 +86,23 @@ def download_log(request, log: str = Query(..., description="One of: errors.log,
     return resp
 
 
-@logs_router.get("/logs/tail", auth=None)
+@router.get("/tail")
 def tail_log(
-    request,
+    request: HttpRequest,
     log: str = Query(..., description="One of: errors.log, django.log, celery-worker.log, celery-phenomate.log"),
     bytes: Optional[int] = Query(None, description="Number of bytes from end of file"),
 ):
     """
     Download the last N bytes of the chosen log (default: DEFAULT_TAIL_BYTES), clamped to MAX_TAIL_BYTES.
+
+   ### Example: tail last 1000 bytes of `errors.log`
+   curl -v \
+  -G "http://localhost:8000/api/logs/tail" \
+  --data-urlencode "log=errors.log" \
+  --data-urlencode "bytes=1000" \
+  -o errors_tail_1000.log
+
+
     """
     log_path = _resolve_log_path(log)
     if not log_path:

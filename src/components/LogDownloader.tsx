@@ -14,7 +14,7 @@ type Props = {
   defaultBytes?: number;
 };
 
-const LogDownloader: React.FC<Props> = ({
+export const LogDownloader: React.FC<Props> = ({
   downloadEndpoint = "/api/logs/download",
   tailEndpoint = "/api/logs/tail",
   defaultBytes = 256 * 1024,
@@ -119,4 +119,4 @@ const LogDownloader: React.FC<Props> = ({
   );
 };
 
-export default LogDownloader;
+// export default LogDownloader;

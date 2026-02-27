@@ -22,10 +22,20 @@ docker compose up -d --force-recreate --build celery_worker
 docker compose up -d
 ```
 
-Running the containers:
+Reinitialise the database:
 
 ```bash
-sudo make run-docker
+docker compose down
+
+# Remove the Docker volume
+docker volume rm phenomate_pgdata
+
+# Restart the continers
+docker compose up -d
+
+# Reinitialise the database via uv/Django
+# docker exec -it backend uv run manage.py migrate
+
 ```
 
 
@@ -73,7 +83,7 @@ make install-local-appm
 
 # Now run the Celery workers
 make run-celery
-# uv run celery -A backend worker --loglevel=info --concurrency=4
+# uv run celery -A backend worker --loglevel=info --concurrency=1
 ```
 
 Then open a new terminal and run:
