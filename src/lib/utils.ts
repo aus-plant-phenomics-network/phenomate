@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import type { ClassValue } from 'clsx'
 import type { FilterFn, Row } from '@tanstack/react-table'
 import type { components } from './api/v1'
-import type { FileData } from '@aperturerobotics/chonky'
+import type { FileData } from 'chonky'
 
 export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs))

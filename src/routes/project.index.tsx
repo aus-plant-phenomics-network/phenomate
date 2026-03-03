@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react'
 import { makeIndexDataColumn } from './-project.index.tables'
 import type { Table } from '@tanstack/react-table'
 import type { components } from '@/lib/api/v1'
-import type { FileData } from '@aperturerobotics/chonky'
+import type { FileData } from 'chonky'
 import { $api, queryClient } from '@/lib/api'
 import {
   DataTableAdvancedSelectionOptions,

@@ -4,8 +4,8 @@ import {
   ChonkyActions,
   FileHelper,
   FullFileBrowser,
-} from '@aperturerobotics/chonky'
-import { ChonkyIconFA } from '@aperturerobotics/chonky-icon-fontawesome'
+} from 'chonky'
+import { ChonkyIconFA } from 'chonky-icon-fontawesome'
 import {
   Dialog,
   DialogClose,
@@ -21,10 +21,11 @@ import type {
   ChonkyFileActionData,
   FileBrowserHandle,
   FileData,
-} from '@aperturerobotics/chonky'
+} from 'chonky'
 import { $api } from '@/lib/api'
 import { usePhenomate } from '@/lib/context'
 import { TooltipInfo } from './TooltipInfo'
+
 
 // AddressBar
 export interface AddressBarProps {
@@ -201,38 +202,8 @@ export const BaseVFS = ({
   const { address, setAddress } = usePhenomate()
   // Chonky Ref for imperative FS apis
   const fileBrowserRef = useRef<FileBrowserHandle>(null)
-  // Chonky's files and folder chain query hook
-  // let folderChain = useFolderChain(address)
-  
-  // Reactive localStorage key based on field name
-  /*const [storageKey, setStorageKey] = useState('');
 
-  useEffect(() => {
-    if (storageKey) {
-      setStorageKey(`${name_local_storage}`);
-    }
-  }, [storageKey]);
-  */
-  // load current path for particular name field from local
-  // storage (if key is available)
-  /*let savedAddress = localStorage.getItem(name_local_storage);
-  if (! savedAddress) {
-      savedAddress = address
-   }*/
-   
-   let savedAddress = address
-   /*useEffect(() => {
-	   savedAddress = localStorage.getItem(storageKey)
-	   if (savedAddress) {
-		   setAddress(savedAddress)
-		 }
-   }, [storageKey])
-  
-  if (! savedAddress)
-	  savedAddress = address
-  */
-   
-  // let savedAddress = address
+  let savedAddress = address
   const folderChain = useFolderChain(savedAddress)
   
   const queryResult = $api.useQuery('get', '/api/urls/', {
@@ -270,6 +241,9 @@ export const BaseVFS = ({
           />
         </DialogHeader>
         <FullFileBrowser
+          
+        
+
           ref={fileBrowserRef}
           files={
             queryResult.isError
