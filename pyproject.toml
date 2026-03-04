@@ -25,6 +25,9 @@ analysis = [
     "pre-commit>=4.2.0",
     "ruff>=0.12.4",
 ]
+dev = [
+    "django-extensions>=4.1",
+]
 
 # [tool.uv.sources]
   # phenomate-core = { path = "../phenomate-core" }

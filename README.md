@@ -14,9 +14,9 @@ docker compose down
 
 # Rebuild all containers if they need updating
 docker compose build --no-cache
-docker compose up -d --force-recreate --build
+
 # or, if only a particular image has changed 
-docker compose up -d --force-recreate --build celery_worker
+docker compose build --force-recreate --build celery_worker
 
 # start containers (or through the sudo make run-docker command)
 docker compose up -d

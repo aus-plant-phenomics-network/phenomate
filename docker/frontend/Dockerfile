@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-# --- build stage ---
+# --- build stage --- 
 FROM node:22-bullseye-slim AS build
 WORKDIR /app
 

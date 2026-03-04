@@ -65,7 +65,7 @@ RUN make install-backend
 RUN make install-libjpeg-turbo
 
 # List what ended up installed
-RUN uv pip list 
+RUN  pip list 
 
 # Expose the Django port
 EXPOSE 8000

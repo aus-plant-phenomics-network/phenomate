@@ -33,6 +33,7 @@ CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = 'INFO'
 
 
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -139,6 +140,10 @@ INSTALLED_APPS = [
     "backend.activity.apps.ActivityConfig",
     "corsheaders",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["django_extensions"]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
