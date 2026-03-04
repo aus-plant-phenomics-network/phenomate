@@ -23,12 +23,13 @@ def remove_task(log_pk: int) -> None:
     
     shared_logger.info(f'Phenomate: remove_task(): src.suffix.lower(): {src.suffix.lower()}')
     
-    # if any of these result in True, then do not delete the file
-    CANBUS  = 'canbus' not in src.stem.lower()
-    RS3     = src.suffix.lower() != ".25b"
-    LIDAR3D = src.suffix.lower() != ".pcap"
+    ## If any of these result in True, then do not delete the file
+    CANBUS  = 'canbus' not in src.stem.lower()  # these are csv files, do not delete them 
+    RS3     = src.suffix.lower() != ".25b"      # has specialised processing in phenomate-core for .25o and .25p
+    LIDAR3D = src.suffix.lower() != ".pcap"     # has specialised processing in phenomate-core for .json
+    # The .bin file should not be deleted, has corresponding .csv file, 
+    # that should not be deleted, and a _GNSS.csv file that has specialised processing
     IMU     = 'imu1' not in src.stem.lower()
-    
     shared_logger.info(f'Phenomate: remove_task() file: {src}: CANBUS: {CANBUS}; RS3: {RS3}; LIDAR3D: {LIDAR3D}; IMU: {IMU};')
     
     if LIDAR3D and RS3 and CANBUS and IMU :
