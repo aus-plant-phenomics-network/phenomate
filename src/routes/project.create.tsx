@@ -224,60 +224,113 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
-			  {/* Template Field */}
+			  {/* Researcher */}
               <FormApi.Field
-                name="template"
+                name="researcherName"
                 children={field => {
-                  const addSelectedFiles = (files: Array<FileData>) => {
-                    if (!files || files.length != 1) field.handleChange(null)
-                    else field.handleChange(files[0].id)
-                  }
                   return (
                     <>
                       <Fieldset>
-                        <Label htmlFor={field.name}>Project Template</Label>
+                        <Label>Researcher</Label>
+                        <Autocomplete
+                          name={field.name}
+                          id={field.name}
+                          value={field.state.value}
+                          setValue={field.handleChange}
+                          placeholder="Search Researcher"
+                          data={
+                            researcherQuery.data
+                              ? researcherQuery.data.map(item => item.name)
+                              : []
+                          }
+                        />
+                      </Fieldset>
+                    </>
+                  )
+                }}
+              />
+              {/* Organisation */}
+              <FormApi.Field
+                name="organisationName"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label>Organisation</Label>
+                        <Autocomplete
+                          name={field.name}
+                          id={field.name}
+                          value={field.state.value}
+                          setValue={field.handleChange}
+                          placeholder="Search Org"
+                          data={
+                            orgQuery.data
+                              ? orgQuery.data.map(item => item.name)
+                              : []
+                          }
+                        />
+                      </Fieldset>
+                    </>
+                  )
+                }}
+              />
+              {/* Template Field */}
+              <FormApi.Field name="template">
+              {field => {
+                const addSelectedFiles = (files: Array<FileData>) => {
+                  if (!files || files.length !== 1) field.handleChange(null);
+                  else field.handleChange(files[0].id);
+                };
+
+                const useBakedIn = () => {
+                  field.handleChange('/opt/phenomate/templates/template.yaml');
+                };
+
+                return (
+                  <>
+                    <Fieldset>
+                      <Label htmlFor={field.name}>Project Template</Label>
+
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                         <VFS_GREY
                           addSelectedFiles={addSelectedFiles}
                           triggerText={
-                            !field.state.value
-                              ? 'YAML Template File'
-                              : field.state.value
+                            !field.state.value ? 'YAML Template File' : field.state.value
                           }
-						  name_local_storage={field.name}
+                          name_local_storage={field.name}
                           title="Select a template file"
-                          description="YAML template that describes the input data filename structure and output directory structure (from APPM project) "
+                          description="YAML template that describes the input data filename structure and output directory structure (from APPM project)"
                           multiple={false}
                           dirOnly={false}
-						  tooltip="Choose a template.yaml file that describes the expected file name format and output directory structure"
+                          tooltip="Choose a template.yaml file that describes the expected file name format and output directory structure"
                         />
-                      </Fieldset>
-                    </>
-                  )
-                }}
-              />
-			  {/* Platform Name */}
-              <FormApi.Field
-                name="platform"
-                children={field => {
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label htmlFor={field.name}>Platform Name*</Label>
-                        <Input
-                          type="text"
-                          id={field.name}
-                          name={field.name}
-                          placeholder="Platform Name"
-                          onBlur={field.handleBlur}
-                          onChange={e => field.handleChange(e.target.value)}
-                        />
-                      </Fieldset>
-                      <FieldInfo field={field} />
-                    </>
-                  )
-                }}
-              />
-			  {/* Project Name */}
+                        
+                        <button
+                          type="button"
+                          onClick={useBakedIn}
+                          className="
+                              bg-green-50
+                              text-green-600
+                              border
+                              border-green-200
+                              rounded-lg
+                              px-3
+                              py-1
+                              font-small
+                              cursor-pointer
+                              hover:bg-green-100
+                            "
+                        >
+                          Default template
+                        </button>
+
+                      </div>
+                    </Fieldset>
+                  </>
+                );
+              }}
+              </FormApi.Field>
+              {/* Project Name */}
               <FormApi.Field
                 name="project"
                 children={field => {
@@ -299,7 +352,7 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
-			  {/* Site Name */}
+              {/* Site Name */}
               <FormApi.Field
                 name="site"
                 children={field => {
@@ -321,8 +374,30 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
-			  
-			  {/* Summary String */}
+              
+              {/* Platform Name */}
+              <FormApi.Field
+                name="platform"
+                children={field => {
+                  return (
+                    <>
+                      <Fieldset>
+                        <Label htmlFor={field.name}>Platform Name*</Label>
+                        <Input
+                          type="text"
+                          id={field.name}
+                          name={field.name}
+                          placeholder="Platform Name"
+                          onBlur={field.handleBlur}
+                          onChange={e => field.handleChange(e.target.value)}
+                        />
+                      </Fieldset>
+                      <FieldInfo field={field} />
+                    </>
+                  )
+                }}
+              />
+              {/* Summary String */}
               <FormApi.Field
                 name="summary"
                 children={field => {
@@ -344,7 +419,7 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
-			  {/* Year Field */}
+              {/* Year Field */}
               <FormApi.Field
                 name="year"
                 children={field => {
@@ -388,59 +463,6 @@ export default function CreateProjectPage() {
                   )
                 }}
               />
-              {/* Researcher */}
-              <FormApi.Field
-                name="researcherName"
-                children={field => {
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label>Researcher</Label>
-                        <Autocomplete
-                          name={field.name}
-                          id={field.name}
-                          value={field.state.value}
-                          setValue={field.handleChange}
-                          placeholder="Search Researcher"
-                          defaultValue="Search Researcher"
-                          data={
-                            researcherQuery.data
-                              ? researcherQuery.data.map(item => item.name)
-                              : []
-                          }
-                        />
-                      </Fieldset>
-                    </>
-                  )
-                }}
-              />
-              {/* Organisation */}
-              <FormApi.Field
-                name="organisationName"
-                children={field => {
-                  return (
-                    <>
-                      <Fieldset>
-                        <Label>Organisation</Label>
-                        <Autocomplete
-                          name={field.name}
-                          id={field.name}
-                          value={field.state.value}
-                          setValue={field.handleChange}
-                          placeholder="Search Org"
-                          defaultValue="Search Org"
-                          data={
-                            orgQuery.data
-                              ? orgQuery.data.map(item => item.name)
-                              : []
-                          }
-                        />
-                      </Fieldset>
-                    </>
-                  )
-                }}
-              />
-
             {/* End of form */}
             </div>
             {/* Form submit button */}

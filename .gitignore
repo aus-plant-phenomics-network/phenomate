@@ -166,3 +166,4 @@ cython_debug/
 
 node_modules
 .vscode/
+.tanstack/

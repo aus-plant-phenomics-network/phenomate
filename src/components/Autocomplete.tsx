@@ -22,10 +22,10 @@ import {
 
 interface AutocompleteProps {
   data: Array<string>
-  value: string | null | undefined
+  value?: string | null | undefined
   setValue: React.Dispatch<React.SetStateAction<string | null | undefined>>
   placeholder: string
-  defaultValue: string
+  defaultValue?: string
 }
 
 export function Autocomplete(
