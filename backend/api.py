@@ -57,9 +57,9 @@ def integrity_conflict(request: HttpRequest, exc: IndentationError) -> HttpRespo
     )
 
 
-app.add_router("/project/", project_router, tags=["project"])
-app.add_router("/urls/", urls_router, tags=["urls"])
-app.add_router("/researcher/", researcher_router, tags=["researcher"])
-app.add_router("/organisation/", organisation_router, tags=["organisation"])
-app.add_router("/activity/", activity_router, tags=["activity"])
-app.add_router("/logs/", logs_router, tags=["logs"])
+app.add_router("/project/", project_router, tags=["project"], auth=None)
+app.add_router("/urls/", urls_router, tags=["urls"], auth=None)
+app.add_router("/researcher/", researcher_router, tags=["researcher"], auth=None)
+app.add_router("/organisation/", organisation_router, tags=["organisation"], auth=None)
+app.add_router("/activity/", activity_router, tags=["activity"], auth=None)
+app.add_router("/logs/", logs_router, tags=["logs"], auth=None)

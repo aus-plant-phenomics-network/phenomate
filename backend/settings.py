@@ -27,7 +27,7 @@ ALLOWED_LOG_FILES = {
 }
 
 # Tail limits/defaults
-MAX_TAIL_BYTES = int(os.environ.get("MAX_TAIL_BYTES", 5 * 1024 * 1024))   # 5 MB cap per request
+MAX_TAIL_BYTES = int(os.environ.get("MAX_TAIL_BYTES", 2 * 1024 * 1024))   # 5 MB cap per request
 DEFAULT_TAIL_BYTES = int(os.environ.get("DEFAULT_TAIL_BYTES", 256 * 1024)) # default 256 KB
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')

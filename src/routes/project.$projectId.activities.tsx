@@ -15,7 +15,7 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { DeleteDialog } from '@/components/DeleteDialog'
-import { LogDownloader } from '@/components/LogDownloader'
+import { LogDownloaderWithUseQuery } from '@/components/LogDownloaderWithUseQuery'
 import { usePhenomate } from '@/lib/context'
 
 const queryOption = (projectId: string) =>
@@ -108,10 +108,7 @@ function RouteComponent() {
       </div>
       <RawDataTable table={table} />
       <DataTablePagination table={table} />
-      <LogDownloader
-        downloadEndpoint="/api/logs/download"
-        tailEndpoint="/api/logs/tail"
-        defaultBytes={512 * 1024}
+      <LogDownloaderWithUseQuery
       />
     </>
   )
