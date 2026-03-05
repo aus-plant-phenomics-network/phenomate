@@ -15,7 +15,7 @@ import {
 } from '@/components/Table'
 import { Button } from '@/components/ui/button'
 import { DeleteDialog } from '@/components/DeleteDialog'
-// import { TZSelect } from '@/components/TimezoneSelect'
+import { LogDownloaderWithUseQuery } from '@/components/LogDownloaderWithUseQuery'
 import { usePhenomate } from '@/lib/context'
 
 const queryOption = (projectId: string) =>
@@ -108,6 +108,8 @@ function RouteComponent() {
       </div>
       <RawDataTable table={table} />
       <DataTablePagination table={table} />
+      <LogDownloaderWithUseQuery
+      />
     </>
   )
 }
