@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxext6 \
     && rm -rf /var/lib/apt/lists/*
+    
 RUN pip install opencv-contrib-python-headless
 
 # Download the latest installer
@@ -40,6 +41,8 @@ ENV PATH="/root/.local/bin/:$PATH"
 # Create the app directory and logfile mount position directory
 RUN mkdir -p /app/phenomate/log
 
+
+
 # Copy in template_appn_default.yaml file from examples directory 
 # Make sure target dir exists
 RUN mkdir -p /opt/phenomate/templates
@@ -50,7 +53,7 @@ COPY --from=fetch /tmp/ext/examples/template_appn_default.yaml /opt/phenomate/te
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEFAULT_ROOT_FOLDER="/home"
-ENV DJANGO_ALLOWED_HOST="127.0.0.1,.localhost,[::1],0.0.0.0"
+ENV DJANGO_ALLOWED_HOST="127.0.0.1,.localhost,frontend,backend,[::1],0.0.0.0"
 ENV CELERY_BROKER_URL="amqp://guest:guest@localhost"
 
 # Copy the Django project  and install dependencies
