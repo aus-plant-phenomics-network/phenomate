@@ -28,8 +28,8 @@ export const makeIndexDataColumn = (
       enableSorting: false,
       enableHiding: true,
     },
-	{	 
-	  id: 'projectId',
+    {     
+      id: 'projectId',
       header: 'pid',
       cell: ({ row /*, table*/ }) => {
         /*// Get current page index and page size from table state
@@ -37,31 +37,29 @@ export const makeIndexDataColumn = (
         const pageSize = table.getState().pagination.pageSize;
         // Calculate the row number
         return row.index + 1 + pageIndex * pageSize;*/
-		return row.original.id.toString()
+        return row.original.id.toString()
        },
-	},
+    },
     {
       id: 'action',
-	  cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,  // this is our green 'Select Action' button and it's dialog box
+      cell: ({ row }) => <OffloadOrQueueDialog  row={row} />,  // this is our green 'Select Action' button and it's dialog box
     },
     {
       accessorKey: 'name',
       header: ({ column }) => (
-
-        <DataTableColumnHeader column={column} title="Name" tooltip="These are the output directory names which are derived from the template.yaml file used and the data entered on project creation" />
-		
+        <DataTableColumnHeader column={column} title="Platform" tooltip="This is the Platform name (should be a Phenomate) " />
       ),
     },
-	{
+    {
       accessorKey: 'location',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Location" tooltip="This is the full directory path to where data will be extracted" />
+        <DataTableColumnHeader column={column} title="Location" tooltip="This is the base directory path to where data will be extracted - a date based subfolder will hold the final data" />
       ),
-	  cell: ({ cell }) => {
-		 // return  removeLastDirectory(cell.getValue())
-		 const value = cell.getValue();
+      cell: ({ cell }) => {
+         // return  removeLastDirectory(cell.getValue())
+         const value = cell.getValue();
          return typeof value === 'string' ? removeLastDirectory(value) : '';
-	  },
+      },
     },
     {
       accessorKey: 'updated',
@@ -101,27 +99,27 @@ export const makeIndexDataColumn = (
         <DataTableColumnHeader column={column} title="Organisation" />
       ),
     },
-	{
+    {
       accessorKey: 'internal',
       cell: ({ cell }) => (cell.getValue() as boolean).toString(),
       header: ({ /*column*/}) => (
         // <DataTableColumnHeader column={column} title="Internal" />
-		<span title="Indicates if the project is internal to APPN">Internal</span>
+        <span title="Indicates if the project is internal to APPN">Internal</span>
       ),
-	  enableColumnFilter: false,
+      enableColumnFilter: false,
       /*meta: {
         filterVariant: 'boolean',
       },*/
     },
-	{
+    {
       accessorKey: 'is_valid',
       cell: ({ cell }) => (cell.getValue() as boolean).toString(),
-	  
+      
       header: ({ /*column*/ }) => (
         // <DataTableColumnHeader column={column} title="Valid" />
-		<span title="Indicates if the values are valid (ToDo: check what determines this as true)">Valid</span>
+        <span title="Indicates if the values are valid (ToDo: check what determines this as true)">Valid</span>
       ),
-	  enableColumnFilter: false,
+      enableColumnFilter: false,
       /*filterFn: equalsBoolean,
       meta: {
         filterVariant: 'boolean',

@@ -36,11 +36,11 @@ const projectImportSchema = z.object({
 
 function AddProjectPanelButton() {
   return (
-    <TooltipInfo contentText="Add a project entry to the list">
+    <TooltipInfo contentText="Add a project site entry to the list">
     <Link to="/project/create">
       <Button variant="outline" >
         <Plus />
-        Create Project
+        Create Project Site
       </Button>
     </Link>
 	</TooltipInfo>
@@ -144,10 +144,10 @@ function ImportProjectPanelButton({
               <VFS_GREY
 				  addSelectedFiles={addSelectedFiles}
 				  triggerText={
-					"Import Project"
+					"Import Project Site"
 				  }
 				  name_local_storage={"root"}
-				  title="Import Project"
+				  title="Import Project Site"
 				  description="Select Project Folder to Import"
 				  multiple={false}
 				  dirOnly={true}

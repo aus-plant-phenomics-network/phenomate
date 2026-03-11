@@ -52,7 +52,7 @@ def does_not_exist(request: HttpRequest, exc: ObjectDoesNotExist) -> HttpRespons
 def integrity_conflict(request: HttpRequest, exc: IndentationError) -> HttpResponse:
     return app.create_response(
         request,
-        {"message": str(exc)},
+        {"message": str(exc) + " Use the pre-defined project or import the project."},
         status=409,
     )
 

@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1.6   # enables modern BuildKit features if you need them later
+#################
 FROM alpine:3.20 AS fetch
 RUN apk add --no-cache git
 
@@ -12,7 +13,7 @@ RUN ls -l /tmp/ext/examples/
 # Optional: validate the file exists early (will fail the build if missing)
 RUN test -f /tmp/ext/examples/template_appn_default.yaml
 
-
+#################
 FROM python:3.12-slim
 
 # Install make and build essentials
@@ -41,8 +42,6 @@ ENV PATH="/root/.local/bin/:$PATH"
 # Create the app directory and logfile mount position directory
 RUN mkdir -p /app/phenomate/log
 
-
-
 # Copy in template_appn_default.yaml file from examples directory 
 # Make sure target dir exists
 RUN mkdir -p /opt/phenomate/templates
@@ -53,7 +52,7 @@ COPY --from=fetch /tmp/ext/examples/template_appn_default.yaml /opt/phenomate/te
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEFAULT_ROOT_FOLDER="/home"
-ENV DJANGO_ALLOWED_HOST="127.0.0.1,.localhost,frontend,backend,[::1],0.0.0.0"
+ENV DJANGO_ALLOWED_HOST="127.0.0.1,localhost,frontend,backend,[::1],0.0.0.0"
 ENV CELERY_BROKER_URL="amqp://guest:guest@localhost"
 
 # Copy the Django project  and install dependencies

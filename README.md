@@ -68,10 +68,10 @@ make install-dev
 
 Note running with privilege is required since we will need to kill rabbitmq process listening on 5672. Running the previous two commands should allow you to access Phenomate.
 
-Set up the Celery server:
+1. Set up the Celery server and workers:
 
 ```bash
-# First make sure Rabbitmq has started
+# First make sure Rabbitmq is installed and has started 
 sudo systemctl status rabbitmq-server
 # If it is not started then start it:
 sudo systemctl start rabbitmq-server
@@ -86,14 +86,14 @@ make run-celery
 # uv run celery -A backend worker --loglevel=info --concurrency=1
 ```
 
-Then open a new terminal and run:
+2. Then open a new terminal and run:
 
 ```bash
 make run-server
 # uv run manage.py runserver
 ```
 
-Note that you may need to apply migration the first time running the server. To do this, you can do either:
+Note that you may need to setup the database the first time running the server. To do this, you can do either:
 
 ```bash
 uv run manage.py makemigrations activity project organisation researcher && uv run manage.py migrate
@@ -105,28 +105,31 @@ or
 make clear-db
 ```
 
-Then open another terminal and run:
+3. Then open another terminal and run:
 
 ```bash
+# For debug version
 make run-ui
 # npm run dev
+
+# For production version
+npm run build
+serve -s dist -l 3000
 ```
 
 Now open a browser and point to localhost:3000
 
-To sync dto types between the frontend and backend, run
+
+### Developer data type migration
+To sync `dto` types between the frontend and backend, run
 
 ```bash
 npm run sync-backend
 ```
 
-You only need to run this if you have made any changes to any backend dto. Doing this helps eliminate the need to define types twice and is generally improves developer experience by a fair bit.
+You only need to run this if you have made any changes to any backend dto. Doing this helps eliminate the need to define types twice and is generally improves developer experience.
 
-In development mode, Phenomate uses sqlite as the db. To quickly purge all data from the db, you can use the make utility:
 
-```bash
-make clear-db
-```
 
 ### Recreating the Typescript interface to a changed backend API
 If adding or modifying the backend API data requirements the frontend code needs to be informed about the new types.
@@ -172,7 +175,7 @@ export LOG_DIR=${HOME}/phenomate/log_dev
 ```
 otherwise they will be found in ```/tmp/log/phenomete```
 
-### Mounting directory
+### Docker mounting directory
 
 By default, both the backend and the celery services mount the host (local environment) file system as volume accessible
  at `/hostfs` within the service environment.
@@ -182,8 +185,7 @@ volumes:
   - /:/hostfs
 ```
 
-Check out the [official documentation](https://docs.docker.com/reference/compose-file/volumes/) to configure additional 
-mounting points if needed.
+Check out the [official documentation](https://docs.docker.com/reference/compose-file/volumes/) to configure additional mounting points if needed.
 
 # Removing and reinitialising the Docker volume database storage
 

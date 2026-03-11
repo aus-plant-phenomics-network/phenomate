@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { fetchClient } from '../lib/api';
 import { filenameFromContentDisposition, saveBlob } from '../utils/download';
 
-type LogName = 'errors.log' | 'celery-worker.log' | 'celery-phenomate.log';
+type LogName = 'errors.log' | 'celery-worker.log' | 'celery-phenomate.log' | 'django.log';
 
 export const LogDownloaderWithUseQuery: React.FC = () => {
   const [log, setLog] = React.useState<LogName>('errors.log');
@@ -32,8 +32,9 @@ export const LogDownloaderWithUseQuery: React.FC = () => {
     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
       <select value={log} onChange={(e) => setLog(e.target.value as LogName)} disabled={busy}>
         <option value="errors.log">errors.log</option>
-        <option value="celery-worker.log">celery-worker.log</option>
         <option value="celery-phenomate.log">celery-phenomate.log</option>
+        <option value="celery-worker.log">celery-worker.log</option>
+        <option value="django.log">django.log</option>        
       </select>
 
       <button 

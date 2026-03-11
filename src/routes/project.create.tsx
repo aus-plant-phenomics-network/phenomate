@@ -87,7 +87,7 @@ export default function CreateProjectPage() {
     const timerRef = useRef<number | null>(null)
 
     const previewMutation = $api.useMutation('post', '/api/project/preview/', {
-      onSuccess(data) {
+      onSuccess(data) {defaultProjectCreateValues
         console.log('Preview received:', data)
 
          setPreview(data)
@@ -295,7 +295,7 @@ export default function CreateProjectPage() {
                         <VFS_GREY
                           addSelectedFiles={addSelectedFiles}
                           triggerText={
-                            !field.state.value ? 'YAML Template File' : field.state.value
+                            !field.state.value ? '/opt/phenomate/templates/template.yaml' : field.state.value
                           }
                           name_local_storage={field.name}
                           title="Select a template file"

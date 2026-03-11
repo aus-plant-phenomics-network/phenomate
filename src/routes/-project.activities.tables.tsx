@@ -37,10 +37,10 @@ const ActivityButton = ({ row  }: {
 export function makeActivityColumns(
   timezone: string,
 ): Array<ColumnDef<components['schemas']['ActivitySchema']>> {
-	
 
 
-	
+
+
   return [
   {
       id: 'select',
@@ -58,19 +58,18 @@ export function makeActivityColumns(
         // const pageSize = table.getState().pagination.pageSize;
         // Calculate the row number
         // return row.index + 1 + pageIndex * pageSize;
-		return row.id
+        return row.id
       },
-	  enableSorting: true,
-    },	
-    
+      enableSorting: true,
+    },
+
     {
       id: 'action',
       // cell: ({ row }) => <ActivityAction row={row} />,
-	  // cell: ({ row }) => <ActivityOptionsDialog row={row} />,
-	   cell: ({ row }) => <ActivityButton row={row} />,
-	 
-    },
-    {
+      // cell: ({ row }) => <ActivityOptionsDialog row={row} />,
+      cell: ({ row }) => <ActivityButton row={row} />,
+        },
+        {
       accessorKey: 'activity',
       header: ({ column }) => (
         <DataTableColumnHeader title="Activity" column={column} />
@@ -78,8 +77,8 @@ export function makeActivityColumns(
       meta: {
         filterVariant: 'select',
       },
-    },
-    {
+        },
+        {
       accessorKey: 'status',
       header: ({ column }) => (
         <DataTableColumnHeader title="Status" column={column} />
@@ -87,8 +86,31 @@ export function makeActivityColumns(
       meta: {
         filterVariant: 'select',
       },
-    },
-    {
+        },
+        
+        {
+      accessorKey: 'filename',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="FileName" column={column} />
+      ),
+      cell: ({ cell }) => {
+        
+        const value = cell.getValue() as string
+        if (value.length > 30){
+          // return '...' + value.slice(value.length - 30, value.length)
+          return value.split('/').pop() 
+        } else {
+          return value
+        }
+      },
+        },
+        {
+      accessorKey: 'target',
+      header: ({ column }) => (
+        <DataTableColumnHeader title="Target" column={column} />
+      ),
+        },
+        {
       accessorKey: 'created',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created" />
@@ -115,18 +137,6 @@ export function makeActivityColumns(
       meta: {
         filterVariant: 'date',
       },
-    },
-    {
-      accessorKey: 'filename',
-      header: ({ column }) => (
-        <DataTableColumnHeader title="FileName" column={column} />
-      ),
-    },
-    {
-      accessorKey: 'target',
-      header: ({ column }) => (
-        <DataTableColumnHeader title="Target" column={column} />
-      ),
     },
   ]
 }
