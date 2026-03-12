@@ -22,6 +22,28 @@ docker compose build --force-recreate --build celery_worker
 docker compose up -d
 ```
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant DC as compose
+    participant DB as db
+    participant MQ as mq
+    participant BE as backend
+    participant CW as worker
+    participant FE as frontend
+
+    DC->>DB: start
+    DC->>MQ: start
+    DC-->>BE: start (dep DB,MQ)
+    BE->>BE: migrate→collectstatic→gunicorn :8000
+    DC-->>CW: start (dep BE,MQ)
+    DC-->>FE: start (dep BE)
+
+    FE-->>BE: HTTP :8000
+    BE-->>DB: SQL
+    CW-->>MQ: AMQP :5672
+```
+
 Reinitialise the database:
 
 ```bash
@@ -39,10 +61,11 @@ docker compose up -d
 ```
 
 
-
 ### Local development
 
-The following instructions should work for local development on a Linux machine.
+The following instructions should work for local development on a Linux machine. 
+Local development uses a sqlite database and the Celery task queue should only run a single worker
+to minimise issues writing to the database.
 
 #### Installing local dependencies
 
@@ -202,6 +225,10 @@ docker compose up -d --build
 # run migrations after containers are up
 docker compose exec backend python manage.py migrate
 ```
+
+### Interactions between frontend and backend components
+
+[API Sequence Diagrams](docs/api-sequences.md)
 
 ### Changing ports
 
