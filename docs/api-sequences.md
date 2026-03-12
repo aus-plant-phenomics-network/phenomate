@@ -1,7 +1,7 @@
 
 # Phenomate — Frontend ↔ Backend Sequence Diagrams
 
-> The endpoint paths and operation names in these diagrams are taken from the uploaded `urls.txt` export of your Django Ninja API.
+> The endpoint paths and operation names in these diagrams are taken from the uploaded `urls.txt` export of your BE API.
 
 ---
 
@@ -23,14 +23,11 @@
 
 ```mermaid
 sequenceDiagram
-  
-%% Legend at the top
-  Note over FE,BE: Legend — FE = Frontend, BE = Backend
 
   autonumber
-  participant FE as FE src/routes/project.index.tsx
+  participant FE as FE (Frontend)src/routes/project.index.tsx
   participant Tbl as FE src/routes/-project.index.tables.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (Backend)(/api/*)
   participant DB as Database
 
   Note over FE: Project list page mounts
@@ -60,7 +57,7 @@ sequenceDiagram
 sequenceDiagram
   autonumber
   participant FE as FE src/routes/project.create.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (/api/*)
   participant DB as Database
 
   Note over FE: Form loads, fetch reference data
@@ -93,7 +90,7 @@ sequenceDiagram
   autonumber
   participant FE as FE src/routes/project.$projectId.offload.tsx
   participant Tbl as FE src/routes/-project.offload.tables.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (/api/*)
   participant Worker as Background worker
   participant FS as Storage
   participant DB as Database
@@ -127,7 +124,7 @@ sequenceDiagram
   autonumber
   participant FE as FE src/routes/project.$projectId.activities.tsx
   participant Tbl as FE src/routes/-project.activities.tables.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (/api/*)
   participant DB as Database
 
   Note over FE: Activities tab mounts
@@ -162,7 +159,7 @@ sequenceDiagram
 sequenceDiagram
   autonumber
   participant FE as FE src/routes/activity.$activityId.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (/api/*)
   participant Worker as Background worker
   participant DB as Database
 
@@ -202,7 +199,7 @@ sequenceDiagram
   autonumber
   participant FE as FE src/routes/index.tsx
   participant Root as FE src/routes/__root.tsx
-  participant API as Django Ninja (/api/*)
+  participant API as BE (/api/*)
 
   Note over Root: App shell mounts
   Root->>API: GET /api/  (api-root)
