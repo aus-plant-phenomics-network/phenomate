@@ -19,8 +19,7 @@
 ## 1) Project listing & bulk actions
 **Pages**: `src/routes/index.tsx`, `src/routes/project.index.tsx`, `src/routes/-project.index.tables.tsx`
 
-> Endpoints reflected below are from `urls.txt`. 
-
+[Diagram](images/phenomate_project.png)
 ```mermaid
 sequenceDiagram
 
@@ -51,7 +50,7 @@ sequenceDiagram
 ## 2) Create project (lookup reference data → submit)
 **Page**: `src/routes/project.create.tsx`
 
-> Endpoints reflected below are from `urls.txt`. 
+[Diagram](images/phenomate_project_create.png)
 
 ```mermaid
 sequenceDiagram
@@ -83,7 +82,8 @@ sequenceDiagram
 ## 3) Offload data for a project (export job)
 **Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
 
-> Endpoints reflected below are from `urls.txt`. 
+[Diagram](images/phenomate_project_select_action.png)
+[Diagram](images/phenomate_project_offload_data.png) 
 
 ```mermaid
 sequenceDiagram
@@ -117,7 +117,7 @@ sequenceDiagram
 ## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
-> Endpoints reflected below are from `urls.txt`. 
+[Diagram](images/phenomate_project_activities.png) 
 
 ```mermaid
 sequenceDiagram
