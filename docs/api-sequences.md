@@ -19,9 +19,9 @@
 ## 1) Project listing & bulk actions
 **Pages**: `src/routes/index.tsx`, `src/routes/project.index.tsx`, `src/routes/-project.index.tables.tsx`
 
-
-<img src="images/phenomate_project.png" alt="phenomate_project" style="display: block; margin: 0 auto; width: 65%;">
-
+<p align="center">
+<img src="images/phenomate_project.png" alt="phenomate_project" width="65%">
+</p>
 
 ```mermaid
 sequenceDiagram
@@ -52,9 +52,9 @@ sequenceDiagram
 
 ## 2) Create project (lookup reference data → submit)
 **Page**: `src/routes/project.create.tsx`
-
-<img src="images/phenomate_project_create.png" alt="phenomate_project_create" style="display: block; margin: 0 auto; width: 65%;">
-
+<p align="center">
+<img src="images/phenomate_project_create.png" alt="phenomate_project_create" width="65%">
+</p>
 ```mermaid
 sequenceDiagram
   autonumber
@@ -85,10 +85,12 @@ sequenceDiagram
 ## 3) Offload data for a project (export job)
 **Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
 
-
-<img src="images/phenomate_project_select_action.png" alt="phenomate_project_select_action" style="display: block; margin: 0 auto; width: 65%;">
-<img src="images/phenomate_project_offload_data.png" alt="phenomate_project_offload_data" style="display: block; margin: 0 auto; width: 65%;">
-
+<p align="center">
+<img src="images/phenomate_project_select_action.png" alt="phenomate_project_select_action" width="65%">
+</p>
+<p align="center">
+<img src="images/phenomate_project_offload_data.png" alt="phenomate_project_offload_data" width="65%">
+</p>
 ```mermaid
 sequenceDiagram
   autonumber
@@ -120,9 +122,9 @@ sequenceDiagram
 
 ## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
-
-<img src="images/phenomate_project_activities.png" alt="phenomate_project_activities" style="display: block; margin: 0 auto; width: 65%;">
-
+<p align="center">
+<img src="images/phenomate_project_activities.png" alt="phenomate_project_activities" width="65%">
+</p>
 
 ```mermaid
 sequenceDiagram
