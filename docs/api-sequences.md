@@ -117,7 +117,7 @@ sequenceDiagram
 ## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
-[Diagram](images/phenomate_project_activities.png) 
+[Diagram](images/phenomate_project_activities.png)  
 
 ```mermaid
 sequenceDiagram
