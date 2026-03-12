@@ -19,7 +19,7 @@
 ## 1) Project listing & bulk actions
 **Pages**: `src/routes/index.tsx`, `src/routes/project.index.tsx`, `src/routes/-project.index.tables.tsx`
 
-[Diagram](images/phenomate_project.png)
+![phenomate_project](images/phenomate_project.png)
 ```mermaid
 sequenceDiagram
 
@@ -50,7 +50,7 @@ sequenceDiagram
 ## 2) Create project (lookup reference data → submit)
 **Page**: `src/routes/project.create.tsx`
 
-[Diagram](images/phenomate_project_create.png)
+![phenomate_project_create](images/phenomate_project_create.png)
 
 ```mermaid
 sequenceDiagram
@@ -82,8 +82,8 @@ sequenceDiagram
 ## 3) Offload data for a project (export job)
 **Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
 
-[Diagram](images/phenomate_project_select_action.png)
-[Diagram](images/phenomate_project_offload_data.png) 
+![phenomate_project_select_action](images/phenomate_project_select_action.png)
+![phenomate_project_offload_data](images/phenomate_project_offload_data.png) 
 
 ```mermaid
 sequenceDiagram
@@ -117,7 +117,7 @@ sequenceDiagram
 ## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
-[Diagram](images/phenomate_project_activities.png)  
+![phenomate_project_activities](images/phenomate_project_activities.png)  
 
 ```mermaid
 sequenceDiagram
