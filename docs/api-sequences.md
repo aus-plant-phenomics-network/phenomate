@@ -19,7 +19,8 @@
 ## 1) Project listing & bulk actions
 **Pages**: `src/routes/index.tsx`, `src/routes/project.index.tsx`, `src/routes/-project.index.tables.tsx`
 
-![phenomate_project](images/phenomate_project.png)
+
+<img src="images/phenomate_project.png" alt="phenomate_project" width="50%" height="50%" style="float: center;">
 ```mermaid
 sequenceDiagram
 
@@ -118,6 +119,8 @@ sequenceDiagram
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
 ![phenomate_project_activities](images/phenomate_project_activities.png)  
+
+
 
 ```mermaid
 sequenceDiagram
