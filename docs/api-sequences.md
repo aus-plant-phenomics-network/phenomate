@@ -23,6 +23,10 @@
 
 ```mermaid
 sequenceDiagram
+  
+%% Legend at the top
+  Note over FE,BE: Legend — FE = Frontend, BE = Backend
+
   autonumber
   participant FE as FE src/routes/project.index.tsx
   participant Tbl as FE src/routes/-project.index.tables.tsx
@@ -79,7 +83,41 @@ sequenceDiagram
 
 ---
 
-## 3) Project detail + activities tab
+## 3) Offload data for a project (export job)
+**Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
+
+> Endpoints reflected below are from `urls.txt`. 
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant FE as FE src/routes/project.$projectId.offload.tsx
+  participant Tbl as FE src/routes/-project.offload.tables.tsx
+  participant API as Django Ninja (/api/*)
+  participant Worker as Background worker
+  participant FS as Storage
+  participant DB as Database
+
+  Note over FE: User triggers offload
+  FE->>API: POST /api/activity/offload/<project_id>  (offload_data)
+  API->>Worker: start offload job
+  Worker->>FS: read/package files
+  FS-->>Worker: ok
+  Worker->>DB: INSERT activity(status="queued"/"running"/"completed")
+  DB-->>Worker: ok
+  API-->>FE: 202 {job:"offload", project_id}
+
+  Note over FE: Poll for new/updated activities
+  FE->>API: GET /api/activity/<project_id>  (list_activities)
+  API->>DB: SELECT * FROM activity WHERE project_id=...
+  DB-->>API: rows
+  API-->>FE: 200 [{activity}, ...]
+  FE->>Tbl: render/offload results
+```
+
+---
+
+## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
 > Endpoints reflected below are from `urls.txt`. 
@@ -115,7 +153,7 @@ sequenceDiagram
 
 ---
 
-## 4) Single activity detail & actions (cancel / retry)
+## 5) Single activity detail & actions (cancel / retry)
 **Page**: `src/routes/activity.$activityId.tsx`
 
 > Endpoints reflected below are from `urls.txt`. 
@@ -153,39 +191,6 @@ sequenceDiagram
 
 ---
 
-## 5) Offload data for a project (export job)
-**Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
-
-> Endpoints reflected below are from `urls.txt`. 
-
-```mermaid
-sequenceDiagram
-  autonumber
-  participant FE as FE src/routes/project.$projectId.offload.tsx
-  participant Tbl as FE src/routes/-project.offload.tables.tsx
-  participant API as Django Ninja (/api/*)
-  participant Worker as Background worker
-  participant FS as Storage
-  participant DB as Database
-
-  Note over FE: User triggers offload
-  FE->>API: POST /api/activity/offload/<project_id>  (offload_data)
-  API->>Worker: start offload job
-  Worker->>FS: read/package files
-  FS-->>Worker: ok
-  Worker->>DB: INSERT activity(status="queued"/"running"/"completed")
-  DB-->>Worker: ok
-  API-->>FE: 202 {job:"offload", project_id}
-
-  Note over FE: Poll for new/updated activities
-  FE->>API: GET /api/activity/<project_id>  (list_activities)
-  API->>DB: SELECT * FROM activity WHERE project_id=...
-  DB-->>API: rows
-  API-->>FE: 200 [{activity}, ...]
-  FE->>Tbl: render/offload results
-```
-
----
 
 ## 6) Home/index (optional helpers)
 **Pages**: `src/routes/index.tsx`, `src/routes/__root.tsx`
