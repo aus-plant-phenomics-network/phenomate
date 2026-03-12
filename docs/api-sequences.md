@@ -20,7 +20,9 @@
 **Pages**: `src/routes/index.tsx`, `src/routes/project.index.tsx`, `src/routes/-project.index.tables.tsx`
 
 
-<img src="images/phenomate_project.png" alt="phenomate_project" width="50%" height="50%" style="float: center;">
+<img src="images/phenomate_project.png" alt="phenomate_project" style="display: block; margin: 0 auto; width: 65%;">
+
+
 ```mermaid
 sequenceDiagram
 
@@ -51,7 +53,7 @@ sequenceDiagram
 ## 2) Create project (lookup reference data → submit)
 **Page**: `src/routes/project.create.tsx`
 
-![phenomate_project_create](images/phenomate_project_create.png)
+<img src="images/phenomate_project_create.png" alt="phenomate_project_create" style="display: block; margin: 0 auto; width: 65%;">
 
 ```mermaid
 sequenceDiagram
@@ -83,8 +85,9 @@ sequenceDiagram
 ## 3) Offload data for a project (export job)
 **Pages**: `src/routes/project.$projectId.offload.tsx`, `src/routes/-project.offload.tables.tsx`
 
-![phenomate_project_select_action](images/phenomate_project_select_action.png)
-![phenomate_project_offload_data](images/phenomate_project_offload_data.png) 
+
+<img src="images/phenomate_project_select_action.png" alt="phenomate_project_select_action" style="display: block; margin: 0 auto; width: 65%;">
+<img src="images/phenomate_project_offload_data.png" alt="phenomate_project_offload_data" style="display: block; margin: 0 auto; width: 65%;">
 
 ```mermaid
 sequenceDiagram
@@ -118,8 +121,7 @@ sequenceDiagram
 ## 4) Project detail + activities tab
 **Pages**: `src/routes/project.$projectId.activities.tsx`, `src/routes/-project.activities.tables.tsx`
 
-![phenomate_project_activities](images/phenomate_project_activities.png)  
-
+<img src="images/phenomate_project_activities.png" alt="phenomate_project_activities" style="display: block; margin: 0 auto; width: 65%;">
 
 
 ```mermaid
