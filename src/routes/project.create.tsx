@@ -14,7 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertMessage, FieldInfo, Fieldset } from '@/components/Form'
 
-// import { saveDirectory } from '@/lib/utils'
+
+const DEFAULT_TEMPLATE = '/opt/phenomate/templates/template.yaml';
 
 export const Route = createFileRoute('/project/create')({
   component: CreateProjectPage,
@@ -54,7 +55,7 @@ export default function CreateProjectPage() {
 	    platform: '',
       root: '',
       internal: true,
-      template: null,
+      template: DEFAULT_TEMPLATE ,
       researcherName: null,
       organisationName: null,
     }
