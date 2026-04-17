@@ -1,5 +1,7 @@
 ## Setting up Phenomate
 
+Please Note: The new environment variable PHENOMATE_HYPERSPEC_ID has been added and read by the phenoate-core Hyperspectral processing code. It's value should match the hyperspectral camera product ID - *This is a fragile code change* that can could have unforseen consequences on data integrity, and should be changed once the need for backwards compatibility with the Hyperspectral binary files is removed.
+
 ### Using docker
 
 First, you should set up the docker-compose.yaml file, which mostly requires specifying the 
@@ -104,7 +106,8 @@ sudo systemctl start rabbitmq-server
 make install-local-phenomate-core
 make install-local-appm
 
-# Now run the Celery workers
+# Now run the Celery workers 
+# N.B. Restart these whenever a local repo codebase has been changed
 make run-celery
 # uv run celery -A backend worker --loglevel=info --concurrency=1
 ```
@@ -144,25 +147,26 @@ Now open a browser and point to localhost:3000
 
 
 ### Developer data type migration
-To sync `dto` types between the frontend and backend, run
+Sync `dto` types between the frontend and backend.
+
+#### Recreating the Typescript interface to a changed backend API
+You only need to do this if you have made any changes to any backend dto, the frontend code needs to be informed about the new types.
+Doing this helps eliminate the need to define types twice and is generally improves developer experience.
+
 
 ```bash
-npm run sync-backend
-```
-
-You only need to run this if you have made any changes to any backend dto. Doing this helps eliminate the need to define types twice and is generally improves developer experience.
-
-
-
-### Recreating the Typescript interface to a changed backend API
-If adding or modifying the backend API data requirements the frontend code needs to be informed about the new types.
-
-```
 # N.B. firstly make sure the backend is running : uv run manage.py runserver
 
 # Run the openapi parser
 npx openapi-typescript http://localhost:8000/api/openapi.json -o ./src/lib/api/v1.d.ts
 ```
+
+```bash
+# This script is defined in package.json, and is the same as the command above
+npm run sync-backend
+```
+
+
 
 ## Accessing Phenomate
 
@@ -212,7 +216,7 @@ Check out the [official documentation](https://docs.docker.com/reference/compose
 
 # Removing and reinitialising the Docker volume database storage
 
-```
+```bash
 # stop services and remove containers
 docker compose down
 
@@ -250,6 +254,7 @@ update the corresponding environment variables in the dotenv file. This will all
 - `POSTGRES_HOST`: postgresql image parameters
 - `POSTGRES_PORT`: postgresql image parameters
 - `LOG_DIR` : the directory the the application should place the log files. Development and prodduction (e.g. docker) environments should specify different directories.
+- `PHENOMATE_HYPERSPEC_ID` : This is a CSV list of known Hyperspectral camera Product IDs. The values are used in the phenomate-core HyperspecPreprocessor class to prvide backwards compatibility with older file types.
 
 ## Packages and Frameworks
 
