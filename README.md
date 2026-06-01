@@ -18,11 +18,15 @@ docker compose down
 docker compose build --no-cache
 
 # or, if only a particular image has changed 
-docker compose build --force-recreate --build celery_worker
+docker compose build --no-cache celery_worker
 
 # start containers (or through the sudo make run-docker command)
 docker compose up -d
 ```
+
+N.B. The backend Docker container uses the `template_appn_default.yaml` file taken from the 
+    `appm/examples/` directory, so any required updates to the template .yaml file needs to
+    be added to the `appn-project-manager` git repository.
 
 ```mermaid
 sequenceDiagram
@@ -58,7 +62,7 @@ docker volume rm phenomate_pgdata
 docker compose up -d
 
 # Reinitialise the database via uv/Django
-# docker exec -it backend uv run manage.py migrate
+docker exec -it backend uv run manage.py migrate
 
 ```
 

@@ -167,3 +167,7 @@ cython_debug/
 node_modules
 .vscode/
 .tanstack/
+
+
+.understand-anything/*
+!.understand-anything/knowledge-graph.json

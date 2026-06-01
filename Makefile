@@ -110,6 +110,7 @@ lock:                                              ## Rebuild lockfiles from scr
 install-local-phenomate-core:
 	echo "Installing local phenomate-core from ${LOCAL_PHENOMATE_CORE}"
 	echo "ensure pyproject.toml [tool.uv.sources] section has phenomate-core path set correctly"
+	echo "and restart Celery workers to reload the code changes"
 	uv pip install ${LOCAL_PHENOMATE_CORE}
 
 # Update the path to appn-project-manager as needed
@@ -117,6 +118,7 @@ install-local-phenomate-core:
 install-local-appm:
 	echo "Installing local appm from ${LOCAL_APPM}"
 	echo "ensure pyproject.toml [tool.uv.sources] section has appm path set correctly"
+	echo "and restart Celery workers to reload the code changes"
 	uv pip install ${LOCAL_APPM}
 
 # =============================================================================
