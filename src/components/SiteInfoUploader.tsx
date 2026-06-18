@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { fetchClient } from '../lib/api';
 
-const apiKey = import.meta.env.VITE_API_KEY;
+// const apiKey = import.meta.env.VITE_API_KEY;
 
 // ---- Helper: format datetime ----
 function getFormattedTimestamp(): string {
@@ -76,7 +76,7 @@ export const SiteInfoUploader: React.FC = () => {
         const fullPath = `${projectDirectory}/${siteFilename}`;
 
         const res = await fetchClient.PUT('/api/siteinfo/savesiteinfo', {
-          body: {
+          body: { 
             filename: fullPath,
             content: siteText,
           },
@@ -88,15 +88,16 @@ export const SiteInfoUploader: React.FC = () => {
 
         console.log("RES:", res);
 
-        // ✅ Adjust this depending on your client:
-        if (res?.error) {
-          throw new Error(res.error || 'Upload failed');
+        if (res.error) {
+          throw new Error('Request failed');
         }
 
-        // OR if it's raw fetch:
-        // if (!res.ok) throw new Error('Upload failed');
+        if (!res.data?.success) {
+          throw new Error(res.data?.error || 'Upload failed');
+        }
 
-        return res;
+
+        return res.data;
       },
     });
 

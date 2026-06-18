@@ -268,6 +268,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/siteinfo/savesiteinfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Site Info */
+        put: operations["backend_siteinfo_api_save_site_info"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -435,6 +452,22 @@ export interface components {
         OffloadActivityForm: {
             /** Src Files */
             src_files: string[];
+        };
+        /** SaveSiteInfoResponse */
+        SaveSiteInfoResponse: {
+            /** Success */
+            success: boolean;
+            /** Message */
+            message?: string | null;
+            /** Error */
+            error?: string | null;
+        };
+        /** SaveSiteInfoRequest */
+        SaveSiteInfoRequest: {
+            /** Filename */
+            filename: string;
+            /** Content */
+            content: string;
         };
     };
     responses: never;
@@ -833,6 +866,30 @@ export interface operations {
                 };
                 content: {
                     "text/plain": string;
+                };
+            };
+        };
+    };
+    backend_siteinfo_api_save_site_info: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveSiteInfoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaveSiteInfoResponse"];
                 };
             };
         };
