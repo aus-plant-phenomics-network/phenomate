@@ -26,6 +26,8 @@ ALLOWED_LOG_FILES = {
     "celery-phenomate.log":os.path.join(LOG_DIR, "celery-phenomate.log"),
 }
 
+
+
 # Tail limits/defaults
 MAX_TAIL_BYTES = int(os.environ.get("MAX_TAIL_BYTES", 2 * 1024 * 1024))   # 5 MB cap per request
 DEFAULT_TAIL_BYTES = int(os.environ.get("DEFAULT_TAIL_BYTES", 256 * 1024)) # default 256 KB
@@ -44,8 +46,6 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_WORKER_HIJACK_ROOT_LOGGER = False    # prevent Celery from altering root logger
 CELERY_WORKER_REDIRECT_STDOUTS = True      # send print/stdout/stderr into logger
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = 'INFO'
-
-
 
 
 LOGGING = {
@@ -129,15 +129,18 @@ SECRET_KEY = os.getenv(
     "SECRET_KEY", "django-insecure-qk=zw&3h@zoe10btbj((u^v8%%2m)x%p(i(f+l!g5hgqvz1-51"
 )
 
+# To authenticate the API caller (frontend) 
+# This is currently only used in /api/siteinfo/savesiteinfo
+# in a public accessible backend, the value should be kept sectret
+# i.e. not saved in .env.production
+INTERNAL_API_KEY = os.environ.get("HTTP_API_KEY", 'my-secret-key')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS: list[str] = os.getenv(
     "DJANGO_ALLOWED_HOST", "127.0.0.1,localhost,frontend,[::1],0.0.0.0"
 ).split(",")
-
-CORS_ALLOW_ALL_ORIGINS = True
-
 
 # Application definition
 
@@ -157,6 +160,28 @@ INSTALLED_APPS = [
 
 if DEBUG:
     INSTALLED_APPS += ["django_extensions"]
+
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-api-key",
+]
+
 
 
 MIDDLEWARE = [

@@ -1,11 +1,11 @@
 import os
 from typing import Optional
+
 from django.conf import settings
 from django.http import FileResponse, HttpRequest, HttpResponse, HttpResponseNotFound, StreamingHttpResponse
 from ninja import Router, Query
 
 from appm.utils import get_task_logger
-
 shared_logger = get_task_logger(__name__)
 
 # logs/api.py
@@ -52,6 +52,7 @@ def download_log(
     if not log_path:
         return HttpResponseNotFound("Log file not found or not allowed.")
 
+    # MAX_TAIL_BYTES is from backend/settings.py
     max_tail = getattr(settings, "MAX_TAIL_BYTES", 10 * 1024 * 1024)
     file_size = os.path.getsize(log_path)
 

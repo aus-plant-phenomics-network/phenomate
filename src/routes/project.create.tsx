@@ -191,7 +191,7 @@ export default function CreateProjectPage() {
         >
           <div className="flex flex-col gap-y-6 w-[410px] sm:w-[600px]">
             <h1 className="flex justify-center text-2xl font-bold items-center px-6 pb-4">
-              Create Project
+              Data Acquisition Transfer
             </h1>
             <div className="flex flex-col justify-center gap-y-4 px-6">
               {/* Root Field */}
@@ -388,7 +388,7 @@ export default function CreateProjectPage() {
                           type="text"
                           id={field.name}
                           name={field.name}
-                          placeholder="Platform Name"
+                          placeholder="Phenomate"
                           onBlur={field.handleBlur}
                           onChange={e => field.handleChange(e.target.value)}
                         />
@@ -405,12 +405,12 @@ export default function CreateProjectPage() {
                   return (
                     <>
                       <Fieldset>
-                        <Label htmlFor={field.name}>Project Summary*</Label>
+                        <Label htmlFor={field.name}>Acquisition Summary*</Label>
                         <Input
                           type="text"
                           id={field.name}
                           name={field.name}
-                          placeholder="Project Summary"
+                          placeholder="e.g. run-1"
                           onBlur={field.handleBlur}
                           onChange={e => field.handleChange(e.target.value)}
                         />

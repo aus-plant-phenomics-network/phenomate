@@ -32,13 +32,8 @@ export const makeIndexDataColumn = (
       id: 'projectId',
       header: 'pid',
       cell: ({ row /*, table*/ }) => {
-        /*// Get current page index and page size from table state
-        const pageIndex = table.getState().pagination.pageIndex;
-        const pageSize = table.getState().pagination.pageSize;
-        // Calculate the row number
-        return row.index + 1 + pageIndex * pageSize;*/
         return row.original.id.toString()
-       },
+      },
     },
     {
       id: 'action',
@@ -47,7 +42,7 @@ export const makeIndexDataColumn = (
     {
       accessorKey: 'name',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Platform" tooltip="This is the Platform name (should be a Phenomate) " />
+        <DataTableColumnHeader column={column} title="Site/Run" tooltip="This is the Site or Run name " />
       ),
     },
     {

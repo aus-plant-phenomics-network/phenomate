@@ -7,6 +7,7 @@ export interface MyFormProjectData {
   siteData: string
   platformData: string 
   projectDirectory: string | null | undefined
+  acquisitionData: string
 }
 
 const initialState: MyFormProjectData = {
@@ -14,6 +15,7 @@ const initialState: MyFormProjectData = {
   siteData: '',
   platformData: '',
   projectDirectory: '',
+  acquisitionData: '',
 }
 
 const formSlice = createSlice({

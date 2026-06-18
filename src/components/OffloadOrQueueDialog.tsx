@@ -43,6 +43,7 @@ export const OffloadOrQueueDialog: React.FC<OffloadOrQueueDialogProps> = ({
 			siteData: row.original.site,
 			platformData: row.original.platform,
 			projectDirectory: row.original.location,
+            acquisitionData: row.original.summary,
 		})
 	)
 

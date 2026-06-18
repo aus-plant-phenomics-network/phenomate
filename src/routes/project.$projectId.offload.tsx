@@ -22,8 +22,9 @@ import {
 } from '@/components/Table'
 import { usePhenomate } from '@/lib/context'
 import { parseFileData } from '@/lib/utils'
-
+import { SiteInfoUploader } from '@/components/SiteInfoUploader'
 import { useAppSelector } from '../store/hooks'
+
 
 
 
@@ -99,6 +100,15 @@ function ReviewPage() {
             <td style={td}>
               <div style={tdFull} title={form.platformData}>
                 {form.platformData}
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th style={th}>Acquisition:</th>
+            <td style={td}>
+            {/* acquisitionData is the 'summary' field in the project.create.tsx table */}
+              <div style={tdFull} title={form.acquisitionData}>
+                {form.acquisitionData}
               </div>
             </td>
           </tr>
@@ -294,6 +304,7 @@ export default function OffloadProjectPage() {
 			  
             </div>
 			<ReviewPage />
+            <SiteInfoUploader />
           </div>
 		  
         </form>

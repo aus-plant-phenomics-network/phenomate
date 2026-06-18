@@ -13,6 +13,8 @@ from backend.project.api import router as project_router
 from backend.researcher.api import router as researcher_router
 from backend.url.api import router as urls_router
 from backend.logs.api import router as logs_router
+from backend.siteinfo.api import router as siteinfo_router
+
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse
@@ -63,3 +65,4 @@ app.add_router("/researcher/", researcher_router, tags=["researcher"], auth=None
 app.add_router("/organisation/", organisation_router, tags=["organisation"], auth=None)
 app.add_router("/activity/", activity_router, tags=["activity"], auth=None)
 app.add_router("/logs/", logs_router, tags=["logs"], auth=None)
+app.add_router("/siteinfo/", siteinfo_router, tags=["siteinfo"], auth=None)
