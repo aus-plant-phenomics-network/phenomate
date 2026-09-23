@@ -24,6 +24,10 @@ docker compose build --force-recreate --build celery_worker
 docker compose up -d
 ```
 
+N.B. The backend Docker container uses the `template_appn_default.yaml` file taken from the 
+    `appm/examples/` dircectory, so any required updates to the .yaml file can be added to back
+    to the `appn-project-manager` git repository.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -116,7 +120,7 @@ make run-celery
 
 ```bash
 make run-server
-# uv run manage.py runserver
+#   
 ```
 
 Note that you may need to setup the database the first time running the server. To do this, you can do either:

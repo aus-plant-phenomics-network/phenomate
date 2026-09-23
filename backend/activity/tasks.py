@@ -27,12 +27,17 @@ def remove_task(log_pk: int) -> None:
     CANBUS  = 'canbus' not in src.stem.lower()  # these are csv files, do not delete them 
     RS3     = src.suffix.lower() != ".25b"      # has specialised processing in phenomate-core for .25o and .25p
     LIDAR3D = src.suffix.lower() != ".pcap"     # has specialised processing in phenomate-core for .json
-    # The .bin file should not be deleted, has corresponding .csv file, 
-    # that should not be deleted, and a _GNSS.csv file that has specialised processing
+    # The IMU data is stored in a .bin file and should not be deleted, and has corresponding .csv file, 
+    # that should not be deleted, and a _GNSS.csv file that has specialised processing in  phenomate-core 
+    # file preprocessing\base.py BasePreprocessor 
     IMU     = 'imu1' not in src.stem.lower()
-    shared_logger.info(f'Phenomate: remove_task() file: {src}: CANBUS: {CANBUS}; RS3: {RS3}; LIDAR3D: {LIDAR3D}; IMU: {IMU};')
+    # Septentrio files are 'non-protobuf' .bin files, so they are not unpacked and should be kept as recieved.
+    SEPTENTRIO     = 'septentrio' not in src.stem.lower()
+    CAPTURESOFT    = 'capturesoftware' not in src.stem.lower()
     
-    if LIDAR3D and RS3 and CANBUS and IMU :
+    shared_logger.info(f'Phenomate: remove_task() file: {src}: CANBUS: {CANBUS}; RS3: {RS3}; LIDAR3D: {LIDAR3D}; IMU: {IMU}; SEPTENTRIO: {SEPTENTRIO};  CAPTURESOFT: {CAPTURESOFT};')
+    
+    if LIDAR3D and RS3 and CANBUS and IMU and SEPTENTRIO and CAPTURESOFT:
         src.unlink()  
         
     log.status = Activity.StatusChoices.COMPLETED
@@ -50,11 +55,11 @@ def preprocess_task(log_pk: int) -> int:
         name = src.name
         components = manager.match(name)
         if "sensor" not in components or components["sensor"] is None:
-            raise ValueError("Missing component information for preprocessing")
+            raise ValueError("Phenomate: preprocess_task() Missing sensor component information for preprocessing")
             
         # Retrieve the correct phenomate-core preprocessing class from the class factory
         # The correct class is found by keyword found in the data file filename
-        # e.g. sensor = one of: jai, rs3, oak, [hyperspec, dark, white], canbus
+        # e.g. sensor = one of: jai, rs3, oak, [hyperspec, dark, white], canbus, septentrio, capturesoftware
         processor_class = get_preprocessor(
             components["sensor"], cast("str", components.get("rest", ""))
         )

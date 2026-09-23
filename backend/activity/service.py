@@ -42,8 +42,13 @@ def copy_data(src: list[Path], project: Project) -> None:
             continue
             
         if file.suffix.lower() in DISALLOWED:
-            shared_logger.info(f'Phenomate: copy_data(): Skipping {file.suffix.lower()} file: {file}')
-            continue
+            # Let the CaptureSoftware json files through to be copied in the standard processing
+            # The files also need to checked within backend/activity/tasks.py remove_task() function.
+            if "CaptureSoftware" in file.name:
+                shared_logger.info(f'Phenomate: copy_data(): Not skipping CaptureSoftware {file.suffix.lower()} file: {file}')
+            else:
+              shared_logger.info(f'Phenomate: copy_data(): Skipping {file.suffix.lower()} file: {file}')
+              continue
         
         log = Activity(
             project=project,
